@@ -11,6 +11,18 @@ const routes: Route[] = [
         path: "/",
         element: <Home />,
       },
+      {
+        path: "/profile",
+        element: <Home />,
+      },
+      {
+        path: "/chat",
+        element: <Home />,
+      },
+      {
+        path: "/shop",
+        element: <Home />,
+      },
     ],
   },
 ];
