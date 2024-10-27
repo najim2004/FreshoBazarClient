@@ -25,7 +25,10 @@ export const HomePageBanners: React.FC = () => {
   });
 
   return (
-    <div ref={divRef} className="">
+    <div
+      ref={divRef}
+      className="max-w-[calc(100vw-160px)] overflow-x-hidden w-full"
+    >
       <div ref={sliderRef} className="keen-slider">
         <div className="keen-slider__slide h-[300px] min-w-[650px] bg-gray-50 rounded-2xl"></div>
         <div className="keen-slider__slide h-[300px] min-w-[650px] bg-gray-50 rounded-2xl"></div>

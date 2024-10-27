@@ -8,44 +8,29 @@ export const TodayBestSellingProducts: React.FC = () => {
         Todays Best Selling Products
       </h3>
       <div className="mt-8 flex items-center justify-start gap-6">
-        <button className="px-6 py-2 rounded-full text-white bg-primary text-lg font-fjalla font-medium border">
+        <button className="px-6 py-1.5 rounded-full text-white bg-primary text-lg font-fjalla font-medium border">
           All
         </button>
-        <button className="px-6 py-2 rounded-full bg-transparent text-primary text-lg font-fjalla font-medium border">
+        <button className="px-6 py-1.5 rounded-full bg-transparent text-primary text-lg font-fjalla font-medium bg-white hover:bg-primary hover:text-white">
           Chicken
         </button>
-        <button className="px-6 py-2 rounded-full bg-transparent text-primary text-lg font-fjalla font-medium border">
+        <button className="px-6 py-1.5 rounded-full bg-transparent text-primary text-lg font-fjalla font-medium bg-white hover:bg-primary hover:text-white">
           Tomatoes
         </button>
-        <button className="px-6 py-2 rounded-full bg-transparent text-primary text-lg font-fjalla font-medium border">
+        <button className="px-6 py-1.5 rounded-full bg-transparent text-primary text-lg font-fjalla font-medium bg-white hover:bg-primary hover:text-white">
           Bananas
         </button>
-        <button className="px-6 py-2 rounded-full bg-transparent text-primary text-lg font-fjalla font-medium border">
+        <button className="px-6 py-1.5 rounded-full bg-transparent text-primary text-lg font-fjalla font-medium bg-white hover:bg-primary hover:text-white">
           Cat Fish
         </button>
-        <button className="px-6 py-2 rounded-full bg-transparent text-primary text-lg font-fjalla font-medium border">
+        <button className="px-6 py-1.5 rounded-full bg-transparent text-primary text-lg font-fjalla font-medium bg-white hover:bg-primary hover:text-white">
           Dragon Fruit
         </button>
       </div>
-      <div className="flex flex-wrap gap-[38px] mt-5">
-        <ProductCard />
-        <ProductCard />
-        <ProductCard />
-        <ProductCard />
-        <ProductCard />
-        <ProductCard />
-        <ProductCard />
-        <ProductCard />
-        <ProductCard />
-        <ProductCard />
-        <ProductCard />
-        <ProductCard />
-        <ProductCard />
-        <ProductCard />
-        <ProductCard />
-        <ProductCard />
-        <ProductCard />
-        <ProductCard />
+      <div className="display-grid mt-10">
+        {[...Array(15)].map((_, index) => (
+          <ProductCard key={index} className="" />
+        ))}
       </div>
     </section>
   );

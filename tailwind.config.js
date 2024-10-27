@@ -4,13 +4,23 @@ export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
+      screens: {
+        xs: "480px", // Extra small screens (e.g., small phones)
+        sm: "640px", // Small screens (e.g., phones)
+        md: "768px", // Medium screens (e.g., tablets)
+        lg: "1024px", // Large screens (e.g., laptops)
+        xl: "1280px", // Extra large screens (e.g., desktops)
+        "2xl": "1536px", // 2X extra large screens (e.g., large desktops)
+        "3xl": "1920px", // 3X extra large screens (e.g., extra-large desktops)
+        "4xl": "2560px", // 4X extra large screens (e.g., ultra-wide monitors)
+      },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
       },
       colors: {
-        primary: "#14B546",
+        primary: "#059669",
         "color-primary": "#455154",
         "color-secondary": "#BBC0C1",
         "color-ternary": "#9CA3A5",

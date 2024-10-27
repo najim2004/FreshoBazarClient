@@ -10,7 +10,7 @@ export const SideNavbar: React.FC = () => {
       <li>
         <NavLink
           to={"/"}
-          className="flex justify-center items-center text-3xl p-2 rounded-full"
+          className="flex justify-center items-center text-3xl p-2 rounded-full hover:text-primary"
         >
           {/* home */}
           <TbSmartHome />
@@ -19,7 +19,7 @@ export const SideNavbar: React.FC = () => {
       <li>
         <NavLink
           to={"/shop"}
-          className="flex justify-center items-center text-3xl p-2 rounded-full"
+          className="flex justify-center items-center text-3xl p-2 rounded-full hover:text-primary"
         >
           {/* shop */}
           <PiShoppingCartSimpleBold />
@@ -28,7 +28,7 @@ export const SideNavbar: React.FC = () => {
       <li>
         <NavLink
           to={"/profile"}
-          className="flex justify-center items-center text-3xl p-2 rounded-full"
+          className="flex justify-center items-center text-3xl p-2 rounded-full hover:text-primary"
         >
           {/* profile */}
           <RiUser3Line />
@@ -37,7 +37,7 @@ export const SideNavbar: React.FC = () => {
       <li>
         <NavLink
           to={"/chat"}
-          className="flex justify-center items-center text-3xl p-2 rounded-full"
+          className="flex justify-center items-center text-3xl p-2 rounded-full hover:text-primary"
         >
           {/* chat */}
           <RiMessage3Line />

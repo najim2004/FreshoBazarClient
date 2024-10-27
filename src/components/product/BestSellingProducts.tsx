@@ -1,33 +1,17 @@
-import React, { useEffect, useRef, useState } from "react";
+import React from "react";
 import { BiExpandHorizontal } from "react-icons/bi";
 import { ProductCard } from "./ProductCard";
-import { useKeenSlider } from "keen-slider/react";
-import "keen-slider/keen-slider.min.css";
+import { Swiper, SwiperSlide } from "swiper/react";
+
+// Import Swiper styles
+import "swiper/css";
+import "swiper/css/free-mode";
+// import required modules
+import { FreeMode } from "swiper/modules";
 
 export const BestSellingProducts: React.FC = () => {
-  const bestSellingDivRef = useRef<HTMLDivElement>(null);
-  const [divWidth, setDivWidth] = useState<number>();
-
-  useEffect(() => {
-    if (bestSellingDivRef.current) {
-      const rect = bestSellingDivRef.current.getBoundingClientRect();
-      setDivWidth(rect?.width / (260 + 32) < 1 ? 1 : rect?.width / (260 + 32));
-      console.log(rect?.width);
-    }
-  }, []);
-
-  const [bestSellingSliderRef] = useKeenSlider<HTMLDivElement>({
-    mode: "free",
-    slides: {
-      perView: divWidth,
-      spacing: 38,
-    },
-    drag: true,
-    rubberband: false,
-  });
-
   return (
-    <section className="mt-10">
+    <section className="mt-10 max-w-[calc(100vw-160px)] w-full">
       <div className="flex justify-between items-center">
         <h3 className="text-2xl font-fjalla text-color-primary font-semibold">
           Best Selling Products
@@ -36,39 +20,29 @@ export const BestSellingProducts: React.FC = () => {
           <BiExpandHorizontal />
         </span>
       </div>
-      <div ref={bestSellingDivRef} className="mt-5">
-        <div ref={bestSellingSliderRef} className="keen-slider">
-          <div className="keen-slider__slide ">
-            <ProductCard />
-          </div>
-          <div className="keen-slider__slide ">
-            <ProductCard />
-          </div>
-          <div className="keen-slider__slide ">
-            <ProductCard />
-          </div>
-          <div className="keen-slider__slide ">
-            <ProductCard />
-          </div>
-          <div className="keen-slider__slide ">
-            <ProductCard />
-          </div>
-          <div className="keen-slider__slide ">
-            <ProductCard />
-          </div>
-          <div className="keen-slider__slide ">
-            <ProductCard />
-          </div>
-          <div className="keen-slider__slide ">
-            <ProductCard />
-          </div>
-          <div className="keen-slider__slide ">
-            <ProductCard />
-          </div>
-          <div className="keen-slider__slide ">
-            <ProductCard />
-          </div>
-        </div>
+      <div className="mt-5">
+        <Swiper
+          spaceBetween={30}
+          freeMode={true}
+          modules={[FreeMode]}
+          className="mySwiper"
+          breakpoints={{
+            320: { slidesPerView: 1 }, // Mobile screens
+            640: { slidesPerView: 2 }, // Small screens
+            768: { slidesPerView: 2 }, // Medium screens (tablets)
+            1024: { slidesPerView: 3 }, // Large screens (laptops)
+            1280: { slidesPerView: 4 }, // Extra large screens (desktops)
+            1536: { slidesPerView: 5 }, // 2X extra large screens
+            1920: { slidesPerView: 5 }, // 3X extra large screens
+            2560: { slidesPerView: 6 }, // 4X extra large screens
+          }}
+        >
+          {[...Array(8)].map((_, index) => (
+            <SwiperSlide className="mb-4" key={index}>
+              <ProductCard className="hover:scale-100" />
+            </SwiperSlide>
+          ))}
+        </Swiper>
       </div>
     </section>
   );
