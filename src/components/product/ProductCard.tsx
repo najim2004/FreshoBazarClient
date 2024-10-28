@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Leaf, MapPin } from "lucide-react";
+import { Leaf, MapPin, Plus, Minus } from "lucide-react";
+import { MdOutlineShoppingBag } from "react-icons/md";
 
 interface ProductCardProps {
   name: string;
@@ -28,12 +29,7 @@ export const ProductCard = ({
   className,
 }: ProductCardProps) => {
   const navigator = useNavigate();
-
-  // Updated to handle div clicks
-  const onViewDetails = (e: React.MouseEvent<HTMLDivElement>): void => {
-    e.stopPropagation(); // Prevent click from bubbling to parent
-    navigator(`/product/details`); // Navigate to details page
-  };
+  const [quantity, setQuantity] = useState<number>(1);
 
   // Updated to handle button clicks
   const onAddToCart = (e: React.MouseEvent<HTMLButtonElement>): void => {
@@ -44,7 +40,10 @@ export const ProductCard = ({
 
   return (
     <div
-      onClick={onViewDetails}
+      onClick={(e: React.MouseEvent<HTMLDivElement>): void => {
+        e.stopPropagation(); // Prevent click from bubbling to parent
+        navigator(`/product/details`);
+      }}
       className={`max-w-sm rounded-lg overflow-hidden shadow-lg bg-beige-100 transition-transform duration-300 md:hover:scale-105 bg-white ${className}`}
     >
       <div className="relative">
@@ -73,12 +72,37 @@ export const ProductCard = ({
           </span>
           <span className="text-sm text-gray-600">per {unit}</span>
         </div>
-        <button
-          onClick={onAddToCart}
-          className="w-full bg-primary/80 hover:bg-primary text-white font-bold py-2 px-4 rounded-full transition duration-300 ease-in-out transform hover:scale-105"
-        >
-          Add to Cart
-        </button>
+        <div className="flex gap-10 items-center justify-between">
+          <div className="flex justify-center items-center gap-3 bg-primary/80 rounded-full p-0.5">
+            <button
+              className="py-1.5 px-1.5 text-primary bg-white rounded-full active:opacity-90 active:scale-105"
+              onClick={(e: React.MouseEvent<HTMLButtonElement>): void => {
+                e.stopPropagation();
+                setQuantity((prev) => (prev == 1 ? 1 : prev - 1));
+              }}
+            >
+              <Minus />
+            </button>
+            <span className="text-white font-semibold w-7 flex justify-center items-center">
+              {quantity}
+            </span>
+            <button
+              className="py-1.5 px-1.5 text-primary bg-white rounded-full active:opacity-90 active:scale-105"
+              onClick={(e: React.MouseEvent<HTMLButtonElement>): void => {
+                e.stopPropagation();
+                setQuantity((prev) => prev + 1);
+              }}
+            >
+              <Plus />
+            </button>
+          </div>
+          <button
+            onClick={onAddToCart}
+            className="w-full flex items-center justify-center bg-primary/80 hover:bg-primary text-white font-bold py-2 px-4 rounded-full transition duration-300 ease-in-out transform hover:scale-105 text-2xl"
+          >
+            <MdOutlineShoppingBag />
+          </button>
+        </div>
       </div>
       <div className="px-6 py-4 bg-beige-200 flex items-center justify-between">
         <div className="flex items-center">

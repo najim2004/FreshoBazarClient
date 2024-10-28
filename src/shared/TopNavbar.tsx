@@ -17,7 +17,7 @@ export const TopNavbar: React.FC = () => {
         />
       </Link>
 
-      <div className="flex-grow h-16 rounded-3xl bg-white shadow-sm py-2.5 px-4 flex items-center justify-between shadow-primary/30">
+      <div className="flex-grow h-16 rounded-xl bg-white shadow-sm py-2.5 px-4 flex items-center justify-between shadow-primary/30">
         <div className="">
           <h3 className="text-lg font-bold text-primary">Krishok Bolchi</h3>
         </div>
@@ -32,10 +32,13 @@ export const TopNavbar: React.FC = () => {
             <IoIosSearch />
           </button>
         </div>
-        <button className="bg-gray-100 text-primary flex gap-1 text-xl font-fjalla font-semibold items-center justify-center h-full px-3 rounded-xl">
+        <Link
+          to={"/cart"}
+          className="bg-gray-100 text-primary flex gap-1 text-xl font-fjalla font-semibold items-center justify-center h-full px-3 rounded-xl"
+        >
           <RiShoppingBag3Fill className="text-2xl mb-1" />
           02
-        </button>
+        </Link>
       </div>
     </nav>
   );

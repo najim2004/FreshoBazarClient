@@ -47,7 +47,7 @@ export const SideNavbar: React.FC = () => {
   );
   return (
     <nav className="fixed top-0 left-0 p-6 h-full flex items-center">
-      <div className="w-16 min-h-40 bg-white rounded-3xl shadow-sm p-2.5">
+      <div className="w-16 min-h-40 bg-white rounded-xl shadow-sm p-2.5">
         <ul className="navList w-full flex flex-col items-center justify-center gap-5">
           {navList}
         </ul>

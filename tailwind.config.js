@@ -22,8 +22,8 @@ export default {
       colors: {
         primary: "#059669",
         "color-primary": "#455154",
-        "color-secondary": "#BBC0C1",
-        "color-ternary": "#9CA3A5",
+        "color-secondary": "#9ca3af",
+        "color-ternary": "#4b5563",
       },
       fontFamily: {
         fjalla: '"Fjalla One", sans-serif',

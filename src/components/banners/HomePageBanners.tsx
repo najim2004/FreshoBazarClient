@@ -10,7 +10,6 @@ export const HomePageBanners: React.FC = () => {
     if (divRef.current) {
       const rect = divRef.current.getBoundingClientRect();
       setDivWidth(rect?.width / (600 + 32) < 1 ? 1 : rect?.width / (600 + 32));
-      console.log(rect?.width);
     }
   }, []);
 

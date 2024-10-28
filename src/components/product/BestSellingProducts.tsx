@@ -38,7 +38,7 @@ export const BestSellingProducts: React.FC = () => {
           }}
         >
           {[...Array(8)].map((_, index) => (
-            <SwiperSlide className="mb-4" key={index}>
+            <SwiperSlide className="my-4" key={index}>
               <ProductCard className="hover:scale-100" />
             </SwiperSlide>
           ))}

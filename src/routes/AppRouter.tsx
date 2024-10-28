@@ -2,7 +2,8 @@ import { createBrowserRouter } from "react-router-dom";
 import { Route } from "../types/routes";
 import { App } from "../App";
 import { Home } from "../pages/home/Home";
-import { ProductDetails } from "@/pages/product/ProductDetails";
+import { ProductPage } from "@/pages/product/ProductPage";
+import { ShoppingCart } from "@/pages/cart/ShoppingCart";
 const routes: Route[] = [
   {
     path: "/",
@@ -25,8 +26,12 @@ const routes: Route[] = [
         element: <Home />,
       },
       {
+        path: "/cart",
+        element: <ShoppingCart />,
+      },
+      {
         path: "/product/:id",
-        element: <ProductDetails />,
+        element: <ProductPage />,
       },
     ],
   },
