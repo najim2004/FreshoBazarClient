@@ -10,7 +10,7 @@ export const SideNavbar: React.FC = () => {
       <li>
         <NavLink
           to={"/"}
-          className="flex justify-center items-center text-3xl p-2 rounded-full hover:text-primary"
+          className="flex justify-center items-center text-xl lg:text-3xl p-1 lg:p-2 rounded-full hover:text-primary"
         >
           {/* home */}
           <TbSmartHome />
@@ -19,7 +19,7 @@ export const SideNavbar: React.FC = () => {
       <li>
         <NavLink
           to={"/shop"}
-          className="flex justify-center items-center text-3xl p-2 rounded-full hover:text-primary"
+          className="flex justify-center items-center text-xl lg:text-3xl p-1 lg:p-2 rounded-full hover:text-primary"
         >
           {/* shop */}
           <PiShoppingCartSimpleBold />
@@ -28,7 +28,7 @@ export const SideNavbar: React.FC = () => {
       <li>
         <NavLink
           to={"/profile"}
-          className="flex justify-center items-center text-3xl p-2 rounded-full hover:text-primary"
+          className="flex justify-center items-center text-xl lg:text-3xl p-1 lg:p-2 rounded-full hover:text-primary"
         >
           {/* profile */}
           <RiUser3Line />
@@ -37,7 +37,7 @@ export const SideNavbar: React.FC = () => {
       <li>
         <NavLink
           to={"/chat"}
-          className="flex justify-center items-center text-3xl p-2 rounded-full hover:text-primary"
+          className="flex justify-center items-center text-xl lg:text-3xl p-1 lg:p-2 rounded-full hover:text-primary"
         >
           {/* chat */}
           <RiMessage3Line />
@@ -46,9 +46,9 @@ export const SideNavbar: React.FC = () => {
     </>
   );
   return (
-    <nav className="fixed top-0 left-0 p-6 h-full flex items-center">
-      <div className="w-16 min-h-40 bg-white rounded-xl shadow-sm p-2.5">
-        <ul className="navList w-full flex flex-col items-center justify-center gap-5">
+    <nav className="fixed bottom-5 lg:top-0 left-0 lg:p-6 lg:h-full w-full lg:w-auto flex items-end lg:items-center justify-center">
+      <div className="lg:w-16 lg:min-h-40 bg-white rounded-xl shadow-md lg:shadow-sm p-2.5">
+        <ul className="navList w-full flex lg:flex-col items-center justify-center gap-5">
           {navList}
         </ul>
       </div>

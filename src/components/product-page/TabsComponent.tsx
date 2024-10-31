@@ -1,6 +1,6 @@
 import React from "react";
 
-type tapId = "about" | "ratings" | "shipping" | "questions";
+type tapId = "about" | "ratings" | "shipping";
 
 interface TabsComponentProps {
   activeTab: string;
@@ -14,7 +14,7 @@ export const TabsComponent: React.FC<TabsComponentProps> = ({
   tabs,
 }) => {
   return (
-    <nav className="mx-auto shadow-md px-4 bg-white mt-10 h-16">
+    <nav className="mx-auto shadow-md px-4 bg-white mt-8 h-16 rounded-t-md">
       {tabs.map((tab) => (
         <button
           key={tab.id}

@@ -12,7 +12,7 @@ export const Home: React.FC = () => {
       <HomePageBanners />
       <Categories />
       <BestSellingProducts />
-      <OrganicBanner />
+      {/* <OrganicBanner /> */}
       {/* <FeaturedFarmers /> */}
       <TodayBestSellingProducts />
     </div>

@@ -5,6 +5,7 @@ export default {
   theme: {
     extend: {
       screens: {
+        xxs: "360px", // Extra-extra small screens (e.g., very small phones)
         xs: "480px", // Extra small screens (e.g., small phones)
         sm: "640px", // Small screens (e.g., phones)
         md: "768px", // Medium screens (e.g., tablets)
@@ -14,6 +15,7 @@ export default {
         "3xl": "1920px", // 3X extra large screens (e.g., extra-large desktops)
         "4xl": "2560px", // 4X extra large screens (e.g., ultra-wide monitors)
       },
+
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",

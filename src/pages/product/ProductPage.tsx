@@ -1,14 +1,16 @@
+import { AboutProduct } from "@/components/product-page/AboutProduct";
 import { ProductDetails } from "@/components/product-page/ProductDetails";
 import { TabsComponent } from "@/components/product-page/TabsComponent";
+import { ProductReviews } from "@/components/product-page/ProductReviews";
 import React, { useState } from "react";
+import ShippingReturns from "@/components/product-page/ShippingReturns";
 
-type Tab = "about" | "ratings" | "shipping" | "questions";
+type Tab = "about" | "ratings" | "shipping";
 
 const tabs: { id: Tab; label: string }[] = [
   { id: "about", label: "About the Product" },
   { id: "ratings", label: "Ratings & Reviews" },
   { id: "shipping", label: "Shipping & Returns" },
-  { id: "questions", label: "Questions & Answers" },
 ];
 
 export const ProductPage: React.FC = () => {
@@ -21,6 +23,9 @@ export const ProductPage: React.FC = () => {
         setActiveTab={setActiveTab}
         tabs={tabs}
       />
+      {activeTab === "about" && <AboutProduct />}
+      {activeTab === "ratings" && <ProductReviews />}
+      {activeTab === "shipping" && <ShippingReturns />}
     </div>
   );
 };

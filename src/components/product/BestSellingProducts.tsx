@@ -11,9 +11,9 @@ import { FreeMode } from "swiper/modules";
 
 export const BestSellingProducts: React.FC = () => {
   return (
-    <section className="mt-10 max-w-[calc(100vw-160px)] w-full">
+    <section className="mt-10 w-screen lg:max-w-[calc(100vw-160px)] lg:w-full">
       <div className="flex justify-between items-center">
-        <h3 className="text-2xl font-fjalla text-color-primary font-semibold">
+        <h3 className="text-2xl text-color-primary font-semibold">
           Best Selling Products
         </h3>
         <span className="text-color-ternary text-3xl">
@@ -27,7 +27,9 @@ export const BestSellingProducts: React.FC = () => {
           modules={[FreeMode]}
           className="mySwiper"
           breakpoints={{
-            320: { slidesPerView: 1 }, // Mobile screens
+            359: { slidesPerView: 1 }, // Mobile screens
+            360: { slidesPerView: 2 }, // Mobile screens
+            480: { slidesPerView: 2 }, // extra small screens
             640: { slidesPerView: 2 }, // Small screens
             768: { slidesPerView: 2 }, // Medium screens (tablets)
             1024: { slidesPerView: 3 }, // Large screens (laptops)

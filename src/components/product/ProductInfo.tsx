@@ -6,13 +6,11 @@ export const ProductInfo: React.FC = () => {
   const [quantity, setQuantity] = useState<number>(1);
   return (
     <div className="px-6">
-      <h3 className="text-3xl font-bold font-fjalla text-color-primary mb-5">
+      <h3 className="text-3xl font-bold text-color-primary mb-5">
         Deliciously Ella
       </h3>
       <div className="flex items-center gap-6">
-        <h3 className="text-3xl font-bold font-fjalla text-primary">
-          20.72 TK
-        </h3>
+        <h3 className="text-3xl font-bold text-primary">20.72 TK</h3>
         <p className="text-2xl font-semibold text-color-secondary">500g</p>
       </div>
       <hr className="mt-4 mb-3 border-gray-300" />

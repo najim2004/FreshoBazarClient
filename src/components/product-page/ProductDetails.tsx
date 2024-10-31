@@ -144,7 +144,7 @@ export const ProductDetails: React.FC = () => {
               $35.98
             </span>
             <span className="ml-2 text-lg text-primary border-primary">
-              -30% Off
+              30% Off
             </span>
           </div>
 

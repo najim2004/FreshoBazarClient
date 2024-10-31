@@ -4,6 +4,8 @@ import { App } from "../App";
 import { Home } from "../pages/home/Home";
 import { ProductPage } from "@/pages/product/ProductPage";
 import { ShoppingCart } from "@/pages/cart/ShoppingCart";
+import { LoginPage } from "../pages/login/login";
+import { SignupPage } from "@/pages/signup/Signup";
 const routes: Route[] = [
   {
     path: "/",
@@ -34,6 +36,14 @@ const routes: Route[] = [
         element: <ProductPage />,
       },
     ],
+  },
+  {
+    path: "/login",
+    element: <LoginPage />,
+  },
+  {
+    path: "/signup",
+    element: <SignupPage />,
   },
 ];
 
