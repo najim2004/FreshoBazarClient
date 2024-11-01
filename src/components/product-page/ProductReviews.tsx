@@ -1,5 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Star, ThumbsUp, ThumbsDown, Link, Flag } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface Review {
   id: number;
@@ -73,20 +78,22 @@ const initialReviews: Review[] = [
   },
 ];
 
-const RatingBar: React.FC<{ percentage: number }> = ({ percentage }) => (
-  <div className="w-full bg-gray-200 rounded-full h-2.5">
-    <div
-      className="bg-orange-400 h-2.5 rounded-full"
-      style={{ width: `${percentage}%` }}
-    ></div>
-  </div>
-);
+const RatingBar: React.FC<{ percentage: number; className?: string }> = ({
+  percentage,
+  className,
+}) => <Progress value={percentage} className={`h-2.5 ${className}`} />;
 
 export const ProductReviews: React.FC = () => {
   const [reviews, setReviews] = useState<Review[]>(initialReviews);
+  const [isLoading, setIsLoading] = useState(true);
 
   const overallRating = 4.1;
   const totalReviews = 43;
+
+  useEffect(() => {
+    const timer = setTimeout(() => setIsLoading(false), 1500);
+    return () => clearTimeout(timer);
+  }, []);
 
   const handleHelpful = (id: number, isHelpful: boolean) => {
     setReviews(
@@ -103,134 +110,206 @@ export const ProductReviews: React.FC = () => {
     );
   };
 
+  if (isLoading) {
+    return <ProductReviewsSkeleton />;
+  }
+
   return (
-    <div className="mx-auto p-4 bg-white mt-8 rounded-b-md">
-      <h2 className="text-2xl font-bold mb-4">Rating & Reviews</h2>
-      <div className="flex flex-col md:flex-row gap-8 mb-8 border p-5">
-        <div className="flex-1 flex flex-col justify-center items-center">
-          <div className="text-6xl font-bold text-color-primary mb-2">
-            {overallRating}
-            <span className="text-2xl text-gray-500">/5</span>
-          </div>
-          <div className="flex items-center mb-2">
-            {[1, 2, 3, 4, 5].map((star) => (
-              <Star
-                key={star}
-                className={`size-6 ${
-                  star <= Math.round(overallRating)
-                    ? "text-yellow-400 fill-yellow-400"
-                    : "text-gray-300"
-                }`}
-              />
-            ))}
-          </div>
-          <div className="text-sm text-color-ternary">
-            Based on {totalReviews} reviews
-          </div>
-        </div>
-        <div className="flex-1">
-          {[5, 4, 3, 2, 1].map((rating) => (
-            <div key={rating} className="flex items-center mb-2">
-              <span className="w-3">{rating}</span>
-              <Star className="w-4 h-4 text-yellow-400 fill-yellow-400 mx-1" />
-              <RatingBar percentage={Math.random() * 100} />
+    <Card className="mx-auto mt-8 rounded-b-md rounded-t-none border-none">
+      <CardHeader>
+        <CardTitle>Rating & Reviews</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="flex flex-col md:flex-row gap-8 mb-8 border p-5">
+          <div className="flex-1 flex flex-col justify-center items-center">
+            <div className="text-6xl font-bold text-primary mb-2">
+              {overallRating}
+              <span className="text-2xl text-color-ternary">/5</span>
             </div>
-          ))}
-        </div>
-        <div className="flex-1 flex flex-col items-center justify-center space-y-3 bg-gray-100 rounded-md">
-          <h3 className="text-2xl font-semibold text-color-primary">
-            Have you used this product?
-          </h3>
-          <p className="text-base font-medium text-color-ternary">
-            Rate it Now
-          </p>
-          <button className="bg-primary text-white py-3 px-4 rounded hover:bg-primary/80 transition duration-300 font-medium">
-            WRITE A REVIEW
-          </button>
-        </div>
-      </div>
-      <div className="mb-4 flex justify-between items-center bg-gray-100 h-12 px-4 font-medium">
-        <span className="text-sm text-gray-500">
-          Displaying Reviews 1-5 of 100
-        </span>
-        <div className="flex gap-2">
-          <button className="text-sm text-gray-600 hover:text-gray-900">
-            Most Helpful
-          </button>
-          <button className="text-sm text-gray-600 hover:text-gray-900">
-            Most Recent
-          </button>
-        </div>
-      </div>
-      {reviews.map((review) => (
-        <div key={review.id} className="py-4 flex items-center">
-          <div className="flex flex-col items-center mb-2 min-w-[300px]">
-            {review.avatar ? (
-              <img
-                src={review.avatar}
-                alt={review.user}
-                className="size-16 rounded-full mr-3"
-              />
-            ) : (
-              <div className="size-16 rounded-full bg-gray-300 flex items-center justify-center mr-3">
-                <span className="text-xl font-bold text-gray-600">
-                  {review.user[0]}
-                </span>
-              </div>
-            )}
-            <div>
-              <div className="font-bold">{review.user}</div>
-              <div className="text-sm text-gray-500">{review.date}</div>
-            </div>
-          </div>
-          <div className="">
             <div className="flex items-center mb-2">
               {[1, 2, 3, 4, 5].map((star) => (
                 <Star
                   key={star}
-                  className={`w-4 h-4 ${
-                    star <= review.rating
-                      ? "text-yellow-400 fill-yellow-400"
-                      : "text-gray-300"
+                  className={`w-6 h-6 ${
+                    star <= Math.round(overallRating)
+                      ? "text-orange-400 fill-orange-400"
+                      : "text-orange-400"
                   }`}
                 />
               ))}
             </div>
-            <h3 className="font-bold mb-2">{review.title}</h3>
-            <p className="text-gray-600 mb-2">{review.content}</p>
-            <div className="flex items-center justify-between text-sm">
-              <div className="flex items-center gap-4">
-                <button
-                  className="flex items-center text-gray-500 hover:text-gray-700"
-                  onClick={() => handleHelpful(review.id, true)}
-                >
-                  <ThumbsUp className="w-4 h-4 mr-1" /> Yes ({review.helpful})
-                </button>
-                <button
-                  className="flex items-center text-gray-500 hover:text-gray-700"
-                  onClick={() => handleHelpful(review.id, false)}
-                >
-                  <ThumbsDown className="w-4 h-4 mr-1" /> No (
-                  {review.notHelpful})
-                </button>
+            <div className="text-sm text-color-ternary">
+              Based on {totalReviews} reviews
+            </div>
+          </div>
+          <div className="flex-1">
+            {[5, 4, 3, 2, 1].map((rating) => (
+              <div key={rating} className="flex items-center mb-2">
+                <span className="w-3">{rating}</span>
+                <Star className="w-4 h-4 text-orange-400 fill-orange-400 mx-1" />
+                <RatingBar
+                  className="*:bg-orange-400"
+                  percentage={Math.random() * 100}
+                />
               </div>
-              <div className="flex items-center gap-4">
-                <button className="flex items-center text-gray-500 hover:text-gray-700">
-                  <Link className="w-4 h-4 mr-1" /> Permalink
-                </button>
-                <button className="flex items-center text-gray-500 hover:text-gray-700">
-                  <Flag className="w-4 h-4 mr-1" /> Report Abuse
-                </button>
+            ))}
+          </div>
+          <div className="flex-1 flex flex-col items-center justify-center space-y-3 bg-muted p-4 rounded-md bg-gray-100 text-center">
+            <h3 className="text-xl font-semibold text-primary">
+              Have you used this product?
+            </h3>
+            <p className="text-base font-medium text-color-ternary">
+              Rate it Now
+            </p>
+            <Button className="bg-primary rounded-sm hover:bg-primary/80">
+              WRITE A REVIEW
+            </Button>
+          </div>
+        </div>
+        <div className="mb-4 flex justify-between items-center bg-gray-100 h-12 px-4 font-medium">
+          <span className="text-sm text-color-ternary">
+            Displaying Reviews 1-5 of 100
+          </span>
+          <div className="flex gap-2">
+            <Button variant="ghost" size="sm">
+              Most Helpful
+            </Button>
+            <Button variant="ghost" size="sm">
+              Most Recent
+            </Button>
+          </div>
+        </div>
+        {reviews.map((review) => (
+          <div
+            key={review.id}
+            className="py-4 flex flex-col md:flex-row items-start md:items-center"
+          >
+            <div className="flex flex-col items-center mb-4 md:mb-0 md:mr-4 min-w-[200px]">
+              <Avatar className="w-16 h-16 mb-2">
+                <AvatarImage src={review.avatar} alt={review.user} />
+                <AvatarFallback>{review.user[0]}</AvatarFallback>
+              </Avatar>
+              <div className="text-center">
+                <div className="font-bold">{review.user}</div>
+                <div className="text-sm text-color-ternary">{review.date}</div>
+              </div>
+            </div>
+            <div className="flex-1">
+              <div className="flex items-center mb-2">
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <Star
+                    key={star}
+                    className={`w-4 h-4 ${
+                      star <= review.rating
+                        ? "text-orange-400 fill-orange-400"
+                        : "text-orange-400"
+                    }`}
+                  />
+                ))}
+              </div>
+              <h3 className="font-bold mb-2">{review.title}</h3>
+              <p className="text-color-ternary mb-2">{review.content}</p>
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between text-sm">
+                <div className="flex items-center gap-4 mb-2 sm:mb-0">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="text-color-ternary hover:text-foreground"
+                    onClick={() => handleHelpful(review.id, true)}
+                  >
+                    <ThumbsUp className="w-4 h-4 mr-1" /> Yes ({review.helpful})
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="text-color-ternary hover:text-foreground"
+                    onClick={() => handleHelpful(review.id, false)}
+                  >
+                    <ThumbsDown className="w-4 h-4 mr-1" /> No (
+                    {review.notHelpful})
+                  </Button>
+                </div>
+                <div className="flex items-center gap-4">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="text-color-ternary hover:text-foreground"
+                  >
+                    <Link className="w-4 h-4 mr-1" /> Permalink
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="text-color-ternary hover:text-foreground"
+                  >
+                    <Flag className="w-4 h-4 mr-1" /> Report Abuse
+                  </Button>
+                </div>
               </div>
             </div>
           </div>
+        ))}
+        <div className="text-center mt-8">
+          <Button variant="outline">VIEW MORE</Button>
         </div>
-      ))}
-      <div className="text-center mt-8">
-        <button className="text-gray-700 py-2 px-4 rounded hover:underline font-medium">
-          VIEW MORE
-        </button>
-      </div>
-    </div>
+      </CardContent>
+    </Card>
+  );
+};
+
+const ProductReviewsSkeleton: React.FC = () => {
+  return (
+    <Card className="mx-auto mt-8 rounded-b-md rounded-t-none border-none">
+      <CardHeader>
+        <Skeleton className="h-8 w-48" />
+      </CardHeader>
+      <CardContent>
+        <div className="flex flex-col md:flex-row gap-8 mb-8 border p-5">
+          <div className="flex-1 flex flex-col justify-center items-center">
+            <Skeleton className="h-16 w-24 mb-2" />
+            <Skeleton className="h-6 w-32 mb-2" />
+            <Skeleton className="h-4 w-40" />
+          </div>
+          <div className="flex-1">
+            {[1, 2, 3, 4, 5].map((i) => (
+              <div key={i} className="flex items-center mb-2">
+                <Skeleton className="h-4 w-full" />
+              </div>
+            ))}
+          </div>
+          <div className="flex-1 flex flex-col items-center justify-center space-y-3 bg-muted p-4 rounded-md">
+            <Skeleton className="h-8 w-48 mb-2" />
+            <Skeleton className="h-6 w-32 mb-2" />
+            <Skeleton className="h-10 w-40" />
+          </div>
+        </div>
+        <Skeleton className="h-12 w-full mb-4" />
+        {[1, 2, 3].map((i) => (
+          <div
+            key={i}
+            className="py-4 flex flex-col md:flex-row items-start md:items-center"
+          >
+            <div className="flex flex-col items-center mb-4 md:mb-0 md:mr-4 min-w-[200px]">
+              <Skeleton className="w-16 h-16 rounded-full mb-2" />
+              <Skeleton className="h-4 w-24 mb-1" />
+              <Skeleton className="h-3 w-20" />
+            </div>
+            <div className="flex-1">
+              <Skeleton className="h-4 w-32 mb-2" />
+              <Skeleton className="h-6 w-3/4 mb-2" />
+              <Skeleton className="h-4 w-full mb-2" />
+              <Skeleton className="h-4 w-full mb-2" />
+              <div className="flex justify-between">
+                <Skeleton className="h-8 w-24" />
+                <Skeleton className="h-8 w-24" />
+              </div>
+            </div>
+          </div>
+        ))}
+        <div className="text-center mt-8">
+          <Skeleton className="h-10 w-32 mx-auto" />
+        </div>
+      </CardContent>
+    </Card>
   );
 };

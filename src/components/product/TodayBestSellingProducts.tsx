@@ -7,7 +7,7 @@ export const TodayBestSellingProducts: React.FC = () => {
       <h3 className="text-2xl text-color-primary font-semibold">
         Todays Best Selling Products
       </h3>
-      <div className="mt-8 flex items-center justify-start gap-4 lg:gap-6 w-screen lg:max-w-[calc(100vw-160px)] overflow-x-auto text-nowrap pb-2">
+      {/* <div className="mt-8 flex items-center justify-start gap-4 lg:gap-6 w-screen overflow-x-auto text-nowrap pb-2">
         <button className="px-3.5 lg:px-6 py-1 lg:py-1.5 rounded-full text-white bg-primary text-base lg:text-lg font-medium border">
           All
         </button>
@@ -26,10 +26,10 @@ export const TodayBestSellingProducts: React.FC = () => {
         <button className="px-3.5 lg:px-6 py-1 lg:py-1.5 rounded-full bg-transparent text-primary text-base lg:text-lg font-medium bg-white hover:bg-primary hover:text-white">
           Dragon Fruit
         </button>
-      </div>
+      </div> */}
       <div className="display-grid mt-10">
         {[...Array(15)].map((_, index) => (
-          <ProductCard key={index} className="" />
+          <ProductCard key={index} />
         ))}
       </div>
     </section>

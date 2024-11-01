@@ -6,6 +6,7 @@ import { ProductPage } from "@/pages/product/ProductPage";
 import { ShoppingCart } from "@/pages/cart/ShoppingCart";
 import { LoginPage } from "../pages/login/login";
 import { SignupPage } from "@/pages/signup/Signup";
+import { Shop } from "@/pages/shop/Shop";
 const routes: Route[] = [
   {
     path: "/",
@@ -25,7 +26,7 @@ const routes: Route[] = [
       },
       {
         path: "/shop",
-        element: <Home />,
+        element: <Shop />,
       },
       {
         path: "/cart",

@@ -1,11 +1,12 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
 
-type tapId = "about" | "ratings" | "shipping";
+type TabId = "about" | "ratings" | "shipping";
 
 interface TabsComponentProps {
-  activeTab: string;
-  setActiveTab: (tabId: tapId) => void;
-  tabs: { id: tapId; label: string }[];
+  activeTab: TabId;
+  setActiveTab: (tabId: TabId) => void;
+  tabs: { id: TabId; label: string }[];
 }
 
 export const TabsComponent: React.FC<TabsComponentProps> = ({
@@ -13,15 +14,26 @@ export const TabsComponent: React.FC<TabsComponentProps> = ({
   setActiveTab,
   tabs,
 }) => {
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setIsLoading(false), 1500);
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (isLoading) {
+    return <TabsSkeleton />;
+  }
+
   return (
-    <nav className="mx-auto shadow-md px-4 bg-white mt-8 h-16 rounded-t-md">
+    <nav className="mx-auto shadow-md px-4 bg-white mt-8 h-16 rounded-t-md overflow-x-auto whitespace-nowrap">
       {tabs.map((tab) => (
         <button
           key={tab.id}
-          className={`px-4 py-2 font-medium h-[calc(100%-2px)] border-b-4 outline-none ${
+          className={`px-4 py-2 font-medium h-[calc(100%-2px)] border-b-4 outline-none transition-colors duration-200 ${
             activeTab === tab.id
-              ? "text-color-primary border-primary"
-              : "text-color-secondary hover:text-color-ternary border-none"
+              ? "text-primary border-primary"
+              : "text-muted-foreground hover:text-foreground border-transparent"
           }`}
           onClick={() => setActiveTab(tab.id)}
         >
@@ -29,5 +41,17 @@ export const TabsComponent: React.FC<TabsComponentProps> = ({
         </button>
       ))}
     </nav>
+  );
+};
+
+const TabsSkeleton: React.FC = () => {
+  return (
+    <div className="mx-auto shadow-md px-4 bg-white mt-8 h-16 rounded-t-md overflow-x-auto whitespace-nowrap">
+      <div className="flex space-x-4 h-full items-center">
+        <Skeleton className="h-8 w-24" />
+        <Skeleton className="h-8 w-24" />
+        <Skeleton className="h-8 w-24" />
+      </div>
+    </div>
   );
 };

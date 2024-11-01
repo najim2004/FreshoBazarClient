@@ -1,133 +1,125 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { Leaf, MapPin, Plus, Minus } from "lucide-react";
-import { MdOutlineShoppingBag } from "react-icons/md";
+import { Heart, Minus, Plus, ShoppingCart } from "lucide-react";
+import { useState } from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { NavigateFunction, useNavigate } from "react-router-dom";
 
 interface ProductCardProps {
-  name: string;
-  price: number;
-  unit: string;
-  description: string;
-  imageUrl: string;
-  farmerName: string;
-  farmLocation: string;
-  isOrganic: boolean;
-  isSustainable: boolean;
-  className: string;
+  title?: string;
+  price?: number;
+  discount?: number;
+  image?: string;
+  unit?: string;
 }
 
 export const ProductCard = ({
-  name = "Deliciously Ella",
-  price = 20,
-  unit = "500g",
-  description = "Lorem ipsum dolor sit amet consectetur adipisicing elit.!",
-  imageUrl = "https://www.haxnicks.co.uk/cdn/shop/articles/tomatoes.jpg?v=1623952431&width=1903",
-  farmerName = "Najim",
-  farmLocation = "cumilla",
-  isOrganic = true,
-  isSustainable = true,
-  className,
+  title = "Farm fresh organic meat 1 kg",
+  price = 11.0,
+  discount = 25,
+  image = "https://png.pngtree.com/png-vector/20241009/ourmid/pngtree-fresh-meat-png-image_14026360.png",
+  unit = "kg",
 }: ProductCardProps) => {
-  const navigator = useNavigate();
   const [quantity, setQuantity] = useState<number>(1);
-
-  // Updated to handle button clicks
-  const onAddToCart = (e: React.MouseEvent<HTMLButtonElement>): void => {
-    e.stopPropagation(); // Prevent click from bubbling to parent
-    // Logic to add the item to the cart can go here
-    console.log("Item added to cart!");
+  const [isFavorite, setIsFavorite] = useState<boolean>(false);
+  const navigate: NavigateFunction = useNavigate();
+  const decreaseQuantity = (e: React.MouseEvent<HTMLButtonElement>): void => {
+    e.stopPropagation();
+    if (quantity > 1) {
+      setQuantity(quantity - 1);
+    }
   };
 
+  const increaseQuantity = (e: React.MouseEvent<HTMLButtonElement>): void => {
+    e.stopPropagation();
+    setQuantity(quantity + 1);
+  };
+  const onClickCart = (e: React.MouseEvent<HTMLButtonElement>): void => {
+    e.stopPropagation();
+  };
   return (
-    <div
+    <Card
       onClick={(e: React.MouseEvent<HTMLDivElement>): void => {
-        e.stopPropagation(); // Prevent click from bubbling to parent
-        navigator(`/product/details`);
+        e.stopPropagation();
+        navigate("/product/123");
       }}
-      className={` z-0 max-w-sm rounded-md overflow-hidden shadow-md bg-beige-100 transition-transform duration-300 md:hover:scale-105 bg-white ${className}`}
+      className="w-full max-w-sm rounded-sm border-none"
     >
-      <div className="relative">
-        <img
-          src={imageUrl}
-          alt={name}
-          className="w-full h-40 xs:h-36 sm:h-48 object-cover"
-        />
-        <div className="absolute top-2 left-2 flex space-x-2">
-          {isOrganic && (
-            <span className="bg-primary/80 text-white text-xs font-semibold px-2 py-1 rounded-full flex items-center">
-              <Leaf className="w-3 h-3 mr-1" />
-              Organic
-            </span>
-          )}
-          {isSustainable && (
-            <span className="bg-brown-600 text-white text-xs font-semibold px-2 py-1 rounded-full">
-              Sustainable
-            </span>
-          )}
-        </div>
-      </div>
-
-      <div className="px-3 sm:px-6 py-2 sm:py-4">
-        <div className="font-bold text-base sm:text-xl mb-1 sm:mb-2 text-color-primary">
-          {name}
-        </div>
-        <p className="text-gray-700 text-xs sm:text-base mb-2 sm:mb-4 line-clamp-2">
-          {description}
-        </p>
-        <div className="flex justify-between items-center mb-2 sm:mb-4">
-          <span className="text-xl sm:text-2xl font-bold text-primary">
-            ${price.toFixed(2)}
-          </span>
-          <span className="text-xs sm:text-sm text-gray-600">per {unit}</span>
-        </div>
-        <div className="flex gap-10 items-center justify-between">
-          <div className="hidden sm:flex justify-center items-center gap-3 bg-primary/80 rounded-full p-0.5">
-            <button
-              className="py-0.5 sm:py-1.5 px-0.5 sm:px-1.5 text-primary bg-white rounded-full active:opacity-90 active:scale-105"
-              onClick={(e: React.MouseEvent<HTMLButtonElement>): void => {
-                e.stopPropagation();
-                setQuantity((prev) => (prev == 1 ? 1 : prev - 1));
-              }}
-            >
-              <Minus />
-            </button>
-            <span className="text-white font-semibold w-7 flex justify-center items-center">
-              {quantity}
-            </span>
-            <button
-              className="py-0.5 sm:py-1.5 px-0.5 sm:px-1.5 text-primary bg-white rounded-full active:opacity-90 active:scale-105"
-              onClick={(e: React.MouseEvent<HTMLButtonElement>): void => {
-                e.stopPropagation();
-                setQuantity((prev) => prev + 1);
-              }}
-            >
-              <Plus />
-            </button>
-          </div>
-          <button
-            onClick={onAddToCart}
-            className="w-full flex items-center justify-center bg-primary/80 hover:bg-primary text-white font-bold py-2 px-4 rounded-full transition duration-300 ease-in-out transform hover:scale-105 text-2xl"
-          >
-            <MdOutlineShoppingBag />
-          </button>
-        </div>
-      </div>
-      <div className="px-6 py-4 bg-beige-200 hidden sm:flex items-center justify-between">
-        <div className="flex items-center">
+      <CardContent className="p-4">
+        <div className="relative">
           <img
-            src="https://img.icons8.com/?size=100&id=sW0a9CbRV4bi&format=png&color=000000"
-            alt={farmerName}
-            className="rounded-full mr-2 size-10"
+            src={image}
+            alt={title}
+            className="w-full h-48 object-cover rounded-lg"
           />
-          <span className="text-sm font-semibold text-color-primary">
-            {farmerName}
-          </span>
+          {discount > 0 && (
+            <div className="absolute top-2 left-2">
+              <div className="bg-primary text-white px-2 py-1 rounded-sm text-xs font-semibold">
+                -{discount}%
+              </div>
+            </div>
+          )}
+          <Button
+            variant="ghost"
+            size="icon"
+            className="absolute top-2 right-2 p-1 rounded-full bg-white/80 hover:bg-white transition-colors"
+            onClick={(e: React.MouseEvent<HTMLButtonElement>): void => {
+              e.stopPropagation();
+              setIsFavorite(!isFavorite);
+            }}
+          >
+            <Heart
+              className={`w-5 h-5 ${
+                isFavorite ? "fill-red-500 stroke-red-500" : "stroke-gray-600"
+              }`}
+            />
+          </Button>
         </div>
-        <div className="flex items-center text-brown-600">
-          <MapPin className="w-4 h-4 mr-1" />
-          <span className="text-xs">{farmLocation}</span>
+
+        <div className="mt-4">
+          <div className="text-gray-500 text-sm uppercase">MEAT</div>
+          <h3 className="font-semibold text-gray-800 text-lg">{title}</h3>
+          <div className="mt-2 text-primary font-bold">
+            ${price.toFixed(2)}/{unit}
+          </div>
         </div>
-      </div>
-    </div>
+
+        <div className="mt-4 flex items-center gap-2 justify-between">
+          <div className="flex items-center border rounded-md">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="p-0 h-9 w-9 hover:bg-gray-100 transition-colors"
+              onClick={decreaseQuantity}
+            >
+              <Minus className="w-4 h-4" />
+            </Button>
+            <Input
+              type="number"
+              value={quantity}
+              onChange={(e) =>
+                setQuantity(Math.max(1, parseInt(e.target.value) || 1))
+              }
+              className="w-12 border-none focus-visible:ring-0 text-center border-x p-0 h-9 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+            />
+            <Button
+              variant="ghost"
+              size="icon"
+              className="p-0 h-9 w-9 hover:bg-gray-100 transition-colors"
+              onClick={increaseQuantity}
+            >
+              <Plus className="w-4 h-4" />
+            </Button>
+          </div>
+          <Button
+            onClick={onClickCart}
+            size="icon"
+            className="p-2 bg-primary hover:bg-primary/80 transition-colors rounded-full text-white h-10 w-10"
+          >
+            <ShoppingCart className="w-5 h-5" />
+          </Button>
+        </div>
+      </CardContent>
+    </Card>
   );
 };

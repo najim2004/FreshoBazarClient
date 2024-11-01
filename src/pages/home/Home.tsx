@@ -8,10 +8,10 @@ import OrganicBanner from "@/components/banners/OrganicBanner";
 
 export const Home: React.FC = () => {
   return (
-    <div className="">
-      <HomePageBanners />
-      <Categories />
-      <BestSellingProducts />
+    <div className="flex-grow">
+      {/* <HomePageBanners /> */}
+      {/* <Categories /> */}
+      {/* <BestSellingProducts /> */}
       {/* <OrganicBanner /> */}
       {/* <FeaturedFarmers /> */}
       <TodayBestSellingProducts />

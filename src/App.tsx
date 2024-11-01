@@ -1,22 +1,25 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
 import { TopNavbar } from "./shared/TopNavbar";
-import { SideNavbar } from "./shared/SideNavbar";
+import { LeftNavbar } from "./shared/LeftNavbar";
 import { Footer } from "./shared/Footer";
+import Navbar from "./shared/Navbar";
+import { RightNavbar } from "./shared/RightNavbar";
+import { Container } from "./components/Container";
 
 export const App: React.FC = () => {
   return (
-    <div className="bg-gray-100 lg:p-6 min-h-screen">
-      <TopNavbar />
-      <div className="flex gap-8 mt-[88px]">
-        <div className="lg:min-w-16 w-full lg:w-auto fixed lg:relative bottom-0 left-0 z-50">
-          <SideNavbar />
-        </div>
-        <div className="flex-grow flex-1">
+    <>
+      {/* <TopNavbar /> */}
+      <Navbar />
+      <div className="mt-[88px]">
+        <Container className="flex gap-6 flex-col lg:flex-row">
+          <LeftNavbar />
           <Outlet />
-          <Footer />
-        </div>
+          <RightNavbar />
+        </Container>
+        <Footer />
       </div>
-    </div>
+    </>
   );
 };

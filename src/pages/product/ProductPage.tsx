@@ -3,7 +3,7 @@ import { ProductDetails } from "@/components/product-page/ProductDetails";
 import { TabsComponent } from "@/components/product-page/TabsComponent";
 import { ProductReviews } from "@/components/product-page/ProductReviews";
 import React, { useState } from "react";
-import ShippingReturns from "@/components/product-page/ShippingReturns";
+import { ShippingReturns } from "@/components/product-page/ShippingReturns";
 import { RelatedProducts } from "@/components/product/RelatedProducts";
 
 type Tab = "about" | "ratings" | "shipping";
