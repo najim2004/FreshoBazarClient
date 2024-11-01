@@ -4,6 +4,7 @@ import { TabsComponent } from "@/components/product-page/TabsComponent";
 import { ProductReviews } from "@/components/product-page/ProductReviews";
 import React, { useState } from "react";
 import ShippingReturns from "@/components/product-page/ShippingReturns";
+import { RelatedProducts } from "@/components/product/RelatedProducts";
 
 type Tab = "about" | "ratings" | "shipping";
 
@@ -26,6 +27,7 @@ export const ProductPage: React.FC = () => {
       {activeTab === "about" && <AboutProduct />}
       {activeTab === "ratings" && <ProductReviews />}
       {activeTab === "shipping" && <ShippingReturns />}
+      <RelatedProducts />
     </div>
   );
 };

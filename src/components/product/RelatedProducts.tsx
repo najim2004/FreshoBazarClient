@@ -3,7 +3,7 @@ import { ProductCard } from "./ProductCard";
 
 export const RelatedProducts: React.FC = () => {
   return (
-    <section className="mt-10">
+    <section className="mt-8">
       <h3 className="text-2xl text-color-primary font-semibold">
         Related Products
       </h3>

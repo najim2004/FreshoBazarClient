@@ -18,7 +18,7 @@ export const TopNavbar: React.FC = () => {
       </Link>
 
       <div className="flex-grow h-12 lg:h-16 lg:rounded-xl bg-white shadow-sm py-1.5 lg:py-2.5 px-1 lg:px-4 flex items-center justify-between gap-x-4 shadow-primary/30">
-        <div className="flex items-center min-w-min">
+        <div className="flex items-center min-w-min pr-4">
           <img
             className="lg:hidden size-8"
             src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAACXBIWXMAAAsTAAALEwEAmpwYAAAElElEQVR4nO1aXYgcRRBuna65O6MBH6PGJzEi0QejD6JPKqIg+qDng3+HAXerZrP+JIiPiz8IskZYbro2i5IDjUIORXxRHwTx71FEjYRoBIkSIQZNotxp8G6lZnrv5u5ytzv7M7OzzgcNy8x2V/XXVTVd1a1UGmgULgDGKjD+CowngHGvPFP/B7iNwlWa8RtgakabNnQYpkvXqFEGME4B4192wt/BdOk6va9wvWY8FBIh73BKjRxmpsbBUC2y2q+r6p5NHb/PMtx68epgtVeZ/HLDz9azEOmrsgyITGjdZujTNYRl3iVmejTpLLuEG43yhuaBqdDtWGDokYhLDP9XAiIKD6bhXC+EDg4zK0120G2oXMJdsbEZ7AoNnUtACgolSfj6aBRAM+5PyuTbugTjftFJJQVgfCXtSa9phl5OkoCTAfP14k0qZYgO1h1OJCYUDP0mQh2m21TKEB2SJ4Bxb7omH+YPwPhF5Fk1MQJUowDic2ExIxV/D/IHIcIWVKqqUtHJEZCjPULzXE510x4ncYA112EZJ3FATgDlFgC5C1AeA9SQxJLEAXkMwL+DlXtt50Vds1grb7Y7v1Mqa9CMP4nyvdT2gXG7zfe/VlmDNvR2oLyhJ7oew/eesgS8obIGMPSQJeBbNTvpxB5gdtJpnSg5jHeqzKFWHtOMP9sVLMXtrhkfD/vSj5nN9KBevN8GsX8c37s1VpHD0FkwtOgw3qKyDDDkt0jQ9eKuDd1BzF5WXiYfFjleVJlHpXL+EgmhOxwKgxtuV753oTT5rQ3tXnmKjM+qUYLLNKkZj3Va9VEjiVp5DBgf0IYOakNHg8NTQ/PyWzO+tRQzRpEA6LCyM8IEUEcTGx0CZicdYNohO8HWrjAOAdJH+soYXW2k0oLre/eBoQ/B0Jlz1PM/atdf/nOOMvgZGdNlvFcNDZgudhjvAsaXwNDHwLhTHmvGI5FP3g+acQYMPepOl67sdGj5r/SRvtrQ9xGrOGxlPAmMn4hs0UF0UUnBMXS7DWgL0VXShg7Ie2B82K72nPa9m3uVpw15siMUeS7j3cEzxndXWdYCGPp84Ed12tDuiFnO21V4wfG9O6LH09rQq/Z/v2tDN3QlrKnO00zPBJM3tChELL2rlcdEJhh63uowZ3Va7CX73BB6X+FGK+RfIUKU2PD+gKH3IkTFu+pWK29eDpy40DaZChOvp60lLHZN+kZoTUgzVlQnCEk4EHGRN8cNbW3XzfW9eyQDtJP/U4JqjLzjOavjO6rfgOBmNzUnpkuXxOknCZC9LifWcFYzzUK9+OCY710R3BCv7tkEhq6VwCaVn0gA/dJl3BZH1kS9eKmVc1z1G9DDBmW8UbhcqjqrA+c6J7/Hwfce6/bbP7CNFPRj4EZhi/izfNO1oV8gKJziH5rxKyEo+KT1eNdnuAlIADkBnFtAM3cBzmNAMzvBpc/IYwDnMaCZxwDOY0Cz37FF5UHQhDW+iVr5MjWkkHR7YBcqdKsMZej9YSQhnDx+YGsPB/suwGXcJiWuWJeaU2l4cmALNG5oa1DQYDyd/kTXTPy0rHzcyf8HX8iXA/k0/W0AAAAASUVORK5CYII="
@@ -38,13 +38,27 @@ export const TopNavbar: React.FC = () => {
             <IoIosSearch />
           </button>
         </div>
-        <Link
-          to={"/cart"}
-          className="bg-gray-100 text-primary flex gap-1 text-base lg:text-xl font-semibold items-center justify-center h-full px-3 rounded-xl"
-        >
-          <RiShoppingBag3Fill className="text-base lg:text-2xl mb-1" />
-          02
-        </Link>
+        <div className="flex gap-4 items-center h-full">
+          <Link
+            to={"/cart"}
+            className="bg-gray-100 text-primary flex gap-1 text-base lg:text-xl font-semibold items-center justify-center h-full px-3 rounded-xl"
+          >
+            <RiShoppingBag3Fill className="text-base lg:text-2xl mb-1" />
+            02
+          </Link>
+          <div className="size-[42px] lg:size-11 rounded-full bg-gray-100 overflow-hidden object-fill">
+            <img
+              src="https://img.icons8.com/?size=100&id=sW0a9CbRV4bi&format=png&color=000000"
+              alt=""
+            />
+          </div>
+          {/* <Link
+            to="/login"
+            className="text-lg font-medium text-primary hover:underline"
+          >
+            Login
+          </Link> */}
+        </div>
       </div>
     </nav>
   );

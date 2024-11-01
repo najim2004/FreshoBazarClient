@@ -100,6 +100,16 @@ export const Categories: React.FC = () => {
             Grains & Pulses
           </h3>
         </div>
+        <div className="shadow-md mb-1 w-[80px] h-[80px] lg:h-[170px] lg:w-[170px] rounded-2xl bg-gradient-to-b from-white to-red-200 flex flex-col gap-2 justify-center items-center">
+          <img
+            src="https://img.icons8.com/?size=100&id=kLWwspVTzZ8b&format=png&color=000000"
+            alt="Spices"
+            className="size-10 lg:size-auto"
+          />
+          <h3 className="text-xs lg:text-xl font-semibold text-color-primary">
+            Spices
+          </h3>
+        </div>
       </div>
     </section>
   );
