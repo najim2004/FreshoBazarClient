@@ -84,7 +84,12 @@ export const ProductCard = ({
           </div>
         </div>
 
-        <div className="mt-4 flex items-center gap-2 justify-between">
+        <div
+          onClick={(e: React.MouseEvent<HTMLDivElement>): void =>
+            e.stopPropagation()
+          }
+          className="mt-4 flex items-center gap-2 justify-between"
+        >
           <div className="flex items-center border rounded-md">
             <Button
               variant="ghost"

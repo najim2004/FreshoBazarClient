@@ -25,7 +25,7 @@ const initialReviews: Review[] = [
     rating: 3,
     title: "Awesome Product and On time Delivery",
     content:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit...",
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit",
     date: "Jan 01, 2023",
     helpful: 20,
     notHelpful: 2,
@@ -36,7 +36,7 @@ const initialReviews: Review[] = [
     rating: 4,
     title: "That's Good Stuff",
     content:
-      "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo...",
+      "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo",
     date: "Jan 20, 2023",
     helpful: 15,
     notHelpful: 1,
@@ -48,7 +48,7 @@ const initialReviews: Review[] = [
     rating: 3,
     title: "Absolute Stunner and Impressive",
     content:
-      "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo...",
+      "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo",
     date: "Feb 15, 2023",
     helpful: 10,
     notHelpful: 0,
@@ -59,7 +59,7 @@ const initialReviews: Review[] = [
     rating: 3,
     title: "Lorem ipsum dolor sit amet",
     content:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat...",
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat",
     date: "Mar 03, 2023",
     helpful: 8,
     notHelpful: 1,
@@ -71,7 +71,7 @@ const initialReviews: Review[] = [
     rating: 3,
     title: "Absolute Stunner and Impressive",
     content:
-      "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo...",
+      "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo",
     date: "Mar 20, 2023",
     helpful: 5,
     notHelpful: 0,
@@ -166,7 +166,7 @@ export const ProductReviews: React.FC = () => {
             </Button>
           </div>
         </div>
-        <div className="mb-4 flex justify-between items-center bg-gray-100 h-12 px-4 font-medium">
+        <div className="mb-4 flex justify-between items-center bg-gray-100 h-min xs:h-12 px-4 font-medium">
           <span className="text-sm text-color-ternary">
             Displaying Reviews 1-5 of 100
           </span>
@@ -182,9 +182,9 @@ export const ProductReviews: React.FC = () => {
         {reviews.map((review) => (
           <div
             key={review.id}
-            className="py-4 flex flex-col md:flex-row items-start md:items-center"
+            className="py-4 flex flex-col sm:flex-row items-start md:items-center"
           >
-            <div className="flex flex-col items-center mb-4 md:mb-0 md:mr-4 min-w-[200px]">
+            <div className="flex flex-col items-center mb-4 md:mb-0 md:mr-4 sm:min-w-[200px] mx-auto">
               <Avatar className="w-16 h-16 mb-2">
                 <AvatarImage src={review.avatar} alt={review.user} />
                 <AvatarFallback>{review.user[0]}</AvatarFallback>
@@ -195,7 +195,7 @@ export const ProductReviews: React.FC = () => {
               </div>
             </div>
             <div className="flex-1">
-              <div className="flex items-center mb-2">
+              <div className="flex items-center justify-center sm:justify-normal mb-2">
                 {[1, 2, 3, 4, 5].map((star) => (
                   <Star
                     key={star}
@@ -208,8 +208,11 @@ export const ProductReviews: React.FC = () => {
                 ))}
               </div>
               <h3 className="font-bold mb-2">{review.title}</h3>
-              <p className="text-color-ternary mb-2">{review.content}</p>
-              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between text-sm">
+              <p className="text-color-ternary mb-2 text-justify">
+                <span className="line-clamp-4">{review.content}</span>
+                <button className="ml-auto">see more..</button>
+              </p>
+              <div className="flex flex-col xs:flex-row sm:items-center sm:justify-between text-sm">
                 <div className="flex items-center gap-4 mb-2 sm:mb-0">
                   <Button
                     variant="ghost"
@@ -264,7 +267,7 @@ const ProductReviewsSkeleton: React.FC = () => {
         <Skeleton className="h-8 w-48" />
       </CardHeader>
       <CardContent>
-        <div className="flex flex-col md:flex-row gap-8 mb-8 border p-5">
+        <div className="flex flex-col sm:flex-row gap-8 mb-8 border p-5">
           <div className="flex-1 flex flex-col justify-center items-center">
             <Skeleton className="h-16 w-24 mb-2" />
             <Skeleton className="h-6 w-32 mb-2" />
@@ -287,19 +290,19 @@ const ProductReviewsSkeleton: React.FC = () => {
         {[1, 2, 3].map((i) => (
           <div
             key={i}
-            className="py-4 flex flex-col md:flex-row items-start md:items-center"
+            className="py-4 flex flex-col sm:flex-row items-start md:items-center"
           >
-            <div className="flex flex-col items-center mb-4 md:mb-0 md:mr-4 min-w-[200px]">
+            <div className="flex flex-col items-center mb-4 md:mb-0 md:mr-4 sm:min-w-[200px] mx-auto">
               <Skeleton className="w-16 h-16 rounded-full mb-2" />
               <Skeleton className="h-4 w-24 mb-1" />
               <Skeleton className="h-3 w-20" />
             </div>
-            <div className="flex-1">
+            <div className="flex-1 w-full sm:w-auto">
               <Skeleton className="h-4 w-32 mb-2" />
               <Skeleton className="h-6 w-3/4 mb-2" />
               <Skeleton className="h-4 w-full mb-2" />
               <Skeleton className="h-4 w-full mb-2" />
-              <div className="flex justify-between">
+              <div className="flex justify-between w-full">
                 <Skeleton className="h-8 w-24" />
                 <Skeleton className="h-8 w-24" />
               </div>

@@ -28,7 +28,7 @@ export const TodayBestSellingProducts: React.FC = () => {
         </button>
       </div> */}
       <div className="display-grid mt-10">
-        {[...Array(15)].map((_, index) => (
+        {[...Array(12)].map((_, index) => (
           <ProductCard key={index} />
         ))}
       </div>
