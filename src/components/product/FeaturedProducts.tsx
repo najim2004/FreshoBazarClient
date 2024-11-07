@@ -9,12 +9,12 @@ import "swiper/css/free-mode";
 // import required modules
 import { FreeMode } from "swiper/modules";
 
-export const BestSellingProducts: React.FC = () => {
+export const FeaturedProducts: React.FC = () => {
   return (
-    <section className="mt-10 w-screen lg:max-w-[calc(100vw-160px)] lg:w-full">
+    <section className="mt-10">
       <div className="flex justify-between items-center">
         <h3 className="text-2xl text-color-primary font-semibold">
-          Best Selling Products
+          Featured Products
         </h3>
         <span className="text-color-ternary text-3xl">
           <BiExpandHorizontal />
@@ -22,7 +22,7 @@ export const BestSellingProducts: React.FC = () => {
       </div>
       <div className="mt-5">
         <Swiper
-          spaceBetween={30}
+          spaceBetween={24}
           freeMode={true}
           modules={[FreeMode]}
           className="mySwiper"
@@ -30,17 +30,12 @@ export const BestSellingProducts: React.FC = () => {
             359: { slidesPerView: 1 }, // Mobile screens
             360: { slidesPerView: 2 }, // Mobile screens
             480: { slidesPerView: 2 }, // extra small screens
-            640: { slidesPerView: 2 }, // Small screens
-            768: { slidesPerView: 2 }, // Medium screens (tablets)
-            1024: { slidesPerView: 3 }, // Large screens (laptops)
-            1280: { slidesPerView: 4 }, // Extra large screens (desktops)
-            1536: { slidesPerView: 5 }, // 2X extra large screens
-            1920: { slidesPerView: 5 }, // 3X extra large screens
-            2560: { slidesPerView: 6 }, // 4X extra large screens
+            640: { slidesPerView: 3 }, // Small screens
+            1536: { slidesPerView: 4 }, // 2X extra large screens
           }}
         >
           {[...Array(8)].map((_, index) => (
-            <SwiperSlide className="my-4" key={index}>
+            <SwiperSlide className="mb-1" key={index}>
               <ProductCard />
             </SwiperSlide>
           ))}

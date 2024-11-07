@@ -11,7 +11,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { FaSearch } from "react-icons/fa";
-
+import { Filter } from "./Filter";
 const products: string[] = [
   "Fresh Tomatoes",
   "Organic Spinach",
@@ -25,10 +25,13 @@ const products: string[] = [
   "Pumpkin",
 ];
 
+const featuredProducts: string[] = ["Fresh Tomatoes", "Mango", "Hilsa Fish"];
+
 export const SearchBar: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [showSuggestions, setShowSuggestions] = useState<boolean>(false);
+  const [filterCategory, setFilterCategory] = useState<string>("all");
 
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
@@ -66,7 +69,7 @@ export const SearchBar: React.FC = () => {
 
   return (
     <div className="relative flex items-center w-full h-10">
-      <Select onValueChange={(v) => console.log(v)}>
+      <Select value={filterCategory} onValueChange={setFilterCategory}>
         <SelectTrigger className="w-min h-full rounded-none rounded-l-md border-r-0 outline-none focus:ring-0 shadow-none">
           <SelectValue placeholder="All" />
         </SelectTrigger>
@@ -79,12 +82,12 @@ export const SearchBar: React.FC = () => {
           </SelectGroup>
         </SelectContent>
       </Select>
-      <div className="w-full h-full">
+      <div className="flex-grow h-full relative">
         <Input
           id="searchInput" // Set ID for direct focusing
           type="text"
           placeholder="Search for products... ( CTRL+K )"
-          className="h-full border border-gray-300 text-sm px-4 pr-10 py-1 w-full focus-visible:ring-0 shadow-none rounded-none rounded-r-md"
+          className="h-full border text-sm px-4 pr-10 py-1 w-full focus-visible:ring-0 shadow-none rounded-none"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           onFocus={() => setShowSuggestions(true)}
@@ -98,8 +101,9 @@ export const SearchBar: React.FC = () => {
           <FaSearch className="text-color-primary group-active:scale-95 group-hover:text-primary" />
         </Button>
       </div>
+      <Filter />
       {showSuggestions && suggestions.length > 0 && (
-        <ul className="absolute top-10 z-10 w-full bg-white border border-gray-300 rounded-b-md shadow-lg mt-1">
+        <ul className="absolute top-10 z-10 w-full bg-white border rounded-b-md shadow-lg mt-1">
           {suggestions.map((suggestion) => (
             <li
               key={suggestion} // Unique key using suggestion

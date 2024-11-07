@@ -4,7 +4,8 @@ import { useLocation } from "react-router-dom";
 
 export const RightNavbar: React.FC = () => {
   const location = useLocation();
-  const isCartRoute: boolean = location.pathname.includes("/cart");
+  const isCartRoute: boolean =
+    location.pathname.includes("/cart") || location.pathname.includes("/chat");
   if (isCartRoute) return null;
   return (
     <div className={`min-w-[250px] max-w-[250px] hidden xl:block`}>

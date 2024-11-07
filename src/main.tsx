@@ -6,6 +6,9 @@ import { HelmetProvider } from "react-helmet-async";
 import { router } from "./routes/AppRouter";
 import { Provider } from "react-redux";
 import store from "./redux/store";
+import { Toaster } from "./components/ui/toaster";
+import { ApolloProvider } from "@apollo/client";
+import client from "./apollo/client";
 
 const rootElement = document.getElementById("root");
 
@@ -13,9 +16,12 @@ if (rootElement) {
   createRoot(rootElement).render(
     <StrictMode>
       <HelmetProvider>
-        <Provider store={store}>
-          <RouterProvider router={router} />
-        </Provider>
+        <ApolloProvider client={client}>
+          <Provider store={store}>
+            <RouterProvider router={router} />
+          </Provider>
+        </ApolloProvider>
+        <Toaster />
       </HelmetProvider>
     </StrictMode>
   );

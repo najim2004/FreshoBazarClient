@@ -7,6 +7,8 @@ import { ShoppingCart } from "@/pages/cart/ShoppingCart";
 import { LoginPage } from "../pages/login/login";
 import { SignupPage } from "@/pages/signup/Signup";
 import { Shop } from "@/pages/shop/Shop";
+import { Chat } from "@/pages/chat/Chat";
+import { Dashboard } from "@/layout/dashboard/Dashboard";
 const routes: Route[] = [
   {
     path: "/",
@@ -22,10 +24,14 @@ const routes: Route[] = [
       },
       {
         path: "/chat",
-        element: <Home />,
+        element: <Chat />,
       },
       {
-        path: "/shop",
+        path: "/shop/category/:slug",
+        element: <Shop />,
+      },
+      {
+        path: "/shop/category/:slug/:sub_slug",
         element: <Shop />,
       },
       {
@@ -45,6 +51,10 @@ const routes: Route[] = [
   {
     path: "/signup",
     element: <SignupPage />,
+  },
+  {
+    path: "/dashboard",
+    element: <Dashboard />,
   },
 ];
 

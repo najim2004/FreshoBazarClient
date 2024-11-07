@@ -10,7 +10,9 @@ interface ProductCardProps {
   price?: number;
   discount?: number;
   image?: string;
-  unit?: string;
+  unitType?: string;
+  unitSize?: number;
+  category?: string;
 }
 
 export const ProductCard = ({
@@ -18,7 +20,9 @@ export const ProductCard = ({
   price = 11.0,
   discount = 25,
   image = "https://png.pngtree.com/png-vector/20241009/ourmid/pngtree-fresh-meat-png-image_14026360.png",
-  unit = "kg",
+  unitType = "kg",
+  unitSize = 1,
+  category = "Meat",
 }: ProductCardProps) => {
   const [quantity, setQuantity] = useState<number>(1);
   const [isFavorite, setIsFavorite] = useState<boolean>(false);
@@ -77,10 +81,10 @@ export const ProductCard = ({
         </div>
 
         <div className="mt-4">
-          <div className="text-gray-500 text-sm uppercase">MEAT</div>
+          <div className="text-gray-500 text-sm uppercase">{category}</div>
           <h3 className="font-semibold text-gray-800 text-lg">{title}</h3>
           <div className="mt-2 text-primary font-bold">
-            ${price.toFixed(2)}/{unit}
+            ${price.toFixed(2)}/{unitSize} {unitType}
           </div>
         </div>
 

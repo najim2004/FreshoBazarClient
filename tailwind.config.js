@@ -4,6 +4,12 @@ export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
+      backgroundImage: {
+        "custom-image": "url('./src/assets/transparent-bg.png')",
+      },
+      boxShadow: {
+        inner: "inset 0 2px 4px rgba(0, 0, 0, 0.2)",
+      },
       screens: {
         xxs: "360px",
         xs: "480px",
