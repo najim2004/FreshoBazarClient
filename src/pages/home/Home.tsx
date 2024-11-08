@@ -1,7 +1,6 @@
 import { FeaturedProducts } from "@/components/product/FeaturedProducts";
 import React from "react";
 import { TodayBestSellingProducts } from "@/components/product/TodayBestSellingProducts";
-import OrganicBanner from "@/components/banners/OrganicBanner";
 import { HomePageBanners } from "@/components/banners/HomePageBanners";
 import { Subscription } from "@/components/subscribtion/Subscripton";
 import { HomePagePromotion } from "@/components/promotions/HomPagePromotion";

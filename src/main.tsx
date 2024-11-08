@@ -9,6 +9,7 @@ import store from "./redux/store";
 import { Toaster } from "./components/ui/toaster";
 import { ApolloProvider } from "@apollo/client";
 import client from "./apollo/client";
+import { AppProvider } from "./provider/AppProvider";
 
 const rootElement = document.getElementById("root");
 
@@ -18,7 +19,9 @@ if (rootElement) {
       <HelmetProvider>
         <ApolloProvider client={client}>
           <Provider store={store}>
-            <RouterProvider router={router} />
+            <AppProvider>
+              <RouterProvider router={router} />
+            </AppProvider>
           </Provider>
         </ApolloProvider>
         <Toaster />

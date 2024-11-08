@@ -17,7 +17,7 @@ interface Product {
 
 // Define the response structure from the `GET_PRODUCTS` query
 interface GetProductsResponse {
-  products: {
+  getProducts: {
     success: boolean;
     error: boolean;
     error_message: string | null;
@@ -27,7 +27,7 @@ interface GetProductsResponse {
 
 const GET_PRODUCTS = gql`
   query {
-    products {
+    getProducts {
       success
       error
       error_message
@@ -81,9 +81,10 @@ export const TodayBestSellingProducts: React.FC = () => {
       </div>
       <div className="display-grid mt-10">
         {/* Render Products */}
-        {data?.products?.products?.map((product) => (
+        {data?.getProducts?.products?.map((product) => (
           <ProductCard
             key={product._id}
+            id={product._id}
             title={product.title}
             price={product.price}
             discount={product.discountValue}

@@ -1,11 +1,17 @@
 import { Heart, Minus, Plus, ShoppingCart } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { NavigateFunction, useNavigate } from "react-router-dom";
+import { gql, useMutation } from "@apollo/client";
+import { useDispatch, useSelector } from "react-redux";
+import { setFavoriteProducts } from "@/redux/slices/favoriteProduct.slice";
+import { RootState } from "@/redux/root.reducer";
 
+// Define ProductCardProps interface to ensure proper typing for props passed to the component.
 interface ProductCardProps {
+  id: string | undefined;
   title?: string;
   price?: number;
   discount?: number;
@@ -15,7 +21,54 @@ interface ProductCardProps {
   category?: string;
 }
 
+// Define the structure of the response after toggling the favorite product.
+interface ToggleFavoriteResponse {
+  toggleFavorite: {
+    success?: boolean;
+    error?: boolean;
+    error_message?: string | null;
+    favorites?: Favorites;
+  };
+}
+
+// Define the structure of the request variables when toggling favorite.
+interface ToggleFavoriteVariables {
+  userId?: string;
+  productId?: string;
+}
+
+// Define the structure of favorites object
+interface Favorites {
+  _id: string;
+  userId: string;
+  products?: Array<{ productId: string; addedAt?: Date }>;
+  createdAt?: Date;
+  updatedAt?: Date;
+}
+
+// GraphQL mutation to toggle favorite product.
+const TOGGLE_FAVORITE = gql`
+  mutation ToggleFavorite($userId: ID!, $productId: ID!) {
+    toggleFavorite(userId: $userId, productId: $productId) {
+      success
+      error
+      error_message
+      favorites {
+        _id
+        userId
+        products {
+          productId
+          addedAt
+        }
+        updatedAt
+        createdAt
+      }
+    }
+  }
+`;
+
 export const ProductCard = ({
+  id = "",
   title = "Farm fresh organic meat 1 kg",
   price = 11.0,
   discount = 25,
@@ -24,28 +77,77 @@ export const ProductCard = ({
   unitSize = 1,
   category = "Meat",
 }: ProductCardProps) => {
-  const [quantity, setQuantity] = useState<number>(1);
-  const [isFavorite, setIsFavorite] = useState<boolean>(false);
-  const navigate: NavigateFunction = useNavigate();
-  const decreaseQuantity = (e: React.MouseEvent<HTMLButtonElement>): void => {
-    e.stopPropagation();
-    if (quantity > 1) {
-      setQuantity(quantity - 1);
+  const [quantity, setQuantity] = useState<number>(1); // Track quantity for this product.
+  const [isFavorite, setIsFavorite] = useState<boolean>(false); // Track if the product is in the favorites.
+
+  const navigate: NavigateFunction = useNavigate(); // Hook to navigate to product detail page.
+
+  // Redux state to track favorite products and dispatch function to update them.
+  const favoriteProducts = useSelector(
+    (state: RootState) => state?.favoriteProducts?.favoriteProducts
+  );
+  const dispatch = useDispatch();
+
+  // GraphQL mutation to toggle favorite for this product.
+  const [toggleFavorite, { data, loading }] = useMutation<
+    ToggleFavoriteResponse,
+    ToggleFavoriteVariables
+  >(TOGGLE_FAVORITE);
+
+  // Effect hook to handle response after toggling favorite status.
+  useEffect(() => {
+    if (data?.toggleFavorite) {
+      const { success, error, favorites } = data.toggleFavorite;
+      if (success && !error && favorites) {
+        // Dispatch the updated favorite products to Redux store.
+        dispatch(setFavoriteProducts(favorites));
+      }
+    }
+  }, [data?.toggleFavorite, dispatch]);
+
+  // Effect hook to check if this product is already in the user's favorites list.
+  useEffect(() => {
+    const isExist = favoriteProducts?.data?.products?.find(
+      (product) => product.productId === id
+    );
+    setIsFavorite(!!isExist); // Update favorite status based on product existence.
+  }, [favoriteProducts?.data?.products, id]);
+  // console.log(favoriteProducts);
+
+  // Function to handle the click on the favorite button.
+  const onFavoriteClick = (id: string | undefined): void => {
+    if (!loading && id) {
+      // Trigger GraphQL mutation to toggle favorite.
+      toggleFavorite({
+        variables: { userId: "672cbfba5011c05833acf37e", productId: id },
+      });
     }
   };
 
+  // Function to decrease the product quantity.
+  const decreaseQuantity = (e: React.MouseEvent<HTMLButtonElement>): void => {
+    e.stopPropagation();
+    if (quantity > 1) setQuantity(quantity - 1);
+  };
+
+  // Function to increase the product quantity.
   const increaseQuantity = (e: React.MouseEvent<HTMLButtonElement>): void => {
     e.stopPropagation();
     setQuantity(quantity + 1);
   };
+
+  // Function to handle click on the cart button (optional: can trigger add-to-cart functionality).
   const onClickCart = (e: React.MouseEvent<HTMLButtonElement>): void => {
     e.stopPropagation();
+    // Additional logic for adding to cart can be added here.
   };
+
   return (
     <Card
       onClick={(e: React.MouseEvent<HTMLDivElement>): void => {
         e.stopPropagation();
-        navigate("/product/123");
+        // Navigate to the product detail page when the card is clicked.
+        navigate(`/product/${id}`);
       }}
       className="w-full max-w-sm rounded-sm border-none"
     >
@@ -69,7 +171,8 @@ export const ProductCard = ({
             className="absolute top-2 right-2 p-1 rounded-full bg-white/80 hover:bg-white transition-colors"
             onClick={(e: React.MouseEvent<HTMLButtonElement>): void => {
               e.stopPropagation();
-              setIsFavorite(!isFavorite);
+              // Toggle favorite status when the button is clicked.
+              onFavoriteClick(id);
             }}
           >
             <Heart
