@@ -1,11 +1,11 @@
 // src/redux/rootReducer.ts
 
 import { combineReducers } from "redux";
-import exampleReducer from "./slices/exampleSlice"; // Import example slice
-import favoriteProductsReducer from "./slices/favoriteProduct.slice";
+import categoriesReducer from "./slices/categoriesSlice"; // Import categories slice
+import favoriteProductsReducer from "./slices/favoriteProductSlice";
 
 const rootReducer = combineReducers({
-  example: exampleReducer,
+  categories: categoriesReducer,
   favoriteProducts: favoriteProductsReducer, // Add your reducers here
 });
 

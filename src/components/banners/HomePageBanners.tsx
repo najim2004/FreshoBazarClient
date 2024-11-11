@@ -13,6 +13,7 @@ import {
   CarouselPrevious,
 } from "../ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
+import { transparentBg } from "@/assets/amader-krishok-assets";
 
 export const HomePageBanners: React.FC = () => {
   return (
@@ -27,7 +28,13 @@ export const HomePageBanners: React.FC = () => {
       <CarouselContent>
         {/* 1st */}
         <CarouselItem>
-          <div className="w-full flex items-center justify-between bg-green-50 h-[50vh] px-10">
+          <div className="relative w-full flex items-center justify-between bg-green-50 h-[50vh] px-10">
+            <div
+              className="absolute inset-0 opacity-[0.03] z-0"
+              style={{
+                background: `url(${transparentBg}) lightgray 50% / cover no-repeat`,
+              }}
+            ></div>
             <div className="h-full flex flex-col justify-center items-center text-center flex-1">
               <h2 className="text-4xl font-black text-primary leading-[50px]">
                 Fresh Vegetables, Directly from Farmers!
@@ -45,7 +52,13 @@ export const HomePageBanners: React.FC = () => {
 
         {/* 2nd */}
         <CarouselItem>
-          <div className="w-full flex items-center justify-between bg-orange-50 h-[50vh] px-10">
+          <div className="relative w-full flex items-center justify-between bg-orange-50 h-[50vh] px-10">
+            <div
+              className="absolute inset-0 opacity-[0.03] z-0"
+              style={{
+                background: `url(${transparentBg}) lightgray 50% / cover no-repeat`,
+              }}
+            ></div>
             <div className="h-full flex flex-col justify-center items-center text-center flex-1">
               <h2 className="text-4xl font-black text-primary leading-[50px]">
                 Premium Quality Meat & Poultry, Fresh to Your Door!
@@ -63,7 +76,13 @@ export const HomePageBanners: React.FC = () => {
 
         {/* 3rd */}
         <CarouselItem>
-          <div className="w-full flex items-center justify-between bg-yellow-50 h-[50vh] px-10">
+          <div className="relative w-full flex items-center justify-between bg-yellow-50 h-[50vh] px-10">
+            <div
+              className="absolute inset-0 opacity-[0.03] z-0"
+              style={{
+                background: `url(${transparentBg}) lightgray 50% / cover no-repeat`,
+              }}
+            ></div>
             <div className="h-full flex flex-col justify-center items-center text-center flex-1">
               <h2 className="text-4xl font-black text-primary leading-[50px]">
                 Premium Quality Meat & Poultry, Fresh to Your Door!
@@ -81,7 +100,13 @@ export const HomePageBanners: React.FC = () => {
 
         {/* 4th */}
         <CarouselItem>
-          <div className="w-full flex items-center justify-between bg-amber-50 h-[50vh] px-10">
+          <div className="relative w-full flex items-center justify-between bg-amber-50 h-[50vh] px-10">
+            <div
+              className="absolute inset-0 opacity-[0.03] z-0"
+              style={{
+                background: `url(${transparentBg}) lightgray 50% / cover no-repeat`,
+              }}
+            ></div>
             <div className="h-full flex flex-col justify-center items-center text-center flex-1">
               <h2 className="text-4xl font-black text-primary leading-[50px]">
                 Premium Quality Meat & Poultry, Fresh to Your Door!

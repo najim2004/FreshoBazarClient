@@ -6,8 +6,8 @@ import { Input } from "@/components/ui/input";
 import { NavigateFunction, useNavigate } from "react-router-dom";
 import { gql, useMutation } from "@apollo/client";
 import { useDispatch, useSelector } from "react-redux";
-import { setFavoriteProducts } from "@/redux/slices/favoriteProduct.slice";
-import { RootState } from "@/redux/root.reducer";
+import { setFavoriteProducts } from "@/redux/slices/favoriteProductSlice";
+import { RootState } from "@/redux/rootReducer";
 
 // Define ProductCardProps interface to ensure proper typing for props passed to the component.
 interface ProductCardProps {
