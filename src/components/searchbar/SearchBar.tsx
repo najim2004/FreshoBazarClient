@@ -12,6 +12,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { FaSearch } from "react-icons/fa";
 import { Filter } from "./Filter";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/rootReducer";
 const products: string[] = [
   "Fresh Tomatoes",
   "Organic Spinach",
@@ -25,13 +27,15 @@ const products: string[] = [
   "Pumpkin",
 ];
 
-const featuredProducts: string[] = ["Fresh Tomatoes", "Mango", "Hilsa Fish"];
 
 export const SearchBar: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [showSuggestions, setShowSuggestions] = useState<boolean>(false);
   const [filterCategory, setFilterCategory] = useState<string>("all");
+  const categories = useSelector(
+    (state: RootState) => state?.categories.Categories
+  );
 
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
@@ -68,7 +72,7 @@ export const SearchBar: React.FC = () => {
   };
 
   return (
-    <div className="relative flex items-center w-full h-10">
+    <div className="relative flex items-center w-full h-10 ">
       <Select value={filterCategory} onValueChange={setFilterCategory}>
         <SelectTrigger className="w-min h-full rounded-none rounded-l-md border-r-0 outline-none focus:ring-0 shadow-none">
           <SelectValue placeholder="All" />
@@ -76,9 +80,13 @@ export const SearchBar: React.FC = () => {
         <SelectContent>
           <SelectGroup>
             <SelectLabel>Categories</SelectLabel>
-            <SelectItem value="all">All</SelectItem>
-            <SelectItem value="vegetables">Vegetables</SelectItem>
-            <SelectItem value="fish">Fish</SelectItem>
+            {
+              categories?.map((category) => (
+                <SelectItem key={category._id} value={category.slug}>
+                  {category.name}
+                </SelectItem>
+              )) || [] // Handle empty categories array gracefully
+            }
           </SelectGroup>
         </SelectContent>
       </Select>

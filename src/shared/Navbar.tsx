@@ -12,7 +12,7 @@ import { AvatarMenu } from "@/components/AvatarMenu";
 export const Navbar: React.FC = () => {
   return (
     <>
-      <div className="bg-white/95 backdrop-blur-md shadow fixed top-0 left-0 w-full z-[5000000]">
+      <div className="bg-white/95 backdrop-blur-md shadow fixed top-0 left-0 w-full z-50">
         <Container className="h-12 md:h-16 flex items-center justify-between px-4 my-1 md:my-0">
           <MenuDrawer />
           <Link
@@ -24,7 +24,7 @@ export const Navbar: React.FC = () => {
               Amader Krishok
             </span>
           </Link>
-          <div className="hidden lg:block w-1/2">
+          <div className="hidden lg:block w-1/2 z-[50]">
             <SearchBar />
           </div>
           <div className="flex items-center space-x-4 w-max">

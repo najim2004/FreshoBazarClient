@@ -5,10 +5,12 @@ import { gql, useQuery } from "@apollo/client";
 import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
 
+// Props Interface for the AppProvider
 interface AppProviderProps {
   children: React.ReactNode;
 }
 
+// Interfaces for API responses and data types
 interface Favorites {
   _id: string;
   userId: string;
@@ -29,6 +31,28 @@ interface GetFavoriteProductsResponse {
   };
 }
 
+interface GetCategoriesResponse {
+  getAllCategories: {
+    success: boolean;
+    message: string;
+    categories?: Array<{
+      _id: string;
+      name: string;
+      slug: string;
+      subcategories?: Array<{ slug: string; name: string }>;
+    }>;
+  };
+}
+
+interface GetCartResponse {
+  getCart: {
+    success: boolean;
+    message: string;
+    cart?: Cart;
+  };
+}
+
+// GraphQL queries
 const GET_FAVORITE_PRODUCTS = gql`
   query GetFavoritesByUserId($userId: ID!) {
     getFavoritesByUserId(userId: $userId) {
@@ -47,19 +71,6 @@ const GET_FAVORITE_PRODUCTS = gql`
   }
 `;
 
-interface getCategoriesResponse {
-  getAllCategories: {
-    success: boolean;
-    message: string;
-    categories?: Array<{
-      _id: string;
-      name: string;
-      slug: string;
-      subcategories: Array<{ slug: string; name: string }>;
-    }>;
-  };
-}
-
 const GET_ALL_CATEGORIES = gql`
   query GetAllCategories {
     getAllCategories {
@@ -77,14 +88,6 @@ const GET_ALL_CATEGORIES = gql`
     }
   }
 `;
-
-interface getCartResponse {
-  getCart: {
-    success: boolean;
-    message: string;
-    cart?: Cart;
-  };
-}
 
 const GET_CART = gql`
   query GetCart($userId: ID!) {
@@ -112,55 +115,80 @@ const GET_CART = gql`
   }
 `;
 
+// Main AppProvider component with enhanced error handling
 export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   const dispatch = useDispatch();
+  const userId = "672cbfba5011c05833acf37e"; // Example user ID for demonstration
 
-  const Id = "672cbfba5011c05833acf37e"; // Example static userId (replace with dynamic logic)
-
-  const { data: categoriesResponse } =
-    useQuery<getCategoriesResponse>(GET_ALL_CATEGORIES);
-  const { data } = useQuery<GetFavoriteProductsResponse>(
+  // Execute GraphQL queries
+  const { data: categoriesData, error: categoriesError } = useQuery<GetCategoriesResponse>(GET_ALL_CATEGORIES);
+  const { data: favoriteProductsData, error: favoriteProductsError } = useQuery<GetFavoriteProductsResponse>(
     GET_FAVORITE_PRODUCTS,
-    {
-      variables: { userId: Id },
-    }
+    { variables: { userId } }
   );
-  const { data: cartResponse } = useQuery<getCartResponse>(GET_CART, {
-    variables: { userId: Id },
-  });
-  console.log(cartResponse);
+  const { data: cartData, error: cartError } = useQuery<GetCartResponse>(GET_CART, { variables: { userId } });
+
+  // console.log(cartData)
+  // console.log(favoriteProductsData)
+  // console.log(categoriesData)
 
   useEffect(() => {
-    if (data?.getFavoritesByUserId) {
-      const { success, error, error_message, favorites } =
-        data.getFavoritesByUserId;
+    try {
+      if (favoriteProductsData?.getFavoritesByUserId?.success) {
+        const { favorites } = favoriteProductsData.getFavoritesByUserId;
+        if (favorites) {
+          dispatch(setFavoriteProducts(favorites));
+        }
+      } else if (favoriteProductsData?.getFavoritesByUserId?.error) {
+        console.error("Error fetching favorite products:", favoriteProductsData?.getFavoritesByUserId.error_message);
+      }
+    } catch (error) {
+      console.error("An unexpected error occurred while fetching favorite products:", error);
+    }
+  }, [favoriteProductsData, dispatch]);
 
-      if (success && !error && favorites) {
-        dispatch(setFavoriteProducts(favorites));
-      } else {
-        console.error("Error fetching favorite products:", error_message);
-      }
-    }
-    if (categoriesResponse?.getAllCategories) {
-      const { success, message, categories } =
-        categoriesResponse.getAllCategories;
-      if (success && categories) {
-        dispatch(setCategories(categories));
-      } else {
-        console.error("Error fetching categories:", message);
-      }
-    }
-  }, [data, dispatch, categoriesResponse?.getAllCategories]);
   useEffect(() => {
-    if (cartResponse?.getCart) {
-      const { success, message, cart } = cartResponse.getCart;
-      if (success && cart) {
-        dispatch(setCart(cart));
-      } else {
-        console.error("Error fetching cart:", message);
+    try {
+      if (categoriesData?.getAllCategories?.success) {
+        const { categories } = categoriesData.getAllCategories;
+        if (categories) {
+          dispatch(setCategories(categories));
+        }
+      } else if (categoriesData?.getAllCategories) {
+        console.error("Error fetching categories:", categoriesData?.getAllCategories.message);
       }
+    } catch (error) {
+      console.error("An unexpected error occurred while fetching categories:", error);
     }
-  }, [cartResponse?.getCart, dispatch]);
+  }, [categoriesData, dispatch]);
+
+  useEffect(() => {
+    try {
+      if (cartData?.getCart?.success) {
+        const { cart } = cartData.getCart;
+        if (cart) {
+          dispatch(setCart(cart));
+        }
+      } else if (cartData?.getCart) {
+        console.error("Error fetching cart:", cartData.getCart.message);
+      }
+    } catch (error) {
+      console.error("An unexpected error occurred while fetching cart data:", error);
+    }
+  }, [cartData, dispatch]);
+
+  // Log any query errors from Apollo Client
+  useEffect(() => {
+    if (categoriesError) {
+      console.error("GraphQL error while fetching categories:", categoriesError);
+    }
+    if (favoriteProductsError) {
+      console.error("GraphQL error while fetching favorite products:", favoriteProductsError);
+    }
+    if (cartError) {
+      console.error("GraphQL error while fetching cart data:", cartError);
+    }
+  }, [categoriesError, favoriteProductsError, cartError]);
 
   return <>{children}</>;
 };

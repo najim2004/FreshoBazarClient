@@ -19,7 +19,7 @@ export const HomePagePromotion = () => {
             background: `url(${transparentBg}) lightgray 50% / cover no-repeat`,
           }}
         ></div>
-        <CardContent className="px-12 py-8 z-50 ">
+        <CardContent className="px-12 py-8 z-40 ">
           <Badge className=" bg-amber-100 mb-4 border-none min-w-[86px] w-max py-2 rounded-sm shadow-none text-color-secondary">
             FREE DELIVERY
           </Badge>
@@ -53,7 +53,7 @@ export const HomePagePromotion = () => {
             background: `url(${transparentBg}) lightgray 50% / cover no-repeat`,
           }}
         ></div>
-        <CardContent className="px-12 py-8 z-50 ">
+        <CardContent className="px-12 py-8 z-40 ">
           <Badge className=" bg-primary/80 mb-4 border-none min-w-[86px] w-max py-2 rounded-sm shadow-none text-white">
             60% off
           </Badge>

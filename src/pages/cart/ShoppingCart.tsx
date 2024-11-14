@@ -6,6 +6,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CartItem } from "@/components/cart/CartItem";
 import { Separator } from "@/components/ui/separator";
 import { Input } from "@/components/ui/input";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/rootReducer";
 
 interface CartItemData {
   id: number;
@@ -49,6 +51,7 @@ export const ShoppingCart: React.FC = () => {
   const [cartItems, setCartItems] = useState<CartItemData[]>(initialCartItems);
   const [selectedItems, setSelectedItems] = useState<number[]>([]);
   const [promoCode, setPromoCode] = useState("");
+  const cartItems = useSelector((state: RootState) => state?.myCart.cart);
 
   const toggleSelectAll = () => {
     if (selectedItems.length === cartItems.length) {

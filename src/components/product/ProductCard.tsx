@@ -8,6 +8,8 @@ import { gql, useMutation } from "@apollo/client";
 import { useDispatch, useSelector } from "react-redux";
 import { setFavoriteProducts } from "@/redux/slices/favoriteProductSlice";
 import { RootState } from "@/redux/rootReducer";
+import { Cart, setCart } from "@/redux/slices/cartSlice";
+import { useToast } from "@/hooks/use-toast";
 
 // Define ProductCardProps interface to ensure proper typing for props passed to the component.
 interface ProductCardProps {
@@ -46,6 +48,25 @@ interface Favorites {
   updatedAt?: Date;
 }
 
+// Define the structure of the response after adding the product on the cart.
+interface CartResponse {
+  addItemToCart: {
+    success?: boolean;
+    message?: string | null;
+    cart?: Cart;
+  };
+}
+
+// Define the structure of the request variables when toggling favorite.
+interface CartVariables {
+  userId?: string;
+  item: {
+    productId?: string;
+    quantity?: number;
+    options?: JSON;
+  };
+}
+
 // GraphQL mutation to toggle favorite product.
 const TOGGLE_FAVORITE = gql`
   mutation ToggleFavorite($userId: ID!, $productId: ID!) {
@@ -62,6 +83,33 @@ const TOGGLE_FAVORITE = gql`
         }
         updatedAt
         createdAt
+      }
+    }
+  }
+`;
+
+// GraphQL mutation to add item to the cart
+const ADD_TO_CART = gql`
+  mutation AddToCart($userId: ID!, $item: CartItemInput!) {
+    addItemToCart(userId: $userId, item: $item) {
+      success
+      message
+      cart {
+        _id
+        userId
+        items {
+          productId
+          name
+          price
+          quantity
+          thumbnail
+          totalPrice
+        }
+        status
+        totalPrice
+        totalQuantity
+        createdAt
+        updatedAt
       }
     }
   }
@@ -87,12 +135,16 @@ export const ProductCard = ({
     (state: RootState) => state?.favoriteProducts?.favoriteProducts
   );
   const dispatch = useDispatch();
+  const { toast } = useToast();
 
   // GraphQL mutation to toggle favorite for this product.
   const [toggleFavorite, { data, loading }] = useMutation<
     ToggleFavoriteResponse,
     ToggleFavoriteVariables
   >(TOGGLE_FAVORITE);
+
+  const [addItemToCart, { data: cartResponse, loading: isCartLoading }] =
+    useMutation<CartResponse, CartVariables>(ADD_TO_CART);
 
   // Effect hook to handle response after toggling favorite status.
   useEffect(() => {
@@ -104,6 +156,29 @@ export const ProductCard = ({
       }
     }
   }, [data?.toggleFavorite, dispatch]);
+
+  // Effect hook to handle response after adding cart.
+  useEffect(() => {
+    if (cartResponse?.addItemToCart) {
+      const { success, message, cart } = cartResponse.addItemToCart;
+      if (success && cart) {
+        // Dispatch the updated favorite products to Redux store.
+        dispatch(setCart(cart));
+        toast({
+          title: "Success",
+          description: "Item added to cart successfully!",
+          duration: 3000,
+        });
+      } else {
+        toast({
+          title: "Error",
+          description: message ?? "Failed to add item to cart!",
+          duration: 3000,
+          variant: "destructive",
+        });
+      }
+    }
+  }, [cartResponse?.addItemToCart, dispatch, toast]);
 
   // Effect hook to check if this product is already in the user's favorites list.
   useEffect(() => {
@@ -139,7 +214,15 @@ export const ProductCard = ({
   // Function to handle click on the cart button (optional: can trigger add-to-cart functionality).
   const onClickCart = (e: React.MouseEvent<HTMLButtonElement>): void => {
     e.stopPropagation();
-    // Additional logic for adding to cart can be added here.
+    if (!isCartLoading && id) {
+      // Trigger GraphQL mutation to toggle favorite.
+      addItemToCart({
+        variables: {
+          userId: "672cbfba5011c05833acf37e",
+          item: { productId: id, quantity },
+        },
+      });
+    }
   };
 
   return (
