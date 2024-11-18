@@ -51,7 +51,7 @@ export const ShoppingCart: React.FC = () => {
   const [cartItems, setCartItems] = useState<CartItemData[]>(initialCartItems);
   const [selectedItems, setSelectedItems] = useState<number[]>([]);
   const [promoCode, setPromoCode] = useState("");
-  const cartItems = useSelector((state: RootState) => state?.myCart.cart);
+  const myCart = useSelector((state: RootState) => state?.myCart.cart);
 
   const toggleSelectAll = () => {
     if (selectedItems.length === cartItems.length) {
@@ -132,11 +132,11 @@ export const ShoppingCart: React.FC = () => {
               </Button>
             </div>
 
-            {cartItems.map((item) => (
+            {myCart?.items.map((item, idx) => (
               <CartItem
-                key={item.id}
+                key={item.productId}
                 {...item}
-                isSelected={selectedItems.includes(item.id)}
+                isSelected={selectedItems.includes(idx)}
                 onSelect={toggleSelectItem}
                 onRemove={removeItem}
                 onUpdateQuantity={updateQuantity}

@@ -1,6 +1,6 @@
 import { createBrowserRouter } from "react-router-dom";
 import { Route } from "../types/routes";
-import { App } from "../App";
+import { App } from "../layout/app/App";
 import { Home } from "../pages/home/Home";
 import { ProductPage } from "@/pages/product/ProductPage";
 import { ShoppingCart } from "@/pages/cart/ShoppingCart";
@@ -9,6 +9,7 @@ import { SignupPage } from "@/pages/signup/Signup";
 import { Shop } from "@/pages/shop/Shop";
 import { Chat } from "@/pages/chat/Chat";
 import { Dashboard } from "@/layout/dashboard/Dashboard";
+import { Overview } from "@/pages/dashboard/overview/Overview";
 const routes: Route[] = [
   {
     path: "/",
@@ -55,6 +56,7 @@ const routes: Route[] = [
   {
     path: "/dashboard",
     element: <Dashboard />,
+    children: [{ path: "/dashboard", element: <Overview /> }],
   },
 ];
 

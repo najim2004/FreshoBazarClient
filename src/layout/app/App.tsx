@@ -1,10 +1,10 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
-import { LeftNavbar } from "./shared/LeftNavbar";
-import { Footer } from "./shared/Footer";
-import { Navbar } from "./shared/Navbar";
-import { RightNavbar } from "./shared/RightNavbar";
-import { Container } from "./components/Container";
+import { LeftNavbar } from "../../shared/LeftNavbar";
+import { Footer } from "../../shared/Footer";
+import { Navbar } from "../../shared/Navbar";
+import { RightNavbar } from "../../shared/RightNavbar";
+import { Container } from "../../components/Container";
 
 export const App: React.FC = () => {
   return (
