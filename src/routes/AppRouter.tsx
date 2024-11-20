@@ -10,6 +10,7 @@ import { Shop } from "@/pages/shop/Shop";
 import { Chat } from "@/pages/chat/Chat";
 import { Dashboard } from "@/layout/dashboard/Dashboard";
 import { Overview } from "@/pages/dashboard/overview/Overview";
+import { MyShop } from "@/pages/dashboard/shop/MyShop";
 const routes: Route[] = [
   {
     path: "/",
@@ -56,7 +57,10 @@ const routes: Route[] = [
   {
     path: "/dashboard",
     element: <Dashboard />,
-    children: [{ path: "/dashboard", element: <Overview /> }],
+    children: [
+      { path: "/dashboard", element: <Overview /> },
+      { path: "/dashboard/shop", element: <MyShop /> },
+    ],
   },
 ];
 
