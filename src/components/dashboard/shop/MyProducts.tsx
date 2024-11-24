@@ -3,6 +3,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { PlusCircle } from "lucide-react";
 import React from "react";
+import { ProductUploadModal } from "./ProductUploadModal";
 
 export const MyProducts: React.FC = () => {
   return (
@@ -12,13 +13,7 @@ export const MyProducts: React.FC = () => {
           <AvatarImage src="/" alt={"Najim"} />
           <AvatarFallback>CN</AvatarFallback>
         </Avatar>
-        <Button
-          variant="ghost"
-          className="w-[400px] bg-primary text-white h-10"
-        >
-          <PlusCircle />
-          Add a new product
-        </Button>
+        <ProductUploadModal />
         <Button variant="ghost" className="px-10 bg-primary text-white h-10">
           <PlusCircle />
           Add a offer banner

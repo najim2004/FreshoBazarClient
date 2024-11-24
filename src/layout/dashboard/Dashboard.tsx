@@ -9,7 +9,9 @@ export const Dashboard: React.FC = () => {
       <SideMenu />
       <div className="flex-grow flex flex-col gap-6">
         <DashboardNavbar />
-        <Outlet />
+        <div className="flex-grow overflow-auto rounded-lg">
+          <Outlet />
+        </div>
       </div>
     </div>
   );
