@@ -35,6 +35,11 @@ body {
   @apply bg-primary/80 hover:bg-primary;
 }
 
+/* for rich text editor */
+.custom-editor .ql-container {
+  max-height: 300px;
+  overflow-y: auto;
+}
 @layer base {
   :root {
     --chart-1: 12 76% 61%;

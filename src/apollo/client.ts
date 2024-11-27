@@ -2,7 +2,7 @@
 import { ApolloClient, InMemoryCache, HttpLink } from "@apollo/client";
 
 // Define the GraphQL server URI
-const GRAPHQL_URI = "http://localhost:5000/graphql"; // Use environment variable for flexibility
+const GRAPHQL_URI = `${import.meta.env.VITE_API_URL}/graphql`; // Use environment variable for flexibility
 
 // Set up the HTTP Link to connect with the GraphQL server's endpoint
 const httpLink = new HttpLink({

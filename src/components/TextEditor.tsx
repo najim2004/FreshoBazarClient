@@ -11,10 +11,14 @@ interface TextEditorProps {
 
 const TextEditor: React.FC<TextEditorProps> = ({ value, onChange, error }) => {
   return (
-    <div className="space-y-2 rounded-lg">
-      <ReactQuill value={value} onChange={onChange} className="" />
+    <>
+      <ReactQuill
+        value={value}
+        onChange={onChange}
+        className="custom-editor shadow-sm h-[225px] rounded-md"
+      />
       {error && <p className="text-sm text-red-500">{error.message}</p>}
-    </div>
+    </>
   );
 };
 

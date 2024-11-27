@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import {
   Dialog,
@@ -20,6 +20,8 @@ import { Input } from "@/components/ui/input";
 import { PlusCircle, Upload, X } from "lucide-react";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import TextEditor from "@/components/TextEditor";
+import { RootState } from "@/redux/rootReducer";
+import { useSelector } from "react-redux";
 
 type ProductFormData = {
   title: string;
@@ -38,12 +40,19 @@ type ProductFormData = {
 
 export const ProductUploadModal: React.FC = () => {
   const [step, setStep] = useState(1);
+  const [categoryId, setCategoryId] = useState<string>("");
+  const [subcategories, setSubcategories] = useState<Array<{
+    name: string;
+    slug: string;
+  }> | null>(null);
   const [thumbnailPreview, setThumbnailPreview] = useState<string | null>(null);
   const [imagesPreviews, setImagesPreviews] = useState<
     Array<{ id: string; url: string }>
   >([]);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
-
+  const categories = useSelector(
+    (state: RootState) => state?.categories.Categories
+  );
   const {
     register,
     handleSubmit,
@@ -70,6 +79,7 @@ export const ProductUploadModal: React.FC = () => {
       reader.readAsDataURL(file);
     }
   };
+
   const handleImagesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
     const newPreviews = files.map((file) => ({
@@ -102,8 +112,24 @@ export const ProductUploadModal: React.FC = () => {
       imagesPreviews.length > 0
     ) {
       setStep(2);
+    } else {
+      if (!thumbnailPreview) {
+        setThumbnailPreview(null);
+      }
+      if (imagesPreviews.length === 0) {
+        setImagesPreviews([]);
+      }
     }
   };
+
+  useEffect(() => {
+    if (categories) {
+      const category = categories.find((c) => c._id === categoryId);
+      if (category?.subcategories) {
+        setSubcategories(category.subcategories);
+      }
+    }
+  }, [categories, categoryId]);
 
   return (
     <Dialog>
@@ -118,7 +144,7 @@ export const ProductUploadModal: React.FC = () => {
       </DialogTrigger>
       <DialogContent className="max-w-4xl">
         <DialogHeader>
-          <DialogTitle className="text-xl font-semibold">
+          <DialogTitle className="text-xl font-semibold text-color-primary">
             {step === 1 ? "Product Details" : "Product Specifications"} (Step{" "}
             {step}/2)
           </DialogTitle>
@@ -203,10 +229,7 @@ export const ProductUploadModal: React.FC = () => {
                         className="hidden"
                         multiple
                         accept="image/*"
-                        {...register("images", {
-                          required: "Images are required",
-                          onChange: handleImagesChange,
-                        })}
+                        onChange={handleImagesChange}
                       />
 
                       {imagesPreviews.length === 0 ? (
@@ -311,7 +334,7 @@ export const ProductUploadModal: React.FC = () => {
                   <Button
                     type="button"
                     onClick={handleNextStep}
-                    className="w-32"
+                    className="w-32 bg-primary hover:bg-primary/90"
                   >
                     Next
                   </Button>
@@ -331,18 +354,21 @@ export const ProductUploadModal: React.FC = () => {
                     rules={{ required: "Category is required" }}
                     render={({ field }) => (
                       <Select
-                        onValueChange={field.onChange}
+                        onValueChange={(id) => {
+                          field.onChange(id);
+                          setCategoryId(id);
+                        }}
                         defaultValue={field.value}
                       >
                         <SelectTrigger className="w-full">
                           <SelectValue placeholder="Select category" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="electronics">
-                            Electronics
-                          </SelectItem>
-                          <SelectItem value="clothing">Clothing</SelectItem>
-                          <SelectItem value="books">Books</SelectItem>
+                          {categories.map((category) => (
+                            <SelectItem key={category._id} value={category._id}>
+                              {category.name}
+                            </SelectItem>
+                          ))}
                         </SelectContent>
                       </Select>
                     )}
@@ -361,23 +387,27 @@ export const ProductUploadModal: React.FC = () => {
                   <Controller
                     name="subcategory"
                     control={control}
-                    rules={{ required: "Subcategory is required" }}
                     render={({ field }) => (
                       <Select
                         onValueChange={field.onChange}
                         defaultValue={field.value}
+                        disabled={!categoryId}
                       >
                         <SelectTrigger className="w-full">
-                          <SelectValue placeholder="Select subcategory" />
+                          <SelectValue
+                            placeholder={
+                              categoryId
+                                ? "Select a subcategory"
+                                : "Select a category first"
+                            }
+                          />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="smartphones">
-                            Smartphones
-                          </SelectItem>
-                          <SelectItem value="laptops">Laptops</SelectItem>
-                          <SelectItem value="accessories">
-                            Accessories
-                          </SelectItem>
+                          {subcategories?.map((sc) => (
+                            <SelectItem key={sc.slug} value={sc.slug}>
+                              {sc.name}
+                            </SelectItem>
+                          ))}
                         </SelectContent>
                       </Select>
                     )}
@@ -530,7 +560,10 @@ export const ProductUploadModal: React.FC = () => {
                   >
                     Previous
                   </Button>
-                  <Button type="submit" className="w-32">
+                  <Button
+                    type="submit"
+                    className="w-32 bg-primary hover:bg-primary/90"
+                  >
                     Upload Product
                   </Button>
                 </div>
