@@ -22,12 +22,11 @@ import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import TextEditor from "@/components/TextEditor";
 import { RootState } from "@/redux/rootReducer";
 import { useSelector } from "react-redux";
+import { gql, useMutation } from "@apollo/client";
 
 type ProductFormData = {
   title: string;
   description: string;
-  thumbnail: FileList;
-  images: FileList;
   category: string;
   subcategory: string;
   unitType: string;
@@ -38,21 +37,72 @@ type ProductFormData = {
   tags: string;
 };
 
+interface CreateProductResponse {
+  createProduct: {
+    success?: boolean;
+    error?: boolean;
+    error_message?: string | null;
+  };
+}
+
+interface CreateProductVariables {
+  input: {
+    isAvailable: boolean;
+    title: string;
+    description?: string;
+    images: string[]; // FormData এর পরিবর্তে File ব্যবহার করা হচ্ছে
+    thumbnail?: string | null; // thumbnail এর জন্য সরাসরি File
+    categoryId: string;
+    categoryName?: string; // undefined এর পরিবর্তে ঐচ্ছিক হিসেবে রাখা হয়েছে
+    subCategories?: string[];
+    unitType: "kg" | "g" | "l" | "ml" | "piece";
+    unitSize: number;
+    stockSize: number;
+    price: number;
+    currency?: string;
+    isDiscountable?: boolean;
+    discountValue?: number;
+    tags: string[];
+    location?: {
+      subDistrict?: string;
+      district?: string;
+    };
+  };
+}
+
+const CREATEPRODUCT = gql`
+  mutation CreateProduct($input: CreateProduct) {
+    createProduct(input: $input) {
+      success
+      error
+      error_message
+    }
+  }
+`;
+
 export const ProductUploadModal: React.FC = () => {
   const [step, setStep] = useState(1);
   const [categoryId, setCategoryId] = useState<string>("");
+
+  const [isImageNull, setIsImageNull] = useState<Array<string>>([]);
+
   const [subcategories, setSubcategories] = useState<Array<{
     name: string;
     slug: string;
   }> | null>(null);
-  const [thumbnailPreview, setThumbnailPreview] = useState<string | null>(null);
-  const [imagesPreviews, setImagesPreviews] = useState<
-    Array<{ id: string; url: string }>
+
+  const [thumbnail, setThumbnail] = useState<File | null>(null);
+
+  const [productImages, setProductImages] = useState<
+    Array<{ id: string; file: File }>
   >([]);
+
   const fileInputRef = React.useRef<HTMLInputElement>(null);
+
   const categories = useSelector(
     (state: RootState) => state?.categories.Categories
   );
+
   const {
     register,
     handleSubmit,
@@ -65,18 +115,85 @@ export const ProductUploadModal: React.FC = () => {
   const watchTitle = watch("title");
   const watchDescription = watch("description");
 
-  const onSubmit = (data: ProductFormData) => {
-    console.log(data);
+  const [createProduct, { data, loading }] = useMutation<
+    CreateProductResponse,
+    CreateProductVariables
+  >(CREATEPRODUCT);
+
+  // TODO
+  console.log(data, loading);
+
+  const onSubmit = async (data: ProductFormData) => {
+    const {
+      title,
+      description,
+      category,
+      subcategory,
+      unitType,
+      unitSize,
+      stockSize,
+      price,
+      discount,
+      tags,
+    } = data;
+
+    const tagsArray = tags.split(",").map((tag) => tag.trim());
+    const itemImages = productImages.map((img) => img.file);
+    const categoryName =
+      categories?.find((c) => c._id === category)?.name ||
+      "Default Category Name";
+
+    const formatData = (file: File): Promise<string> => {
+      return new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          if (reader.result) {
+            resolve(reader.result as string);
+          } else {
+            reject("Failed to read file");
+          }
+        };
+        reader.onerror = () => reject("File reading error");
+        reader.readAsDataURL(file);
+      });
+    };
+
+    try {
+      const formattedImages = await Promise.all(itemImages.map(formatData));
+      const formattedThumbnail = thumbnail ? await formatData(thumbnail) : null;
+
+      await createProduct({
+        variables: {
+          input: {
+            isAvailable: true,
+            title,
+            description,
+            images: formattedImages,
+            thumbnail: formattedThumbnail,
+            categoryId: category,
+            categoryName,
+            subCategories: subcategory ? [subcategory] : [],
+            unitType: unitType as "kg" | "g" | "l" | "ml" | "piece",
+            unitSize: isNaN(parseInt(unitSize)) ? 0 : parseInt(unitSize),
+            stockSize: stockSize,
+            price: price,
+            currency: "BDT",
+            isDiscountable: discount > 0,
+            discountValue: discount,
+            tags: tagsArray,
+          },
+        },
+      });
+    } catch (error) {
+      console.log("Error while creating product:", error);
+    }
   };
 
   const handleThumbnailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setThumbnailPreview(reader.result as string);
-      };
-      reader.readAsDataURL(file);
+      setThumbnail(file);
+      setIsImageNull((prev) => prev.filter((img) => img !== "thumbnail"));
     }
   };
 
@@ -84,13 +201,16 @@ export const ProductUploadModal: React.FC = () => {
     const files = Array.from(e.target.files || []);
     const newPreviews = files.map((file) => ({
       id: Math.random().toString(36).substring(7),
-      url: URL.createObjectURL(file),
+      file: file,
     }));
-    setImagesPreviews((prev) => [...prev, ...newPreviews]);
+    setProductImages((prev) => [...prev, ...newPreviews]);
+    if (isImageNull.includes("images")) {
+      setIsImageNull((prev) => prev.filter((img) => img !== "images"));
+    }
   };
 
   const removeImage = (idToRemove: string) => {
-    setImagesPreviews((prev) => prev.filter((img) => img.id !== idToRemove));
+    setProductImages((prev) => prev.filter((img) => img.id !== idToRemove));
   };
 
   const handleAddMoreClick = () => {
@@ -98,26 +218,23 @@ export const ProductUploadModal: React.FC = () => {
   };
 
   const handleNextStep = async () => {
-    const isValid = await trigger([
-      "title",
-      "description",
-      "thumbnail",
-      "images",
-    ]);
+    const isValid = await trigger(["title", "description"]);
     if (
       isValid &&
       watchTitle &&
       watchDescription &&
-      thumbnailPreview &&
-      imagesPreviews.length > 0
+      thumbnail &&
+      productImages.length > 0
     ) {
       setStep(2);
     } else {
-      if (!thumbnailPreview) {
-        setThumbnailPreview(null);
+      if (!thumbnail) {
+        setIsImageNull((prev) => [...prev, "thumbnail"]);
+        setThumbnail(null);
       }
-      if (imagesPreviews.length === 0) {
-        setImagesPreviews([]);
+      if (productImages.length === 0) {
+        setIsImageNull((prev) => [...prev, "images"]);
+        setProductImages([]);
       }
     }
   };
@@ -166,20 +283,15 @@ export const ProductUploadModal: React.FC = () => {
                         id="thumbnail"
                         className="hidden"
                         accept="image/*"
-                        {...register("thumbnail", {
-                          required: "Thumbnail is required",
-                          onChange: handleThumbnailChange,
-                        })}
+                        onChange={handleThumbnailChange}
                       />
                       <label
                         htmlFor="thumbnail"
                         className={`flex flex-col items-center justify-center max-w-[300px] h-[200px] border-2 border-dashed rounded-lg cursor-pointer hover:bg-gray-50 transition-colors ${
-                          thumbnailPreview
-                            ? "border-primary"
-                            : "border-gray-300"
+                          thumbnail ? "border-primary" : "border-gray-300"
                         }`}
                       >
-                        {!thumbnailPreview ? (
+                        {!thumbnail ? (
                           <>
                             <Upload className="w-8 h-8 text-gray-400 mb-2" />
                             <p className="text-sm text-gray-600">
@@ -192,7 +304,7 @@ export const ProductUploadModal: React.FC = () => {
                         ) : (
                           <div className="relative size-full">
                             <img
-                              src={thumbnailPreview}
+                              src={URL.createObjectURL(thumbnail)}
                               alt="Thumbnail preview"
                               className="w-full h-full object-cover rounded-md"
                             />
@@ -200,7 +312,7 @@ export const ProductUploadModal: React.FC = () => {
                               type="button"
                               onClick={(e) => {
                                 e.preventDefault();
-                                setThumbnailPreview(null);
+                                setThumbnail(null);
                               }}
                               className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 transition-colors"
                             >
@@ -209,9 +321,9 @@ export const ProductUploadModal: React.FC = () => {
                           </div>
                         )}
                       </label>
-                      {errors.thumbnail && (
+                      {isImageNull.includes("thumbnail") && (
                         <p className="text-red-500 text-sm mt-1">
-                          {errors.thumbnail.message}
+                          Thumbnail is required
                         </p>
                       )}
                     </div>
@@ -232,7 +344,7 @@ export const ProductUploadModal: React.FC = () => {
                         onChange={handleImagesChange}
                       />
 
-                      {imagesPreviews.length === 0 ? (
+                      {productImages.length === 0 ? (
                         <label
                           htmlFor="images"
                           className="flex flex-col items-center justify-center max-w-[300px] p-2 border-2 border-dashed rounded-lg cursor-pointer hover:bg-gray-50 transition-colors border-gray-300"
@@ -259,11 +371,11 @@ export const ProductUploadModal: React.FC = () => {
                                   Add More
                                 </span>
                               </button>
-                              {imagesPreviews.map((img) => (
+                              {productImages.map((img) => (
                                 <div key={img.id} className="relative group">
                                   <div className="size-[80px] relative">
                                     <img
-                                      src={img.url}
+                                      src={URL.createObjectURL(img.file)}
                                       alt="Preview"
                                       className="w-full h-full object-cover rounded-lg"
                                     />
@@ -282,9 +394,9 @@ export const ProductUploadModal: React.FC = () => {
                           </ScrollArea>
                         </div>
                       )}
-                      {errors.images && (
+                      {isImageNull.includes("images") && (
                         <p className="text-red-500 text-sm mt-1">
-                          {errors.images.message}
+                          At least one image is required
                         </p>
                       )}
                     </div>
@@ -438,7 +550,9 @@ export const ProductUploadModal: React.FC = () => {
                         <SelectContent>
                           <SelectItem value="piece">Piece</SelectItem>
                           <SelectItem value="kg">Kilogram</SelectItem>
-                          <SelectItem value="liter">Liter</SelectItem>
+                          <SelectItem value="g">Gram</SelectItem>
+                          <SelectItem value="l">Liter</SelectItem>
+                          <SelectItem value="ml">Mili Liter</SelectItem>
                         </SelectContent>
                       </Select>
                     )}
@@ -457,6 +571,7 @@ export const ProductUploadModal: React.FC = () => {
                   <Input
                     id="unitSize"
                     className="w-full"
+                    type="number"
                     placeholder="Enter unit size"
                     {...register("unitSize", {
                       required: "Unit size is required",

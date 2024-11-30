@@ -1,43 +1,7 @@
 import { useState } from 'react';
 import axios, { AxiosError } from 'axios';
 
-/**
- * A custom hook for uploading images to Imgur and managing the upload state.
- * 
- * @returns {Object} An object containing:
- *   - imageUrl: The URL of the uploaded image (string | null)
- *   - uploadImage: Function to handle image upload (file: File) => Promise<void>
- *   - loading: Boolean indicating if upload is in progress
- *   - error: Error message if upload fails (string | null)
- *   - error_message: Alias for error (string | null)
- * 
- * @throws {Error} When image upload fails
- * 
- * @example
- * ```tsx
- * function ImageUploader() {
- *   const { imageUrl, uploadImage, loading, error } = useFileToImg();
- * 
- *   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
- *     const file = event.target.files?.[0];
- *     if (file) {
- *       uploadImage(file);
- *     }
- *   };
- * 
- *   return (
- *     <div>
- *       <input type="file" onChange={handleFileChange} accept="image/*" />
- *       {loading && <p>Uploading...</p>}
- *       {error && <p>{error}</p>}
- *       {imageUrl && <img src={imageUrl} alt="Uploaded" />}
- *     </div>
- *   );
- * }
- * ```
- */
 const useFileToImg = () => {
-    const [imageUrl, setImageUrl] = useState<string | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
 
@@ -63,7 +27,7 @@ const useFileToImg = () => {
         }
     };
 
-    const uploadImage = async (file: File) => {
+    const uploadImage = async (file: File): Promise<string | null> => {
         setLoading(true);
         setError(null);
 
@@ -71,39 +35,35 @@ const useFileToImg = () => {
         if (!file.type.startsWith('image/')) {
             setError('Please select a valid image file');
             setLoading(false);
-            return;
+            return null;
         }
 
         if (file.size > 10 * 1024 * 1024) { // 10MB limit
             setError('Image size exceeds 10MB limit');
             setLoading(false);
-            return;
+            return null;
         }
 
         const formData = new FormData();
         formData.append('image', file);
-
+        
         try {
-            const response = await axios.post('https://api.imgur.com/3/image', formData, {
-                headers: {
-                    Authorization: `Client-ID ${import.meta.env.VITE_IMGUR_CLIENT_ID}`,
-                },
-                timeout: 10000 // 10 second timeout
-            });
-
-            if (response.data.success) {
-                setImageUrl(response.data.data.link);
+            const response = await axios.post(`https://api.imgbb.com/1/upload?key=${import.meta.env.VITE_API_IMGBB_API_KEY}`, formData);
+            if (response?.data?.success) {
+                return response.data.data.url;
             } else {
                 throw new Error('Failed to upload image');
             }
         } catch (err) {
             handleError(err);
+            console.log(err);
+            return null;
         } finally {
             setLoading(false);
         }
     };
 
-    return { imageUrl, uploadImage, loading, error, error_message: error };
+    return { uploadImage, loading, error };
 };
 
 export default useFileToImg;
