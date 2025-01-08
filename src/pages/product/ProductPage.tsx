@@ -5,6 +5,7 @@ import { ProductReviews } from "@/components/product-page/ProductReviews";
 import React, { useState } from "react";
 import { ShippingReturns } from "@/components/product-page/ShippingReturns";
 import { RelatedProducts } from "@/components/product/RelatedProducts";
+import { useParams } from "react-router-dom";
 
 type Tab = "about" | "ratings" | "shipping";
 
@@ -16,9 +17,10 @@ const tabs: { id: Tab; label: string }[] = [
 
 export const ProductPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<Tab>("about");
+  const { id } = useParams();
   return (
     <div className="bg-gray-100 text-gray-800 font-sans">
-      <ProductDetails />
+      <ProductDetails id={id || ""} />
       <TabsComponent
         activeTab={activeTab}
         setActiveTab={setActiveTab}

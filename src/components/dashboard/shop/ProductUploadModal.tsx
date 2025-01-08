@@ -23,6 +23,7 @@ import TextEditor from "@/components/TextEditor";
 import { RootState } from "@/redux/rootReducer";
 import { useSelector } from "react-redux";
 import { gql, useMutation } from "@apollo/client";
+import { useToast } from "@/hooks/use-toast";
 
 type ProductFormData = {
   title: string;
@@ -83,6 +84,7 @@ const CREATEPRODUCT = gql`
 export const ProductUploadModal: React.FC = () => {
   const [step, setStep] = useState(1);
   const [categoryId, setCategoryId] = useState<string>("");
+  const { toast } = useToast();
 
   const [isImageNull, setIsImageNull] = useState<Array<string>>([]);
 
@@ -120,8 +122,22 @@ export const ProductUploadModal: React.FC = () => {
     CreateProductVariables
   >(CREATEPRODUCT);
 
-  // TODO
-  console.log(data, loading);
+  useEffect(() => {
+    if (data?.createProduct.success && !loading) {
+      toast({
+        title: "Success",
+        description: "Item added to cart successfully!",
+        duration: 3000,
+      });
+    } else if (data?.createProduct.error) {
+      toast({
+        title: "Error",
+        description:
+          data.createProduct.error_message || "Failed to add item to cart",
+        duration: 3000,
+      });
+    }
+  }, [data, loading, toast]);
 
   const onSubmit = async (data: ProductFormData) => {
     const {

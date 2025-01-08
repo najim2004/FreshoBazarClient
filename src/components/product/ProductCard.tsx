@@ -1,15 +1,21 @@
-import { Heart, Minus, Plus, ShoppingCart } from "lucide-react";
+import { Heart, Minus, MoreVertical, Plus, ShoppingCart } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { NavigateFunction, useNavigate } from "react-router-dom";
+import { NavigateFunction, useLocation, useNavigate } from "react-router-dom";
 import { gql, useMutation } from "@apollo/client";
 import { useDispatch, useSelector } from "react-redux";
 import { setFavoriteProducts } from "@/redux/slices/favoriteProductSlice";
 import { RootState } from "@/redux/rootReducer";
 import { Cart, setCart } from "@/redux/slices/cartSlice";
 import { useToast } from "@/hooks/use-toast";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "../ui/dropdown-menu";
 
 // Define ProductCardProps interface to ensure proper typing for props passed to the component.
 interface ProductCardProps {
@@ -21,6 +27,7 @@ interface ProductCardProps {
   unitType?: string;
   unitSize?: number;
   category?: string;
+  updatedAt?: string;
 }
 
 // Define the structure of the response after toggling the favorite product.
@@ -124,6 +131,7 @@ export const ProductCard = ({
   unitType = "kg",
   unitSize = 1,
   category = "Meat",
+  updatedAt,
 }: ProductCardProps) => {
   const [quantity, setQuantity] = useState<number>(1); // Track quantity for this product.
   const [isFavorite, setIsFavorite] = useState<boolean>(false); // Track if the product is in the favorites.
@@ -136,6 +144,8 @@ export const ProductCard = ({
   );
   const dispatch = useDispatch();
   const { toast } = useToast();
+  const location = useLocation();
+  const isDashboard = location?.pathname?.includes("/dashboard");
 
   // GraphQL mutation to toggle favorite for this product.
   const [toggleFavorite, { data, loading }] = useMutation<
@@ -248,72 +258,95 @@ export const ProductCard = ({
               </div>
             </div>
           )}
-          <Button
-            variant="ghost"
-            size="icon"
-            className="absolute top-2 right-2 p-1 rounded-full bg-white/80 hover:bg-white transition-colors"
-            onClick={(e: React.MouseEvent<HTMLButtonElement>): void => {
-              e.stopPropagation();
-              // Toggle favorite status when the button is clicked.
-              onFavoriteClick(id);
-            }}
-          >
-            <Heart
-              className={`w-5 h-5 ${
-                isFavorite ? "fill-red-500 stroke-red-500" : "stroke-gray-600"
-              }`}
-            />
-          </Button>
+          {isDashboard ? (
+            <div className="absolute top-2 right-2">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="icon">
+                    <MoreVertical className="h-4 w-4" />
+                    <span className="sr-only">Actions</span>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem>Edit</DropdownMenuItem>
+                  <DropdownMenuItem>Delete</DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+          ) : (
+            <Button
+              variant="ghost"
+              size="icon"
+              className="absolute top-2 right-2 p-1 rounded-full bg-white/80 hover:bg-white transition-colors"
+              onClick={(e: React.MouseEvent<HTMLButtonElement>): void => {
+                e.stopPropagation();
+                // Toggle favorite status when the button is clicked.
+                onFavoriteClick(id);
+              }}
+            >
+              <Heart
+                className={`w-5 h-5 ${
+                  isFavorite ? "fill-red-500 stroke-red-500" : "stroke-gray-600"
+                }`}
+              />
+            </Button>
+          )}
         </div>
 
         <div className="mt-4">
           <div className="text-gray-500 text-sm uppercase">{category}</div>
           <h3 className="font-semibold text-gray-800 text-lg">{title}</h3>
-          <div className="mt-2 text-primary font-bold">
-            ${price.toFixed(2)}/{unitSize} {unitType}
+          <div className="flex items-center justify-between mt-2">
+            <div className="text-primary font-bold">
+              ${price.toFixed(2)}/{unitSize} {unitType}
+            </div>
+            <p className="text-gray-500 text-sm mt-1">
+              {updatedAt ? new Date(updatedAt).toLocaleDateString() : ""}
+            </p>
           </div>
         </div>
-
-        <div
-          onClick={(e: React.MouseEvent<HTMLDivElement>): void =>
-            e.stopPropagation()
-          }
-          className="mt-4 flex items-center gap-2 justify-between"
-        >
-          <div className="flex items-center border rounded-md">
-            <Button
-              variant="ghost"
-              size="icon"
-              className="p-0 h-9 w-9 hover:bg-gray-100 transition-colors"
-              onClick={decreaseQuantity}
-            >
-              <Minus className="w-4 h-4" />
-            </Button>
-            <Input
-              type="number"
-              value={quantity}
-              onChange={(e) =>
-                setQuantity(Math.max(1, parseInt(e.target.value) || 1))
-              }
-              className="w-12 border-none focus-visible:ring-0 text-center border-x p-0 h-9 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-            />
-            <Button
-              variant="ghost"
-              size="icon"
-              className="p-0 h-9 w-9 hover:bg-gray-100 transition-colors"
-              onClick={increaseQuantity}
-            >
-              <Plus className="w-4 h-4" />
-            </Button>
-          </div>
-          <Button
-            onClick={onClickCart}
-            size="icon"
-            className="p-2 bg-primary hover:bg-primary/80 transition-colors rounded-full text-white h-10 w-10"
+        {!isDashboard && (
+          <div
+            onClick={(e: React.MouseEvent<HTMLDivElement>): void =>
+              e.stopPropagation()
+            }
+            className="mt-4 flex items-center gap-2 justify-between"
           >
-            <ShoppingCart className="w-5 h-5" />
-          </Button>
-        </div>
+            <div className="flex items-center border rounded-md">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="p-0 h-9 w-9 hover:bg-gray-100 transition-colors"
+                onClick={decreaseQuantity}
+              >
+                <Minus className="w-4 h-4" />
+              </Button>
+              <Input
+                type="number"
+                value={quantity}
+                onChange={(e) =>
+                  setQuantity(Math.max(1, parseInt(e.target.value) || 1))
+                }
+                className="w-12 border-none focus-visible:ring-0 text-center border-x p-0 h-9 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+              />
+              <Button
+                variant="ghost"
+                size="icon"
+                className="p-0 h-9 w-9 hover:bg-gray-100 transition-colors"
+                onClick={increaseQuantity}
+              >
+                <Plus className="w-4 h-4" />
+              </Button>
+            </div>
+            <Button
+              onClick={onClickCart}
+              size="icon"
+              className="p-2 bg-primary hover:bg-primary/80 transition-colors rounded-full text-white h-10 w-10"
+            >
+              <ShoppingCart className="w-5 h-5" />
+            </Button>
+          </div>
+        )}
       </CardContent>
     </Card>
   );

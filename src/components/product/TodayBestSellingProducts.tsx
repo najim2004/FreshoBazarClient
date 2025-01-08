@@ -7,7 +7,7 @@ interface Product {
   _id: string; // _id is used in the GraphQL response
   title: string; // Corresponding to the product title
   discountValue: number;
-  thumbnail: string; // Image or thumbnail URL
+  thumbnail: { id: string; url: string }; // Image or thumbnail URL
   price: number;
   unitType: string;
   unitSize: number;
@@ -35,7 +35,10 @@ const GET_PRODUCTS = gql`
         _id
         title
         discountValue
-        thumbnail
+        thumbnail {
+          id
+          url
+        }
         price
         unitType
         unitSize
@@ -91,6 +94,7 @@ export const TodayBestSellingProducts: React.FC = () => {
             unitType={product.unitType}
             unitSize={product.unitSize}
             category={product.categoryName}
+            image={product.thumbnail.url}
           />
         ))}
       </div>

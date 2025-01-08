@@ -15,6 +15,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
+import gql from "graphql-tag";
+import { useQuery } from "@apollo/client";
 
 interface ProductImage {
   id: number;
@@ -45,21 +47,67 @@ const productImages: ProductImage[] = [
   },
 ];
 
-export const ProductDetails: React.FC = () => {
+interface Product {
+  _id: string; // _id is used in the GraphQL response
+  title: string; // Corresponding to the product title
+  discountValue: number;
+  images: Array<{ id: string; url: string }>;
+  price: number;
+  unitType: string;
+  unitSize: number;
+  categoryId: string; // Product category (e.g., "meat", "vegetables", etc.)
+  categoryName: string; // Product category (e.g., "meat", "vegetables", etc.)
+  stockSize: number;
+  isDiscountable: boolean;
+  averageRating: number;
+  ratingsCount: number;
+}
+
+// Define the response structure from the `GET_PRODUCTS` query
+interface GetProductResponse {
+  getProduct: {
+    success: boolean;
+    error: boolean;
+    error_message: string | null;
+    product?: Product;
+  };
+}
+
+const GET_PRODUCT = gql`
+  query GetProduct($id: ID!) {
+    getProduct(id: $id) {
+      success
+      error
+      errorMessage
+      product {
+        title
+        images {
+          id
+          url
+        }
+        price
+        isDiscountable
+        ratingsCount
+        averageRating
+        discountValue
+        stockSize
+        unitType
+        unitSize
+        categoryId
+        categoryName
+      }
+    }
+  }
+`;
+
+export const ProductDetails: React.FC<{ id: string }> = ({ id }) => {
   const [quantity, setQuantity] = useState<number>(1);
   const [currentImage, setCurrentImage] = useState(0);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    // Simulate loading delay
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 2000);
-
-    return () => clearTimeout(timer);
-  }, []);
-
-  if (isLoading) {
+  const { data, error, loading } = useQuery<GetProductResponse>(GET_PRODUCT, {
+    variables: { id },
+  });
+  console.log(data);
+  if (loading) {
     return <ProductDetailsSkeleton />;
   }
 
@@ -74,8 +122,8 @@ export const ProductDetails: React.FC = () => {
                 New
               </Badge>
               <img
-                src={productImages[currentImage].src}
-                alt="Banganapalli Indian Mango"
+                src={data?.getProduct?.product?.images[currentImage]?.url}
+                alt={data?.getProduct?.product?.title}
                 className="w-full h-[300px] sm:h-[400px] lg:h-[500px] rounded-md object-cover"
               />
               <Button
@@ -95,7 +143,7 @@ export const ProductDetails: React.FC = () => {
                 className="absolute right-2 top-1/2 transform -translate-y-1/2"
                 onClick={() =>
                   setCurrentImage((prev) =>
-                    prev === productImages.length - 1 ? prev : prev + 1
+                    prev === productImages.length - 2 ? prev : prev + 1
                   )
                 }
               >
@@ -103,12 +151,12 @@ export const ProductDetails: React.FC = () => {
                 <span className="sr-only">Next image</span>
               </Button>
             </div>
-            <div className="mt-4 flex space-x-2 overflow-x-auto">
-              {productImages.map((image, index) => (
+            <div className="p-4 flex space-x-2 overflow-x-auto">
+              {data?.getProduct?.product?.images.map((image, index) => (
                 <img
                   key={image.id}
-                  src={image.src}
-                  alt={image.alt}
+                  src={image.url}
+                  alt=""
                   className={`w-20 h-20 rounded-md cursor-pointer ${
                     index === currentImage ? "ring-2 ring-primary" : ""
                   }`}
@@ -124,10 +172,10 @@ export const ProductDetails: React.FC = () => {
               <div>
                 <p className="text-sm text-color-ternary mb-1">Vegetables</p>
                 <h1 className="text-3xl font-bold mb-2">
-                  Banganapalli Indian Mango
+                  {data?.getProduct?.product?.title}
                 </h1>
                 <p className="text-sm text-primary mb-2">
-                  In Stock, 4 Left Only | Item Number: Nort-360
+                  In Stock, {data?.getProduct.product?.stockSize} Left Only
                 </p>
 
                 <div className="flex items-center mb-4">
@@ -141,7 +189,8 @@ export const ProductDetails: React.FC = () => {
                     <Star className="w-5 h-5 text-orange-400" />
                   </div>
                   <span className="ml-2 text-sm text-color-ternary">
-                    4.25 Out of 5.00 | 179 Reviews
+                    {data?.getProduct.product?.averageRating} Out of 5.00 |{" "}
+                    {data?.getProduct.product?.ratingsCount} Reviews
                   </span>
                 </div>
               </div>
@@ -162,12 +211,14 @@ export const ProductDetails: React.FC = () => {
             </div>
 
             <div className="mb-4">
-              <span className="text-3xl font-bold text-primary">$30.98</span>
+              <span className="text-3xl font-bold text-primary">
+                ${data?.getProduct.product?.price}
+              </span>
               <span className="ml-2 text-xl text-color-ternary line-through">
-                $35.98
+                ${data?.getProduct.product?.price}
               </span>
               <Badge variant="outline" className="ml-2">
-                30% Off
+                {data?.getProduct.product?.discountValue}% Off
               </Badge>
             </div>
 
