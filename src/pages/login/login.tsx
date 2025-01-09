@@ -1,7 +1,7 @@
 import { Leaf } from "lucide-react";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   Form,
   FormControl,
@@ -13,6 +13,11 @@ import {
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
+import gql from "graphql-tag";
+import { useMutation } from "@apollo/client";
+import { useToast } from "@/hooks/use-toast";
+import { useLogin } from "@/apollo/hooks/user.hooks";
+import LoadingSpinner from "@/components/ui/loading";
 
 interface LoginFormValues {
   email: string;
@@ -20,8 +25,40 @@ interface LoginFormValues {
   rememberMe: boolean;
 }
 
+interface LoginResponse {
+  login: {
+    success: boolean;
+    message: string;
+    error?: boolean;
+    error_message?: string;
+    token?: string;
+  };
+}
+
+interface LoginVariables {
+  input: {
+    email: string;
+    password: string;
+  };
+}
+
+const LOGIN_MUTATION = gql`
+  mutation Login($input: LoginInput!) {
+    login(input: $input) {
+      success
+      message
+      error
+      error_message
+      token
+    }
+  }
+`;
+
 export const LoginPage: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
+  const { login, loading } = useLogin();
+  const { toast } = useToast();
 
   const form = useForm<LoginFormValues>({
     defaultValues: {
@@ -31,9 +68,36 @@ export const LoginPage: React.FC = () => {
     },
   });
 
-  const onSubmit = (data: LoginFormValues) => {
-    console.log("Login form submitted:", data);
-    // Handle login logic here
+  const onSubmit = async (data: LoginFormValues) => {
+    try {
+      const response = await login({
+        email: data.email,
+        password: data.password,
+      });
+      if (response?.success) {
+        // Store token if needed
+
+        toast({
+          title: "Success",
+          description: response?.message,
+        });
+
+        navigate("/");
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: response?.error_message || "Login failed",
+        });
+      }
+    } catch (error: any) {
+      console.log(error);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: error.message || "An error occurred during login",
+      });
+    }
   };
 
   return (
@@ -93,8 +157,8 @@ export const LoginPage: React.FC = () => {
                 rules={{
                   required: "Password is required",
                   minLength: {
-                    value: 8,
-                    message: "Password must be at least 8 characters",
+                    value: 6,
+                    message: "Password must be at least 6 characters",
                   },
                 }}
                 render={({ field }) => (
@@ -193,10 +257,11 @@ export const LoginPage: React.FC = () => {
             </div>
 
             <Button
+              disabled={loading}
               type="submit"
               className="w-full py-2 px-4 text-sm font-medium rounded-sm text-white bg-primary hover:bg-primary/80 focus:ring-2 focus:ring-offset-2 focus:ring-primary"
             >
-              Sign in
+              {loading ? <LoadingSpinner size={20} color="white" /> : "Login"}
             </Button>
           </form>
         </Form>
