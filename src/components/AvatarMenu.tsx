@@ -9,7 +9,6 @@ import {
 } from "./ui/dropdown-menu";
 import { FaUser, FaCog, FaSignOutAlt } from "react-icons/fa";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-import { Dashboard } from "../layout/dashboard/Dashboard";
 import { DashboardIcon } from "@radix-ui/react-icons";
 import { Link } from "react-router-dom";
 
@@ -25,13 +24,15 @@ export const AvatarMenu: React.FC<AvatarMenuProps> = ({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger className="outline-none">
-        <Avatar>
+        <Avatar className="border">
           <AvatarImage src={avatarUrl} alt={userName} />
-          <AvatarFallback>CN</AvatarFallback>
+          <AvatarFallback>
+            {userName[0] + userName[userName?.length - 1]}
+          </AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>
 
-      <DropdownMenuContent className="w-48 p-2 bg-white rounded-md shadow-lg">
+      <DropdownMenuContent className="w-48 p-2 bg-white rounded-md shadow-lg mt-3">
         <DropdownMenuLabel className="text-gray-700">
           {userName}
         </DropdownMenuLabel>

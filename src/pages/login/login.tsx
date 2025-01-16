@@ -13,8 +13,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
-import gql from "graphql-tag";
-import { useMutation } from "@apollo/client";
 import { useToast } from "@/hooks/use-toast";
 import { useLogin } from "@/apollo/hooks/user.hooks";
 import LoadingSpinner from "@/components/ui/loading";
@@ -24,35 +22,6 @@ interface LoginFormValues {
   password: string;
   rememberMe: boolean;
 }
-
-interface LoginResponse {
-  login: {
-    success: boolean;
-    message: string;
-    error?: boolean;
-    error_message?: string;
-    token?: string;
-  };
-}
-
-interface LoginVariables {
-  input: {
-    email: string;
-    password: string;
-  };
-}
-
-const LOGIN_MUTATION = gql`
-  mutation Login($input: LoginInput!) {
-    login(input: $input) {
-      success
-      message
-      error
-      error_message
-      token
-    }
-  }
-`;
 
 export const LoginPage: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -76,6 +45,7 @@ export const LoginPage: React.FC = () => {
       });
       if (response?.success) {
         // Store token if needed
+        console.log(response);
 
         toast({
           title: "Success",

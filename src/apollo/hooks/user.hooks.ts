@@ -1,11 +1,17 @@
-import { useMutation, ApolloError } from "@apollo/client";
+import { useMutation, ApolloError, useQuery } from "@apollo/client";
 import { LOGIN_USER, REGISTER_USER } from "../mutations/user.mutations";
 import {
   RegisterVariables,
   RegisterResponse,
   LoginResponse,
   LoginVariables,
+  GetUserResponse,
 } from "../types/user.types";
+import { GET_USER_BY_ID } from "../queries/user.queries";
+import { useDispatch } from "react-redux";
+import { setLoading, setUser } from "@/redux/slices/user.slice";
+import { setError } from "@/redux/slices/favoriteProductSlice";
+
 export const useRegister = () => {
   const [registerMutation, { loading, error }] = useMutation<
     { register: RegisterResponse },
@@ -23,10 +29,7 @@ export const useRegister = () => {
       });
       return data?.register || null;
     } catch (err) {
-      // Log error for debugging (optional)
       console.error("Registration error:", err);
-
-      // Re-throw as ApolloError if it's already one, or wrap in Error
       throw err instanceof ApolloError ? err : new Error("Registration failed");
     }
   };
@@ -35,7 +38,7 @@ export const useRegister = () => {
     register: handleRegister,
     loading,
     error,
-  } as const; // Use const assertion for better type inference
+  } as const;
 };
 
 export const useLogin = () => {
@@ -53,14 +56,19 @@ export const useLogin = () => {
           input,
         },
       });
-      if (data?.login?.token) localStorage.setItem("token", data.login.token);
-      else throw new Error("Token not found in response");
+      if (data?.login?.token) {
+        try {
+          localStorage.setItem("token", data.login.token);
+        } catch (storageError) {
+          console.error("Failed to store token:", storageError);
+          throw new Error("Failed to store authentication token");
+        }
+      } else {
+        throw new Error("Token not found in response");
+      }
       return data?.login || null;
     } catch (err) {
-      // Log error for debugging (optional)
       console.error("Login error:", err);
-
-      // Re-throw as ApolloError if it's already one, or wrap in Error
       throw err instanceof ApolloError ? err : new Error("Login failed");
     }
   };
@@ -69,5 +77,37 @@ export const useLogin = () => {
     login: handleLogin,
     loading,
     error,
-  } as const; // Use const assertion for better type inference
+  } as const;
+};
+
+export const useGetUser = () => {
+  const dispatcher = useDispatch();
+
+  const { loading, error, data, refetch } = useQuery<{
+    getUser: GetUserResponse;
+  }>(GET_USER_BY_ID, {
+    skip: !localStorage.getItem("token"),
+  });
+  dispatcher(setLoading(loading));
+  try {
+    if (data?.getUser?.success) {
+      console.log(data?.getUser?.user);
+      dispatcher(setUser(data?.getUser?.user || null));
+    }
+    if (data?.getUser?.error) {
+      throw new Error(
+        data?.getUser?.error_message || "Failed to fetch user data"
+      );
+    }
+  } catch (err: any) {
+    dispatcher(setError(err?.message || "Failed to fetch user data"));
+    console.error("Error dispatching user data:", err);
+  }
+
+  return {
+    refetch,
+    loading,
+    error,
+    data: data?.getUser,
+  } as const;
 };
