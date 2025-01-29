@@ -91,7 +91,6 @@ export const useGetUser = () => {
   dispatcher(setLoading(loading));
   try {
     if (data?.getUser?.success) {
-      console.log(data?.getUser?.user);
       dispatcher(setUser(data?.getUser?.user || null));
     }
     if (data?.getUser?.error) {

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   Star,
   Heart,
@@ -15,98 +15,40 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
-import gql from "graphql-tag";
-import { useQuery } from "@apollo/client";
+import { Image } from "@/apollo/types/product.types";
 
-interface ProductImage {
-  id: number;
-  src: string;
-  alt: string;
-}
-
-const productImages: ProductImage[] = [
-  {
-    id: 1,
-    src: "https://media.post.rvohealth.io/wp-content/uploads/2020/08/fruits-and-vegetables-thumb.jpg",
-    alt: "Whole and cut mango",
-  },
-  {
-    id: 2,
-    src: "https://www.bhg.com/thmb/Mwd_YEkDbVg_fPsUDcWr3eZk9W0=/5645x0/filters:no_upscale():strip_icc()/difference-between-fruits-vegetables-01-5f92e7ec706b463287bcfb46985698f9.jpg",
-    alt: "Whole mango",
-  },
-  {
-    id: 3,
-    src: "https://cdn.britannica.com/17/196817-159-9E487F15/vegetables.jpg",
-    alt: "Mango side view",
-  },
-  {
-    id: 4,
-    src: "https://images2.minutemediacdn.com/image/upload/c_crop,w_1097,h_617,x_0,y_0/c_fill,w_752,ar_16:9,f_auto,q_auto,g_auto/shape/cover/sport/643188-gettyimages-153946385-ca1ccfaad9be44325afc434b305adc0d.jpg",
-    alt: "Cut mango",
-  },
-];
-
-interface Product {
-  _id: string; // _id is used in the GraphQL response
-  title: string; // Corresponding to the product title
-  discountValue: number;
-  images: Array<{ id: string; url: string }>;
-  price: number;
+interface ProductDetailsProps {
+  title: string;
+  images: Image[] | null;
+  categoryName: string;
   unitType: string;
   unitSize: number;
-  categoryId: string; // Product category (e.g., "meat", "vegetables", etc.)
-  categoryName: string; // Product category (e.g., "meat", "vegetables", etc.)
   stockSize: number;
+  price: number;
   isDiscountable: boolean;
+  discountValue: number;
   averageRating: number;
   ratingsCount: number;
+  id: string;
+  loading: boolean;
 }
 
-// Define the response structure from the `GET_PRODUCTS` query
-interface GetProductResponse {
-  getProduct: {
-    success: boolean;
-    error: boolean;
-    error_message: string | null;
-    product?: Product;
-  };
-}
-
-const GET_PRODUCT = gql`
-  query GetProduct($id: ID!) {
-    getProduct(id: $id) {
-      success
-      error
-      errorMessage
-      product {
-        title
-        images {
-          id
-          url
-        }
-        price
-        isDiscountable
-        ratingsCount
-        averageRating
-        discountValue
-        stockSize
-        unitType
-        unitSize
-        categoryId
-        categoryName
-      }
-    }
-  }
-`;
-
-export const ProductDetails: React.FC<{ id: string }> = ({ id }) => {
+export const ProductDetails: React.FC<ProductDetailsProps> = ({
+  title,
+  images,
+  categoryName,
+  unitType,
+  unitSize,
+  price,
+  stockSize,
+  isDiscountable,
+  discountValue,
+  averageRating,
+  ratingsCount,
+  loading,
+}) => {
   const [quantity, setQuantity] = useState<number>(1);
   const [currentImage, setCurrentImage] = useState(0);
-  const { data, error, loading } = useQuery<GetProductResponse>(GET_PRODUCT, {
-    variables: { id },
-  });
-  console.log(data);
   if (loading) {
     return <ProductDetailsSkeleton />;
   }
@@ -122,8 +64,8 @@ export const ProductDetails: React.FC<{ id: string }> = ({ id }) => {
                 New
               </Badge>
               <img
-                src={data?.getProduct?.product?.images[currentImage]?.url}
-                alt={data?.getProduct?.product?.title}
+                src={images ? images[currentImage]?.url : ""}
+                alt={title}
                 className="w-full h-[300px] sm:h-[400px] lg:h-[500px] rounded-md object-cover"
               />
               <Button
@@ -141,21 +83,23 @@ export const ProductDetails: React.FC<{ id: string }> = ({ id }) => {
                 variant="outline"
                 size="icon"
                 className="absolute right-2 top-1/2 transform -translate-y-1/2"
-                onClick={() =>
-                  setCurrentImage((prev) =>
-                    prev === productImages.length - 2 ? prev : prev + 1
-                  )
-                }
+                onClick={() => {
+                  if (images) {
+                    setCurrentImage((prev) =>
+                      prev === images.length - 1 ? images.length - 1 : prev + 1
+                    );
+                  }
+                }}
               >
                 <ChevronRight className="h-4 w-4" />
                 <span className="sr-only">Next image</span>
               </Button>
             </div>
             <div className="p-4 flex space-x-2 overflow-x-auto">
-              {data?.getProduct?.product?.images.map((image, index) => (
+              {images?.map((image, index) => (
                 <img
-                  key={image.id}
-                  src={image.url}
+                  key={image?.id}
+                  src={image?.url}
                   alt=""
                   className={`w-20 h-20 rounded-md cursor-pointer ${
                     index === currentImage ? "ring-2 ring-primary" : ""
@@ -170,12 +114,12 @@ export const ProductDetails: React.FC<{ id: string }> = ({ id }) => {
           <div className="lg:w-1/2">
             <div className="flex justify-between items-start">
               <div>
-                <p className="text-sm text-color-ternary mb-1">Vegetables</p>
-                <h1 className="text-3xl font-bold mb-2">
-                  {data?.getProduct?.product?.title}
-                </h1>
+                <p className="text-sm text-color-ternary mb-1">
+                  {categoryName}
+                </p>
+                <h1 className="text-3xl font-bold mb-2">{title}</h1>
                 <p className="text-sm text-primary mb-2">
-                  In Stock, {data?.getProduct.product?.stockSize} Left Only
+                  In Stock, {stockSize} Left Only
                 </p>
 
                 <div className="flex items-center mb-4">
@@ -189,8 +133,7 @@ export const ProductDetails: React.FC<{ id: string }> = ({ id }) => {
                     <Star className="w-5 h-5 text-orange-400" />
                   </div>
                   <span className="ml-2 text-sm text-color-ternary">
-                    {data?.getProduct.product?.averageRating} Out of 5.00 |{" "}
-                    {data?.getProduct.product?.ratingsCount} Reviews
+                    {averageRating} Out of 5.00 | {ratingsCount} Reviews
                   </span>
                 </div>
               </div>
@@ -211,15 +154,26 @@ export const ProductDetails: React.FC<{ id: string }> = ({ id }) => {
             </div>
 
             <div className="mb-4">
-              <span className="text-3xl font-bold text-primary">
-                ${data?.getProduct.product?.price}
-              </span>
-              <span className="ml-2 text-xl text-color-ternary line-through">
-                ${data?.getProduct.product?.price}
-              </span>
-              <Badge variant="outline" className="ml-2">
-                {data?.getProduct.product?.discountValue}% Off
-              </Badge>
+              {isDiscountable ? (
+                <>
+                  <span className="text-3xl font-bold text-primary">
+                    {price - (price * discountValue) / 100}TK
+                  </span>
+                  <span className="ml-2 text-xl text-color-ternary line-through">
+                    {price}TK
+                  </span>
+                </>
+              ) : (
+                <span className="text-3xl font-bold text-primary">
+                  {price}TK
+                </span>
+              )}
+
+              {isDiscountable && (
+                <Badge variant="outline" className="ml-2">
+                  {discountValue}% Off
+                </Badge>
+              )}
             </div>
 
             <p className="text-sm text-color-ternary mb-4">
@@ -229,7 +183,8 @@ export const ProductDetails: React.FC<{ id: string }> = ({ id }) => {
             <div className="mb-4 flex items-center gap-6">
               <span className="text-sm font-medium">SIZE</span>
               <span className="text-sm font-medium text-primary">
-                1kg / $6.00
+                {unitSize}
+                {unitType} / {price}TK
               </span>
             </div>
 

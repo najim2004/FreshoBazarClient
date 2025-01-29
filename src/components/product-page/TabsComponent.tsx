@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 
 type TabId = "about" | "ratings" | "shipping";
@@ -7,21 +7,17 @@ interface TabsComponentProps {
   activeTab: TabId;
   setActiveTab: (tabId: TabId) => void;
   tabs: { id: TabId; label: string }[];
+  loading:boolean;
 }
 
 export const TabsComponent: React.FC<TabsComponentProps> = ({
   activeTab,
   setActiveTab,
   tabs,
+  loading,
 }) => {
-  const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    const timer = setTimeout(() => setIsLoading(false), 1500);
-    return () => clearTimeout(timer);
-  }, []);
-
-  if (isLoading) {
+  if (loading) {
     return <TabsSkeleton />;
   }
 
