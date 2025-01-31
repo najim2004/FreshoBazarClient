@@ -6,7 +6,7 @@ export const GET_PRODUCT = gql`
         getProduct(id: $id) {
             success
             error
-            errorMessage
+            error_message
             product {
                 _id
                 isAvailable

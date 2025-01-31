@@ -20,7 +20,7 @@ interface Category {
 
 export const Categories: React.FC = () => {
   const categories = useSelector(
-    (state: RootState) => state?.categories.Categories
+    (state: RootState) => state?.categories
   );
   const [expandedCategories, setExpandedCategories] = useState<string[]>([]);
   const navigator = useNavigate();

@@ -14,6 +14,8 @@ import { FaSearch } from "react-icons/fa";
 import { Filter } from "./Filter";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/rootReducer";
+import { Subcategory } from "@/redux/slices/categoriesSlice";
+import { useLocation } from "react-router-dom";
 const products: string[] = [
   "Fresh Tomatoes",
   "Organic Spinach",
@@ -27,15 +29,33 @@ const products: string[] = [
   "Pumpkin",
 ];
 
-
 export const SearchBar: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [showSuggestions, setShowSuggestions] = useState<boolean>(false);
   const [filterCategory, setFilterCategory] = useState<string>("all");
-  const categories = useSelector(
-    (state: RootState) => state?.categories.Categories
-  );
+  const [filterSubCategory, setFilterSubCategory] = useState<Subcategory[]>([]);
+  const categories = useSelector((state: RootState) => state?.categories);
+
+  const [filters, setFilters] = useState({
+    category: "",
+    dietaryOption: "",
+    unitSize: "",
+    price: "",
+    date: "",
+    otherOptions: [],
+  });
+
+  const location = useLocation();
+
+  useEffect(() => {
+    const foundedCategory = categories?.find(
+      (category) => category.slug === filterCategory
+    );
+    if (foundedCategory) {
+      setFilterSubCategory(foundedCategory?.subcategories || []);
+    }
+  }, [categories, filterCategory]);
 
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
@@ -70,6 +90,31 @@ export const SearchBar: React.FC = () => {
     setSearchTerm(suggestion);
     setShowSuggestions(false);
   };
+
+  // const updateFilter = (filterType: string, value: string) => {
+  //   const newFilters = { ...filters, [filterType]: value };
+  //   setFilters(newFilters);
+
+  //   // Create the new URL search parameters
+  //   const params = new URLSearchParams();
+  //   Object.keys(newFilters).forEach((key) => {
+  //     if (newFilters[key]) {
+  //       if (Array.isArray(newFilters[key])) {
+  //         newFilters[key].forEach((item: string) => {
+  //           params.append(key, item);
+  //         });
+  //       } else {
+  //         params.set(key, newFilters[key]);
+  //       }
+  //     }
+  //   });
+
+  //   // Push the new filters into the history (URL)
+  //   history.push({
+  //     pathname: "/search",
+  //     search: `?${params.toString()}`,
+  //   });
+  // };
 
   return (
     <div className="relative flex items-center w-full h-10 ">
@@ -109,7 +154,7 @@ export const SearchBar: React.FC = () => {
           <FaSearch className="text-color-primary group-active:scale-95 group-hover:text-primary" />
         </Button>
       </div>
-      <Filter />
+      <Filter subcategories={filterSubCategory || []} />
       {showSuggestions && suggestions.length > 0 && (
         <ul className="absolute top-10 z-10 w-full bg-white border rounded-b-md shadow-lg mt-1">
           {suggestions.map((suggestion) => (

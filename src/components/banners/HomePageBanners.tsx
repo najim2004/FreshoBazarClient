@@ -20,10 +20,10 @@ export const HomePageBanners: React.FC = () => {
     <Carousel
       plugins={[
         Autoplay({
-          delay: 2500,
+          delay: 3000,
         }),
       ]}
-      className="w-full"
+      className="w-full ease-in-out transition-all"
     >
       <CarouselContent>
         {/* 1st */}

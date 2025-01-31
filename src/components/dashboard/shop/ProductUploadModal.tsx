@@ -85,6 +85,7 @@ export const ProductUploadModal: React.FC = () => {
   const [step, setStep] = useState(1);
   const [categoryId, setCategoryId] = useState<string>("");
   const { toast } = useToast();
+  const [open, setOpen] = useState(false);
 
   const [isImageNull, setIsImageNull] = useState<Array<string>>([]);
 
@@ -129,6 +130,7 @@ export const ProductUploadModal: React.FC = () => {
         description: "Item added to cart successfully!",
         duration: 3000,
       });
+      setOpen(false);
     } else if (data?.createProduct.error) {
       toast({
         title: "Error",
@@ -138,6 +140,27 @@ export const ProductUploadModal: React.FC = () => {
       });
     }
   }, [data, loading, toast]);
+
+  const imageFormatter = (file: File): Promise<string> =>
+    new Promise((resolve, reject) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        const scale = img.width > 800 ? 800 / img.width : 1;
+        [canvas.width, canvas.height] = [img.width * scale, img.height * scale];
+        canvas
+          .getContext("2d", { willReadFrequently: true })
+          ?.drawImage(img, 0, 0, canvas.width, canvas.height);
+        resolve(canvas.toDataURL("image/png"));
+      };
+      const reader = new FileReader();
+      reader.onload = (e) =>
+        e.target?.result
+          ? (img.src = e.target.result as string)
+          : reject("Invalid");
+      reader.onerror = () => reject("Failed");
+      reader.readAsDataURL(file);
+    });
 
   const onSubmit = async (data: ProductFormData) => {
     const {
@@ -159,24 +182,11 @@ export const ProductUploadModal: React.FC = () => {
       categories?.find((c) => c._id === category)?.name ||
       "Default Category Name";
 
-    const formatData = (file: File): Promise<string> => {
-      return new Promise<string>((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          if (reader.result) {
-            resolve(reader.result as string);
-          } else {
-            reject("Failed to read file");
-          }
-        };
-        reader.onerror = () => reject("File reading error");
-        reader.readAsDataURL(file);
-      });
-    };
-
     try {
-      const formattedImages = await Promise.all(itemImages.map(formatData));
-      const formattedThumbnail = thumbnail ? await formatData(thumbnail) : null;
+      const formattedImages = await Promise.all(itemImages.map(imageFormatter));
+      const formattedThumbnail = thumbnail
+        ? await imageFormatter(thumbnail)
+        : null;
 
       await createProduct({
         variables: {
@@ -263,9 +273,8 @@ export const ProductUploadModal: React.FC = () => {
       }
     }
   }, [categories, categoryId]);
-
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button
           variant="ghost"

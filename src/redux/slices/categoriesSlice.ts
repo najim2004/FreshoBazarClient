@@ -1,35 +1,36 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-// Define the shape of each category in the action payload
+// Types and Interfaces
+export interface Subcategory {
+  name: string;
+  slug: string;
+}
+
 export interface Category {
   _id: string;
   name: string;
   slug: string;
-  subcategories?: Array<{ name: string; slug: string }>;
+  subcategories?: Subcategory[];
 }
 
-// Define the shape of the Categories state
-interface CategoriesState {
-  Categories: Category[];
-}
+// State Type
+type CategoriesState = Category[];
 
-// Initial state with an empty Categories array
-const initialState: CategoriesState = {
-  Categories: [],
-};
+// Initial State
+const initialState: CategoriesState = [];
 
-// Create the categories slice
+// Slice Definition
 const categoriesSlice = createSlice({
   name: "categories",
   initialState,
   reducers: {
-    // Sets the entire Categories array in the state
     setCategories: (state, action: PayloadAction<Category[]>) => {
-      state.Categories = action.payload;
+      // Return new state array to maintain immutability
+      return action.payload;
     },
   },
 });
 
-// Export actions and reducer
+// Exports
 export const { setCategories } = categoriesSlice.actions;
 export default categoriesSlice.reducer;

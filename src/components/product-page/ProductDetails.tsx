@@ -221,7 +221,7 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({
                 </div>
               </div>
               <Button className="w-full sm:w-auto bg-color-primary hover:bg-color-primary text-white">
-                30TK / 1kg
+                {price*quantity}TK / {quantity}{unitType}
               </Button>
               <Button
                 className="w-full sm:w-auto bg-primary hover:bg-primary/80 text-white"

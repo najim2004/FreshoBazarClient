@@ -249,7 +249,7 @@ export const ProductCard = ({
           <img
             src={image}
             alt={title}
-            className="w-full h-48 object-cover rounded-lg"
+            className="w-full h-48 object-contain rounded-lg"
           />
           {discount > 0 && (
             <div className="absolute top-2 left-2">

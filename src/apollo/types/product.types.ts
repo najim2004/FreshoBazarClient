@@ -41,7 +41,7 @@ export interface ProductPayload {
   success: boolean;
   product?: Product;
   error?: boolean;
-  errorMessage?: string;
+  error_message?: string;
 }
 
 export interface ProductDeletePayload {

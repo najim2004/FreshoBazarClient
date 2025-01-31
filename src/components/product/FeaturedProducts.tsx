@@ -7,7 +7,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/free-mode";
 // import required modules
-import { FreeMode } from "swiper/modules";
+import { FreeMode, Autoplay } from "swiper/modules"; // Add Autoplay
 
 export const FeaturedProducts: React.FC = () => {
   return (
@@ -24,14 +24,22 @@ export const FeaturedProducts: React.FC = () => {
         <Swiper
           spaceBetween={24}
           freeMode={true}
-          modules={[FreeMode]}
+          modules={[FreeMode, Autoplay]} // Add Autoplay to modules
           className="mySwiper"
+          autoplay={{
+            delay: 2000,
+            disableOnInteraction: false,
+            pauseOnMouseEnter: true, // Pause on hover
+          }}
+          speed={800}
+          effect="slide"
+          cssMode={false}
           breakpoints={{
-            359: { slidesPerView: 1 }, // Mobile screens
-            360: { slidesPerView: 2 }, // Mobile screens
-            480: { slidesPerView: 2 }, // extra small screens
-            640: { slidesPerView: 3 }, // Small screens
-            1536: { slidesPerView: 4 }, // 2X extra large screens
+            359: { slidesPerView: 1 },
+            360: { slidesPerView: 2 },
+            480: { slidesPerView: 2 },
+            640: { slidesPerView: 3 },
+            1536: { slidesPerView: 4 },
           }}
         >
           {[...Array(8)].map((_, index) => (
