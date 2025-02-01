@@ -53,6 +53,8 @@ export const ShoppingCart: React.FC = () => {
   const [promoCode, setPromoCode] = useState("");
   const myCart = useSelector((state: RootState) => state?.myCart.cart);
 
+  console.log(myCart);
+
   const toggleSelectAll = () => {
     if (selectedItems.length === cartItems.length) {
       setSelectedItems([]);

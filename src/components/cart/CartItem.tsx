@@ -9,7 +9,7 @@ interface CartItemProps {
   name: string;
   price: number;
   size: string;
-  image: string;
+  thumbnail: { id: string; url: string };
   quantity: number;
   isSelected: boolean;
   onSelect: (id: number) => void;
@@ -22,7 +22,7 @@ export const CartItem: React.FC<CartItemProps> = ({
   name,
   price,
   size,
-  image,
+  thumbnail,
   quantity,
   isSelected,
   onSelect,
@@ -58,11 +58,11 @@ export const CartItem: React.FC<CartItemProps> = ({
               checked={isSelected}
               onCheckedChange={() => onSelect(id)}
             />
-            <div className="flex-shrink-0">
+            <div className="flex-shrink-0 border rounded-md">
               <img
-                src={image}
+                src={thumbnail?.url}
                 alt={name}
-                className="w-20 h-20 rounded-md object-cover"
+                className="w-20 h-20 rounded-md object-contain"
               />
             </div>
             <div className="flex-grow">

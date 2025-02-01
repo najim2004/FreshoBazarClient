@@ -1,60 +1,13 @@
 import React from "react";
 import { ProductCard } from "./ProductCard";
-import { useQuery, gql } from "@apollo/client";
-
-// types
-interface Product {
-  _id: string; // _id is used in the GraphQL response
-  title: string; // Corresponding to the product title
-  discountValue: number;
-  thumbnail: { id: string; url: string }; // Image or thumbnail URL
-  price: number;
-  unitType: string;
-  unitSize: number;
-  categoryId: string; // Product category (e.g., "meat", "vegetables", etc.)
-  categoryName: string; // Product category (e.g., "meat", "vegetables", etc.)
-}
-
-// Define the response structure from the `GET_PRODUCTS` query
-interface GetProductsResponse {
-  getProducts: {
-    success: boolean;
-    error: boolean;
-    error_message: string | null;
-    products?: Product[];
-  };
-}
-
-const GET_PRODUCTS = gql`
-  query {
-    getProducts {
-      success
-      error
-      error_message
-      products {
-        _id
-        title
-        discountValue
-        thumbnail {
-          id
-          url
-        }
-        price
-        unitType
-        unitSize
-        categoryId
-        categoryName
-      }
-    }
-  }
-`;
+import { useGetProducts } from "@/apollo/hooks/product.hooks";
 
 export const TodayBestSellingProducts: React.FC = () => {
-  const { data, loading, error } = useQuery<GetProductsResponse>(GET_PRODUCTS);
-
+  const { products,loading, error } =useGetProducts({})
+;
   // Handle loading and error states
   if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error: {error.message}</p>;
+  if (error) return <p>Error: Failed to get products</p>;
 
   return (
     <section className="mt-10">
@@ -84,7 +37,7 @@ export const TodayBestSellingProducts: React.FC = () => {
       </div>
       <div className="display-grid mt-10">
         {/* Render Products */}
-        {data?.getProducts?.products?.map((product) => (
+        {products?.map((product) => (
           <ProductCard
             key={product._id}
             id={product._id}
@@ -94,7 +47,7 @@ export const TodayBestSellingProducts: React.FC = () => {
             unitType={product.unitType}
             unitSize={product.unitSize}
             category={product.categoryName}
-            image={product.thumbnail.url}
+            image={product?.thumbnail?.url}
           />
         ))}
       </div>

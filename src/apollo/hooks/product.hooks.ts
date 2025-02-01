@@ -1,6 +1,10 @@
 import { useQuery } from "@apollo/client";
-import { GET_PRODUCT } from "../queries/product.queries";
-import { GetProductResponse } from "../types/product.types";
+import { GET_PRODUCT, GET_PRODUCTS } from "../queries/product.queries";
+import {
+  GetProductResponse,
+  GetProductsInput,
+  GetProductsResponse,
+} from "../types/product.types";
 
 // Create the hook
 export const useGetProduct = (id: string) => {
@@ -18,10 +22,32 @@ export const useGetProduct = (id: string) => {
       refetch,
     };
   }
+  return {
+    product: undefined,
+    loading,
+    error: data?.getProduct.error || error,
+    refetch,
+  };
+};
+
+export const useGetProducts = (input: GetProductsInput) => {
+  const { data, loading, error, refetch } = useQuery<{
+    getProducts: GetProductsResponse;
+  }>(GET_PRODUCTS, {
+    variables: { input },
+  });
+  if (data?.getProducts?.success) {
     return {
-        product: undefined,
-        loading,
-        error: data?.getProduct.error||error,
-        refetch,
+      products: data?.getProducts.products,
+      loading,
+      error,
+      refetch,
     };
+  }
+  return {
+    products: undefined,
+    loading,
+    error: data?.getProducts.error || error,
+    refetch,
+  };
 };

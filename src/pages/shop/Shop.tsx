@@ -1,6 +1,7 @@
 import { ProductCard } from "@/components/product/ProductCard";
+import { AllParamsState } from "@/components/searchbar/SearchBar";
 import React, { useEffect, useState } from "react";
-import { useLocation,  } from "react-router-dom";
+import { useLocation, useSearchParams } from "react-router-dom";
 
 interface Filters {
   category: string;
@@ -12,36 +13,35 @@ interface Filters {
 }
 
 export const Shop: React.FC = () => {
-  const location = useLocation();
-  const [filters, setFilters] = useState<Filters>({
-    category: "",
-    dietaryOption: "",
-    unitSize: "",
-    price: "",
-    date: "",
+  const [allParams, setAllParams] = useState<AllParamsState>({
+    search: "",
+    subcategories: [],
+    dietaryOptions: [],
+    unitSize: [],
+    date: [],
+    price: [],
     otherOptions: [],
+    priceRange: [0, 100000],
   });
+  const [searchParams] = useSearchParams();
 
-  // Function to extract query params from URL
-  const getQueryParams = React.useCallback(() => {
-    const urlParams = new URLSearchParams(location.search);
-    return {
-     category: urlParams.get("category") || "",
-     dietaryOption: urlParams.get("dietaryOption") || "",
-     unitSize: urlParams.get("unitSize") || "",
-     price: urlParams.get("price") || "",
-     date: urlParams.get("date") || "",
-     otherOptions: (urlParams.getAll("otherOptions") || []).map(
-      (option) => option
-     ),
+  React.useEffect(() => {
+    const newFilters: AllParamsState = {
+      search: searchParams.get("search") || "",
+      subcategories: searchParams.get("categories")?.split(",") || [],
+      dietaryOptions: searchParams.get("dietaryOptions")?.split(",") || [],
+      unitSize: searchParams.get("unitSize")?.split(",") || [],
+      date: searchParams.get("date")?.split(",") || [],
+      price: searchParams.get("price")?.split(",") || [],
+      otherOptions: searchParams.get("otherOptions")?.split(",") || [],
+      priceRange: searchParams.get("priceRange")?.split(",").map(Number) || [
+        0, 100,
+      ],
     };
-  }, [location.search]);
 
-  useEffect(() => {
-    // Update filters based on query params in URL
-    const queryParams = getQueryParams();
-    setFilters(queryParams);
-  }, [getQueryParams]);
+    setAllParams(newFilters);
+  }, [searchParams]);
+  console.log(allParams);
 
   return (
     <div>

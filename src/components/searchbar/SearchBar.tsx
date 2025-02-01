@@ -15,7 +15,12 @@ import { Filter } from "./Filter";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/rootReducer";
 import { Subcategory } from "@/redux/slices/categoriesSlice";
-import { useLocation } from "react-router-dom";
+import {
+  useLocation,
+  useNavigate,
+  useParams,
+  useSearchParams,
+} from "react-router-dom";
 const products: string[] = [
   "Fresh Tomatoes",
   "Organic Spinach",
@@ -29,24 +34,38 @@ const products: string[] = [
   "Pumpkin",
 ];
 
+export interface AllParamsState {
+  search: string;
+  subcategories: string[];
+  dietaryOptions: string[];
+  unitSize: string[];
+  date: string[];
+  price: string[];
+  otherOptions: string[];
+  priceRange: number[];
+}
+
 export const SearchBar: React.FC = () => {
-  const [searchTerm, setSearchTerm] = useState<string>("");
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [showSuggestions, setShowSuggestions] = useState<boolean>(false);
   const [filterCategory, setFilterCategory] = useState<string>("all");
   const [filterSubCategory, setFilterSubCategory] = useState<Subcategory[]>([]);
   const categories = useSelector((state: RootState) => state?.categories);
-
-  const [filters, setFilters] = useState({
-    category: "",
-    dietaryOption: "",
-    unitSize: "",
-    price: "",
-    date: "",
+  const [allParams, setAllParams] = useState<AllParamsState>({
+    search: "",
+    subcategories: [],
+    dietaryOptions: [],
+    unitSize: [],
+    date: [],
+    price: [],
     otherOptions: [],
+    priceRange: [0, 100000],
   });
-
   const location = useLocation();
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const { slug } = useParams();
+  const pathName = location.pathname;
 
   useEffect(() => {
     const foundedCategory = categories?.find(
@@ -59,9 +78,9 @@ export const SearchBar: React.FC = () => {
 
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
-      if (searchTerm.length > 0) {
+      if (allParams.search.length > 0) {
         const filteredSuggestions = products.filter((product) =>
-          product.toLowerCase().includes(searchTerm.toLowerCase())
+          product.toLowerCase().includes(allParams.search.toLowerCase())
         );
         setSuggestions(filteredSuggestions.slice(0, 5));
         setShowSuggestions(true);
@@ -72,7 +91,7 @@ export const SearchBar: React.FC = () => {
     }, 500); // Reduced debounce delay
 
     return () => clearTimeout(delayDebounceFn);
-  }, [searchTerm]);
+  }, [allParams]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -86,35 +105,59 @@ export const SearchBar: React.FC = () => {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
 
+  useEffect(() => {
+    if (categories?.find((category) => category.slug === slug)) {
+      setFilterCategory((prev) => slug || prev);
+    }
+  }, [slug, categories]);
+
   const handleSuggestionClick = (suggestion: string) => {
-    setSearchTerm(suggestion);
+    setAllParams((prev: AllParamsState) => ({
+      ...prev,
+      search: suggestion,
+    }));
     setShowSuggestions(false);
   };
 
-  // const updateFilter = (filterType: string, value: string) => {
-  //   const newFilters = { ...filters, [filterType]: value };
-  //   setFilters(newFilters);
+  const updateFiltersInURL = (allParams: AllParamsState) => {
+    const params = new URLSearchParams(searchParams);
 
-  //   // Create the new URL search parameters
-  //   const params = new URLSearchParams();
-  //   Object.keys(newFilters).forEach((key) => {
-  //     if (newFilters[key]) {
-  //       if (Array.isArray(newFilters[key])) {
-  //         newFilters[key].forEach((item: string) => {
-  //           params.append(key, item);
-  //         });
-  //       } else {
-  //         params.set(key, newFilters[key]);
-  //       }
-  //     }
-  //   });
+    Object.keys(allParams).forEach((key) => {
+      const value = allParams[key as keyof AllParamsState];
+      if (Array.isArray(value) && value.length > 0) {
+        params.set(key, value.join(","));
+      } else if (typeof value === "string" && value.trim() !== "") {
+        params.set(key, value);
+      } else if (
+        Array.isArray(value) &&
+        value.every((v) => typeof v === "number")
+      ) {
+        params.set(key, value.join(","));
+      } else {
+        params.delete(key);
+      }
+    });
+    return params.toString();
+  };
 
-  //   // Push the new filters into the history (URL)
-  //   history.push({
-  //     pathname: "/search",
-  //     search: `?${params.toString()}`,
-  //   });
-  // };
+  const onSearchClick = () => {
+    const updatedParams = updateFiltersInURL(allParams);
+    navigate(
+      `/shop/category/${filterCategory}${
+        filterSubCategory.length > 0 ? "/" + filterCategory + "-all?" : "?"
+      }${updatedParams}`
+    );
+    setShowSuggestions(false);
+  };
+  const onApplyFilter = () => {
+    // /shop/category
+    if (pathName.includes("/shop/category")) {
+      const updatedParams = updateFiltersInURL(
+        slug == slug + "-all" ? allParams : { ...allParams, search: "" }
+      );
+      navigate(`?${updatedParams}`);
+    }
+  };
 
   return (
     <div className="relative flex items-center w-full h-10 ">
@@ -141,12 +184,21 @@ export const SearchBar: React.FC = () => {
           type="text"
           placeholder="Search for products... ( CTRL+K )"
           className="h-full border text-sm px-4 pr-10 py-1 w-full focus-visible:ring-0 shadow-none rounded-none"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
+          value={allParams.search}
+          onChange={(e) =>
+            setAllParams((prev: AllParamsState) => ({
+              ...prev,
+              search: e.target.value,
+            }))
+          }
+          onKeyUp={(e) => {
+            if (e.key === "Enter") onSearchClick();
+          }}
           onFocus={() => setShowSuggestions(true)}
           onBlur={() => setTimeout(() => setShowSuggestions(false), 100)}
         />
         <Button
+          onClick={onSearchClick}
           variant="outline"
           className="px-3 py-1 absolute right-0 top-0 h-full border-none bg-transparent shadow-none hover:bg-transparent group"
           aria-label="Search"
@@ -154,7 +206,12 @@ export const SearchBar: React.FC = () => {
           <FaSearch className="text-color-primary group-active:scale-95 group-hover:text-primary" />
         </Button>
       </div>
-      <Filter subcategories={filterSubCategory || []} />
+      <Filter
+        subcategories={filterSubCategory || []}
+        allParams={allParams}
+        setAllParams={setAllParams}
+        onApplyFilter={onApplyFilter}
+      />
       {showSuggestions && suggestions.length > 0 && (
         <ul className="absolute top-10 z-10 w-full bg-white border rounded-b-md shadow-lg mt-1">
           {suggestions.map((suggestion) => (

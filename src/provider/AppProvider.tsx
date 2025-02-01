@@ -103,7 +103,10 @@ const GET_CART = gql`
           name
           price
           quantity
-          thumbnail
+          thumbnail {
+            id
+            url
+          }
           totalPrice
         }
         status

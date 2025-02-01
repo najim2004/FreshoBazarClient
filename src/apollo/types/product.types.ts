@@ -78,9 +78,48 @@ export interface CreateProductInput {
   location?: Location;
 }
 
+// get product
 export interface GetProductResponse {
   success: boolean;
   error: boolean;
   error_message: string | null;
   product?: Product;
+}
+
+// get products
+export interface GetProductsResponse {
+  success: boolean;
+  error: boolean;
+  error_message: string | null;
+  products?: Product[];
+}
+
+enum PriceForSort {
+  highest_price = "highest_price",
+  lowest_price = "lowest_price",
+}
+enum DietaryOptions {
+  none_organic = "none_organic",
+  organic = "organic",
+}
+enum UnitSizeForSort {
+  bigger_first = "bigger_first",
+  smallest_first = "smallest_first",
+}
+enum DateForSort {
+  oldest = "oldest",
+  newest = "newest",
+}
+
+export interface GetProductsInput {
+  categorySlug?: string;
+  search?: string;
+  subcategories?: [string];
+  dietaryOptions?: DietaryOptions;
+  unitSize?: UnitSizeForSort;
+  date?: DateForSort;
+  price?: PriceForSort;
+  otherOptions?: [string];
+  priceRange?: [number];
+  page?: number;
 }
