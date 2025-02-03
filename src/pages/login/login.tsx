@@ -82,7 +82,7 @@ export const LoginPage: React.FC = () => {
           </Link>
 
           <h2 className="mt-4 text-center text-xl font-bold text-color-primary">
-            Login in to your Amader Krishok account
+            Login in to your FreshSheba account
           </h2>
         </div>
 

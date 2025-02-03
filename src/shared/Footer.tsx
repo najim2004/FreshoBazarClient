@@ -59,7 +59,7 @@ export const Footer = () => {
                 <Link to={"/"} className="flex items-center space-x-2 text-2xl">
                   <Leaf className="h-8 w-8 text-[#4a7c59]" />
                   <span className="text-color-primary font-semibold">
-                    Amader Krishok
+                    FreshSheba
                   </span>
                 </Link>
               </div>

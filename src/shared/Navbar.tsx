@@ -26,7 +26,7 @@ export const Navbar: React.FC = () => {
           >
             <Leaf className="h-8 w-8 text-[#4a7c59]" />
             <span className="text-color-primary font-semibold hidden xs:inline">
-              Amader Krishok
+              FreshSheba
             </span>
           </Link>
           <div className="hidden lg:block w-1/2 z-[50]">

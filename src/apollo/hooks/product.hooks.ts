@@ -30,7 +30,7 @@ export const useGetProduct = (id: string) => {
   };
 };
 
-export const useGetProducts = (input: GetProductsInput) => {
+export const useGetProducts = (input: GetProductsInput = {}) => {
   const { data, loading, error, refetch } = useQuery<{
     getProducts: GetProductsResponse;
   }>(GET_PRODUCTS, {
@@ -47,7 +47,7 @@ export const useGetProducts = (input: GetProductsInput) => {
   return {
     products: undefined,
     loading,
-    error: data?.getProducts.error || error,
+    error: data?.getProducts?.error || error,
     refetch,
   };
 };

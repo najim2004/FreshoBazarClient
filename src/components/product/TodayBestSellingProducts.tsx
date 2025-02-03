@@ -4,6 +4,7 @@ import { useGetProducts } from "@/apollo/hooks/product.hooks";
 
 export const TodayBestSellingProducts: React.FC = () => {
   const { products,loading, error } =useGetProducts({})
+  console.log(products);
 ;
   // Handle loading and error states
   if (loading) return <p>Loading...</p>;
@@ -48,6 +49,7 @@ export const TodayBestSellingProducts: React.FC = () => {
             unitSize={product.unitSize}
             category={product.categoryName}
             image={product?.thumbnail?.url}
+            isFavorite={product?.isFavorite}
           />
         ))}
       </div>

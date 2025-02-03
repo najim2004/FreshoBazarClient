@@ -39,8 +39,8 @@ export const GET_PRODUCT = gql`
 
 // Query to get all products
 export const GET_PRODUCTS = gql`
-  query GetProducts {
-    getProducts {
+  query GetProduct($input: GetProducts) {
+    getProducts(input: $input) {
       success
       error
       error_message
@@ -56,6 +56,7 @@ export const GET_PRODUCTS = gql`
         unitType
         unitSize
         categoryName
+        isFavorite
       }
     }
   }

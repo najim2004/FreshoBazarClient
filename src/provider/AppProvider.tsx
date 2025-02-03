@@ -24,7 +24,7 @@ interface Favorites {
 }
 
 interface GetFavoriteProductsResponse {
-  getFavoritesByUserId: {
+  getFavorites: {
     success?: boolean;
     error?: boolean;
     error_message?: string | null;
@@ -55,8 +55,8 @@ interface GetCartResponse {
 
 // GraphQL queries
 const GET_FAVORITE_PRODUCTS = gql`
-  query GetFavoritesByUserId($userId: ID!) {
-    getFavoritesByUserId(userId: $userId) {
+  query getFavorites {
+    getFavorites {
       success
       error
       error_message
@@ -128,30 +128,28 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   const { data: categoriesData, error: categoriesError } =
     useQuery<GetCategoriesResponse>(GET_ALL_CATEGORIES);
   const { data: favoriteProductsData, error: favoriteProductsError } =
-    useQuery<GetFavoriteProductsResponse>(GET_FAVORITE_PRODUCTS, {
-      variables: { userId },
-    });
+    useQuery<GetFavoriteProductsResponse>(GET_FAVORITE_PRODUCTS);
   const { data: cartData, error: cartError } = useQuery<GetCartResponse>(
     GET_CART,
     { variables: { userId } }
   );
 
   // console.log(cartData)
-  // console.log(favoriteProductsData)
+  console.log(favoriteProductsData)
   // console.log(categoriesData)
   useGetUser();
 
   useEffect(() => {
     try {
-      if (favoriteProductsData?.getFavoritesByUserId?.success) {
-        const { favorites } = favoriteProductsData.getFavoritesByUserId;
+      if (favoriteProductsData?.getFavorites?.success) {
+        const { favorites } = favoriteProductsData.getFavorites;
         if (favorites) {
           dispatch(setFavoriteProducts(favorites));
         }
-      } else if (favoriteProductsData?.getFavoritesByUserId?.error) {
+      } else if (favoriteProductsData?.getFavorites?.error) {
         console.error(
           "Error fetching favorite products:",
-          favoriteProductsData?.getFavoritesByUserId.error_message
+          favoriteProductsData?.getFavorites.error_message
         );
       }
     } catch (error) {

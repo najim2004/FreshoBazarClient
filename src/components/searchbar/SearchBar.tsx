@@ -59,7 +59,7 @@ export const SearchBar: React.FC = () => {
     date: [],
     price: [],
     otherOptions: [],
-    priceRange: [0, 100000],
+    priceRange: [0, 10000],
   });
   const location = useLocation();
   const navigate = useNavigate();

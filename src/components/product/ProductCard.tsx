@@ -19,7 +19,7 @@ import {
 
 // Define ProductCardProps interface to ensure proper typing for props passed to the component.
 interface ProductCardProps {
-  id: string | undefined;
+  id?: string | undefined;
   title?: string;
   price?: number;
   discount?: number;
@@ -27,6 +27,7 @@ interface ProductCardProps {
   unitType?: string;
   unitSize?: number;
   category?: string;
+  isFavorite?: boolean;
   updatedAt?: string;
 }
 
@@ -42,7 +43,6 @@ interface ToggleFavoriteResponse {
 
 // Define the structure of the request variables when toggling favorite.
 interface ToggleFavoriteVariables {
-  userId?: string;
   productId?: string;
 }
 
@@ -76,8 +76,8 @@ interface CartVariables {
 
 // GraphQL mutation to toggle favorite product.
 const TOGGLE_FAVORITE = gql`
-  mutation ToggleFavorite($userId: ID!, $productId: ID!) {
-    toggleFavorite(userId: $userId, productId: $productId) {
+  mutation ToggleFavorite($productId: ID!) {
+    toggleFavorite(productId: $productId) {
       success
       error
       error_message
@@ -134,10 +134,11 @@ export const ProductCard = ({
   unitType = "kg",
   unitSize = 1,
   category = "Meat",
+  isFavorite = false,
   updatedAt,
 }: ProductCardProps) => {
   const [quantity, setQuantity] = useState<number>(1); // Track quantity for this product.
-  const [isFavorite, setIsFavorite] = useState<boolean>(false); // Track if the product is in the favorites.
+  const [favorite, setIsFavorite] = useState<boolean>(false); // Track if the product is in the favorites.
 
   const navigate: NavigateFunction = useNavigate(); // Hook to navigate to product detail page.
 
@@ -155,6 +156,7 @@ export const ProductCard = ({
     ToggleFavoriteResponse,
     ToggleFavoriteVariables
   >(TOGGLE_FAVORITE);
+  // console.log(data);
 
   const [addItemToCart, { data: cartResponse, loading: isCartLoading }] =
     useMutation<CartResponse, CartVariables>(ADD_TO_CART);
@@ -207,7 +209,7 @@ export const ProductCard = ({
     if (!loading && id) {
       // Trigger GraphQL mutation to toggle favorite.
       toggleFavorite({
-        variables: { userId: "672cbfba5011c05833acf37e", productId: id },
+        variables: { productId: id },
       });
     }
   };

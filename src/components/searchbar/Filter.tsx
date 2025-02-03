@@ -117,7 +117,7 @@ export const Filter: React.FC<FilterProps> = ({
       </PopoverTrigger>
       <PopoverContent className="w-[300px]">
         <div className="grid gap-6">
-          {(sub_slug == slug + "-all"||!sub_slug) && (
+          {(sub_slug == slug + "-all" || !sub_slug) && (
             <div className="space-y-2">
               <h4 className="font-medium leading-none text-color-primary">
                 Sub-Categories
@@ -201,7 +201,7 @@ export const Filter: React.FC<FilterProps> = ({
             </h4>
             <Slider
               min={0}
-              max={100}
+              max={10000}
               step={1}
               value={allParams.priceRange}
               onValueChange={handlePriceRangeChange}

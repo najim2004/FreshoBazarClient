@@ -35,6 +35,7 @@ export interface Product {
   discountValue?: number;
   averageRating?: number;
   ratingsCount?: number;
+  isFavorite?: boolean;
 }
 
 export interface ProductPayload {
@@ -94,32 +95,32 @@ export interface GetProductsResponse {
   products?: Product[];
 }
 
-enum PriceForSort {
+export enum PriceForSort {
   highest_price = "highest_price",
   lowest_price = "lowest_price",
 }
-enum DietaryOptions {
+export enum DietaryOptions {
   none_organic = "none_organic",
   organic = "organic",
 }
-enum UnitSizeForSort {
+export enum UnitSizeForSort {
   bigger_first = "bigger_first",
   smallest_first = "smallest_first",
 }
-enum DateForSort {
+export enum DateForSort {
   oldest = "oldest",
   newest = "newest",
 }
 
 export interface GetProductsInput {
-  categorySlug?: string;
+  categoryId?: string;
   search?: string;
-  subcategories?: [string];
+  subcategories?: string[];
   dietaryOptions?: DietaryOptions;
   unitSize?: UnitSizeForSort;
   date?: DateForSort;
   price?: PriceForSort;
-  otherOptions?: [string];
-  priceRange?: [number];
+  otherOptions?: string[];
+  priceRange?: number[];
   page?: number;
 }
