@@ -44,11 +44,7 @@ export const Shop: React.FC = () => {
     setAllParams(newFilters);
   }, [searchParams]);
 
-  const {
-    products: productsResponse,
-    loading,
-    refetch,
-  } = useGetProducts({
+  const { products: productsResponse, refetch } = useGetProducts({
     categoryId:
       slug !== "all"
         ? categories.find((category) => category.slug === slug)?._id

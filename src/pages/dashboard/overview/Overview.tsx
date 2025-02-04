@@ -224,7 +224,9 @@ export const Overview: React.FC = () => {
                   <TableCell>
                     <Badge
                       variant={
-                        order.status === "In Stock" ? "success" : "destructive"
+                        order?.status === "In Stock"
+                          ? "secondary"
+                          : "destructive"
                       }
                     >
                       {order.status}

@@ -24,6 +24,7 @@ import { RootState } from "@/redux/rootReducer";
 import { useSelector } from "react-redux";
 import { gql, useMutation } from "@apollo/client";
 import { useToast } from "@/hooks/use-toast";
+import { Category } from "@/redux/slices/categoriesSlice";
 
 type ProductFormData = {
   title: string;
@@ -102,9 +103,7 @@ export const ProductUploadModal: React.FC = () => {
 
   const fileInputRef = React.useRef<HTMLInputElement>(null);
 
-  const categories = useSelector(
-    (state: RootState) => state?.categories.Categories
-  );
+  const categories = useSelector((state: RootState) => state?.categories);
 
   const {
     register,
@@ -179,7 +178,7 @@ export const ProductUploadModal: React.FC = () => {
     const tagsArray = tags.split(",").map((tag) => tag.trim());
     const itemImages = productImages.map((img) => img.file);
     const categoryName =
-      categories?.find((c) => c._id === category)?.name ||
+      categories?.find((c: Category) => c._id === category)?.name ||
       "Default Category Name";
 
     try {
@@ -267,7 +266,7 @@ export const ProductUploadModal: React.FC = () => {
 
   useEffect(() => {
     if (categories) {
-      const category = categories.find((c) => c._id === categoryId);
+      const category = categories.find((c: Category) => c._id === categoryId);
       if (category?.subcategories) {
         setSubcategories(category.subcategories);
       }

@@ -5,16 +5,16 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardContent } from "@/components/ui/card";
 
 interface CartItemProps {
-  id: number;
+  id: string;
   name: string;
   price: number;
-  size: string;
-  thumbnail: { id: string; url: string };
+  size?: string;
+  thumbnail?: { id: string; url: string };
   quantity: number;
-  isSelected: boolean;
-  onSelect: (id: number) => void;
-  onRemove: (id: number) => void;
-  onUpdateQuantity: (id: number, quantity: number) => void;
+  isSelected?: boolean;
+  onSelect?: (id: string) => void;
+  onRemove?: (id: string) => void;
+  onUpdateQuantity?: (id: string, quantity: number) => void;
 }
 
 export const CartItem: React.FC<CartItemProps> = ({
@@ -25,27 +25,25 @@ export const CartItem: React.FC<CartItemProps> = ({
   thumbnail,
   quantity,
   isSelected,
-  onSelect,
-  onRemove,
-  onUpdateQuantity,
 }) => {
+  const [nowQuantity, setNowQuantity] = React.useState(quantity);
   const handleDecreaseQuantity = () => {
     if (quantity > 1) {
-      onUpdateQuantity(id, quantity - 1);
+      setNowQuantity(quantity - 1);
     }
   };
 
   const handleIncreaseQuantity = () => {
-    onUpdateQuantity(id, quantity + 1);
+    setNowQuantity(quantity + 1);
   };
 
   const handleQuantityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newQuantity = Math.max(1, parseInt(e.target.value) || 1);
-    onUpdateQuantity(id, newQuantity);
+    setNowQuantity(newQuantity);
   };
 
   const handleRemoveItem = () => {
-    onRemove(id);
+    console.log(id);
   };
 
   return (
@@ -53,11 +51,7 @@ export const CartItem: React.FC<CartItemProps> = ({
       <Card className="border-color-secondary/30 shadow-none rounded-md">
         <CardContent className="p-2.5">
           <div className="flex items-center space-x-4">
-            <Checkbox
-              id={`item-${id}`}
-              checked={isSelected}
-              onCheckedChange={() => onSelect(id)}
-            />
+            <Checkbox id={`item-${id}`} checked={isSelected} />
             <div className="flex-shrink-0 border rounded-md">
               <img
                 src={thumbnail?.url}
@@ -81,13 +75,13 @@ export const CartItem: React.FC<CartItemProps> = ({
                   size="icon"
                   className="p-0 h-9 w-9 hover:bg-gray-100 transition-colors"
                   onClick={handleDecreaseQuantity}
-                  disabled={quantity <= 1}
+                  disabled={nowQuantity <= 1}
                 >
                   <Minus className="w-4 h-4" />
                 </Button>
                 <input
                   type="number"
-                  value={quantity}
+                  value={nowQuantity}
                   onChange={handleQuantityChange}
                   className="w-12 border-none focus-visible:ring-0 text-center border-x p-0 h-9 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none outline-none"
                 />

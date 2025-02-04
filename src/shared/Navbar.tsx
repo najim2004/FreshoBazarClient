@@ -26,7 +26,7 @@ export const Navbar: React.FC = () => {
           >
             <Leaf className="h-8 w-8 text-[#4a7c59]" />
             <span className="text-color-primary font-semibold hidden xs:inline">
-              FreshSheba
+              FreshoBazar
             </span>
           </Link>
           <div className="hidden lg:block w-1/2 z-[50]">
@@ -68,7 +68,6 @@ export const Navbar: React.FC = () => {
                 <AvatarMenu
                   userName={currentUser?.firstName || ""}
                   avatarUrl={
-                    currentUser?.avatar ||
                     "https://img.freepik.com/premium-vector/happy-farmer-straw-hat-vector-illustration-smiling-gardener-man-with-moustache-beard-farm-garden-worker-vector-icon-flat-design_408115-2615.jpg?semt=ais_hybrid"
                   }
                 />

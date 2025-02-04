@@ -9,7 +9,7 @@ export const RelatedProducts: React.FC = () => {
       </h3>
       <div className="display-grid mt-5">
         {[...Array(8)].map((_, index) => (
-          <ProductCard key={index} className="" />
+          <ProductCard key={index} />
         ))}
       </div>
     </section>

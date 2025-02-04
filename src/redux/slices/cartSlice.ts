@@ -7,7 +7,7 @@ interface CartItem {
   quantity: number;
   price: number;
   totalPrice: number;
-  thumbnail: string;
+  thumbnail: { id: string; url: string };
 }
 
 // Define the shape of a cart

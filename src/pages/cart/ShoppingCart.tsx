@@ -9,97 +9,9 @@ import { Input } from "@/components/ui/input";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/rootReducer";
 
-interface CartItemData {
-  id: number;
-  name: string;
-  price: number;
-  size: string;
-  image: string;
-  quantity: number;
-}
-
-const initialCartItems: CartItemData[] = [
-  {
-    id: 1,
-    name: "Banganapalli Indian Mango",
-    price: 250000,
-    size: "30TK/2Kg",
-    image:
-      "https://media.post.rvohealth.io/wp-content/uploads/2020/08/fruits-and-vegetables-thumb.jpg",
-    quantity: 1,
-  },
-  {
-    id: 2,
-    name: "Alphonso Mango",
-    price: 180000,
-    size: "30TK/2Kg",
-    image:
-      "https://www.bhg.com/thmb/Mwd_YEkDbVg_fPsUDcWr3eZk9W0=/5645x0/filters:no_upscale():strip_icc()/difference-between-fruits-vegetables-01-5f92e7ec706b463287bcfb46985698f9.jpg",
-    quantity: 1,
-  },
-  {
-    id: 3,
-    name: "Kesar Mango",
-    price: 399000,
-    size: "30TK/2Kg",
-    image: "https://cdn.britannica.com/17/196817-159-9E487F15/vegetables.jpg",
-    quantity: 1,
-  },
-];
-
 export const ShoppingCart: React.FC = () => {
-  const [cartItems, setCartItems] = useState<CartItemData[]>(initialCartItems);
-  const [selectedItems, setSelectedItems] = useState<number[]>([]);
   const [promoCode, setPromoCode] = useState("");
   const myCart = useSelector((state: RootState) => state?.myCart.cart);
-
-  console.log(myCart);
-
-  const toggleSelectAll = () => {
-    if (selectedItems.length === cartItems.length) {
-      setSelectedItems([]);
-    } else {
-      setSelectedItems(cartItems.map((item) => item.id));
-    }
-  };
-
-  const toggleSelectItem = (id: number) => {
-    setSelectedItems((prevSelected) =>
-      prevSelected.includes(id)
-        ? prevSelected.filter((itemId) => itemId !== id)
-        : [...prevSelected, id]
-    );
-  };
-
-  const removeSelectedItems = () => {
-    setCartItems((items) =>
-      items.filter((item) => !selectedItems.includes(item.id))
-    );
-    setSelectedItems([]);
-  };
-
-  const removeItem = (id: number) => {
-    setCartItems((items) => items.filter((item) => item.id !== id));
-    setSelectedItems((prevSelected) =>
-      prevSelected.filter((itemId) => itemId !== id)
-    );
-  };
-
-  const updateQuantity = (id: number, newQuantity: number) => {
-    if (newQuantity > 0) {
-      setCartItems((items) =>
-        items.map((item) =>
-          item.id === id ? { ...item, quantity: newQuantity } : item
-        )
-      );
-    }
-  };
-
-  const subtotal = cartItems.reduce(
-    (sum, item) => sum + item.price * item.quantity,
-    0
-  );
-
   return (
     <div className="flex flex-col lg:flex-row gap-6 w-full">
       <div className="flex-grow">
@@ -113,11 +25,7 @@ export const ShoppingCart: React.FC = () => {
           <CardContent className="p-6">
             <div className="flex justify-between items-center mb-6">
               <div className="flex items-center space-x-2">
-                <Checkbox
-                  id="select-all"
-                  checked={selectedItems.length === cartItems.length}
-                  onCheckedChange={toggleSelectAll}
-                />
+                <Checkbox id="select-all" />
                 <label
                   htmlFor="select-all"
                   className="text-sm font-medium leading-none text-color-ternary peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
@@ -125,23 +33,17 @@ export const ShoppingCart: React.FC = () => {
                   Select All
                 </label>
               </div>
-              <Button
-                variant="destructive"
-                onClick={removeSelectedItems}
-                disabled={selectedItems.length === 0}
-              >
-                Remove Selected
-              </Button>
+              <Button variant="destructive">Remove Selected</Button>
             </div>
 
-            {myCart?.items.map((item, idx) => (
+            {myCart?.items?.map((item) => (
               <CartItem
                 key={item.productId}
-                {...item}
-                isSelected={selectedItems.includes(idx)}
-                onSelect={toggleSelectItem}
-                onRemove={removeItem}
-                onUpdateQuantity={updateQuantity}
+                id={item.productId}
+                name={item.name}
+                price={item.price}
+                quantity={item.quantity}
+                thumbnail={item.thumbnail}
               />
             ))}
           </CardContent>
@@ -158,7 +60,7 @@ export const ShoppingCart: React.FC = () => {
               <div className="flex justify-between">
                 <span className="text-base text-color-ternary">Subtotal</span>
                 <span className="text-base font-medium text-color-primary">
-                  TK {(subtotal / 1000).toFixed(3)}
+                  {/* TK {(subtotal / 1000).toFixed(3)} */}
                 </span>
               </div>
               <Separator className="bg-color-secondary/30" />
@@ -189,7 +91,7 @@ export const ShoppingCart: React.FC = () => {
               <div className="flex justify-between font-semibold">
                 <span className="text-color-primary">Total</span>
                 <span className="text-color-primary">
-                  TK {(subtotal / 1000).toFixed(3)}
+                  {/* TK {(subtotal / 1000).toFixed(3)} */}
                 </span>
               </div>
             </div>

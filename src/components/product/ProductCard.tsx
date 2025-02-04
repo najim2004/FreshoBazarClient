@@ -138,7 +138,9 @@ export const ProductCard = ({
   updatedAt,
 }: ProductCardProps) => {
   const [quantity, setQuantity] = useState<number>(1); // Track quantity for this product.
-  const [favorite, setIsFavorite] = useState<boolean>(false); // Track if the product is in the favorites.
+  // @tsignore
+  const [favorite, setIsFavorite] = useState(false); // Track if the product is in the favorites.
+  console.log(favorite);
 
   const navigate: NavigateFunction = useNavigate(); // Hook to navigate to product detail page.
 

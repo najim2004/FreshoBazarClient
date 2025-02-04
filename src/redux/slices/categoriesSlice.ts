@@ -24,7 +24,7 @@ const categoriesSlice = createSlice({
   name: "categories",
   initialState,
   reducers: {
-    setCategories: (state, action: PayloadAction<Category[]>) => {
+    setCategories: (_, action: PayloadAction<Category[]>) => {
       // Return new state array to maintain immutability
       return action.payload;
     },

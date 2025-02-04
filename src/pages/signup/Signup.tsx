@@ -86,7 +86,7 @@ export const SignupPage: React.FC = () => {
           </Link>
 
           <h2 className="mt-4 text-center text-xl font-bold text-color-primary">
-            Create your FreshSheba account
+            Create your FreshoBazar account
           </h2>
         </div>
 

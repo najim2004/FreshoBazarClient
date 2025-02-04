@@ -135,7 +135,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   );
 
   // console.log(cartData)
-  console.log(favoriteProductsData)
+  // console.log(favoriteProductsData)
   // console.log(categoriesData)
   useGetUser();
 
