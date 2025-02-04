@@ -8,8 +8,10 @@ import "swiper/css";
 import "swiper/css/free-mode";
 // import required modules
 import { FreeMode, Autoplay } from "swiper/modules"; // Add Autoplay
+import { useGetFeaturedProducts } from "@/apollo/hooks/product.hooks";
 
 export const FeaturedProducts: React.FC = () => {
+  const { products } = useGetFeaturedProducts();
   return (
     <section className="mt-10">
       <div className="flex justify-between items-center">
@@ -42,9 +44,19 @@ export const FeaturedProducts: React.FC = () => {
             1536: { slidesPerView: 4 },
           }}
         >
-          {[...Array(8)].map((_, index) => (
-            <SwiperSlide className="mb-1" key={index}>
-              <ProductCard />
+          {products?.map((product) => (
+            <SwiperSlide className="mb-1" key={product?._id}>
+              <ProductCard
+                id={product._id}
+                title={product.title}
+                price={product.price}
+                discount={product.discountValue}
+                unitType={product.unitType}
+                unitSize={product.unitSize}
+                category={product.categoryName}
+                image={product?.thumbnail?.url}
+                isFavorite={product?.isFavorite}
+              />
             </SwiperSlide>
           ))}
         </Swiper>
@@ -52,3 +64,4 @@ export const FeaturedProducts: React.FC = () => {
     </section>
   );
 };
+

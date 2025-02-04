@@ -301,7 +301,7 @@ export const ProductCard = ({
 
         <div className="mt-4">
           <div className="text-gray-500 text-sm uppercase">{category}</div>
-          <h3 className="font-semibold text-gray-800 text-lg">{title}</h3>
+          <h3 className="font-semibold text-gray-800 text-lg line-clamp-1">{title}</h3>
           <div className="flex items-center justify-between mt-2">
             <div className="text-primary font-bold">
               ${price.toFixed(2)}/{unitSize} {unitType}
@@ -357,3 +357,6 @@ export const ProductCard = ({
     </Card>
   );
 };
+
+
+</CardContent>

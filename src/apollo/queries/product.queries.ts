@@ -1,4 +1,5 @@
 import { gql } from "@apollo/client";
+import { PRODUCT_FIELDS } from "../fragments/product.fragments";
 
 // Query to get a single product by ID
 export const GET_PRODUCT = gql`
@@ -31,7 +32,7 @@ export const GET_PRODUCT = gql`
         isDiscountable
         discountValue
         averageRating
-        ratingsCount
+        totalReviews
       }
     }
   }
@@ -39,24 +40,35 @@ export const GET_PRODUCT = gql`
 
 // Query to get all products
 export const GET_PRODUCTS = gql`
+  ${PRODUCT_FIELDS}
   query GetProduct($input: GetProducts) {
     getProducts(input: $input) {
       success
       error
       error_message
       products {
-        _id
-        title
-        discountValue
-        thumbnail {
-          id
-          url
-        }
-        price
-        unitType
-        unitSize
-        categoryName
-        isFavorite
+        ...ProductFields
+      }
+      pagination {
+        currentPage
+        hasNextPage
+        hasPrevPage
+        totalPages
+        totalItems
+      }
+    }
+  }
+`;
+
+export const GET_FEATURED_PRODUCTS = gql`
+  ${PRODUCT_FIELDS}
+  query GetFeaturedProducts {
+    getFeaturedProducts {
+      success
+      error
+      error_message
+      products {
+        ...ProductFields
       }
     }
   }

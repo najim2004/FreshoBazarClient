@@ -23,17 +23,17 @@ export const ProductPage: React.FC = () => {
   return (
     <div className="bg-gray-100 text-gray-800 font-sans">
       <ProductDetails
-        title={product?.title||""}
-        images={product?.images||null}
-        categoryName={product?.categoryName||""}
-        unitType={product?.unitType||""}
-        unitSize={product?.unitSize||0}
-        stockSize={product?.stockSize||0}
-        price={product?.price||0}
-        isDiscountable={product?.isDiscountable||false}
-        discountValue={product?.discountValue||0}
-        averageRating={product?.averageRating||0}
-        ratingsCount={product?.ratingsCount||0}
+        title={product?.title || ""}
+        images={product?.images || null}
+        categoryName={product?.categoryName || ""}
+        unitType={product?.unitType || ""}
+        unitSize={product?.unitSize || 0}
+        stockSize={product?.stockSize || 0}
+        price={product?.price || 0}
+        isDiscountable={product?.isDiscountable || false}
+        discountValue={product?.discountValue || 0}
+        averageRating={product?.averageRating || 0}
+        totalReviews={product?.totalReviews || 0}
         id={id || ""}
         loading={loading}
       />

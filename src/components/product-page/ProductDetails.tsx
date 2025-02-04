@@ -28,7 +28,7 @@ interface ProductDetailsProps {
   isDiscountable: boolean;
   discountValue: number;
   averageRating: number;
-  ratingsCount: number;
+  totalReviews: number;
   id: string;
   loading: boolean;
 }
@@ -44,7 +44,7 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({
   isDiscountable,
   discountValue,
   averageRating,
-  ratingsCount,
+  totalReviews,
   loading,
 }) => {
   const [quantity, setQuantity] = useState<number>(1);
@@ -133,7 +133,7 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({
                     <Star className="w-5 h-5 text-orange-400" />
                   </div>
                   <span className="ml-2 text-sm text-color-ternary">
-                    {averageRating} Out of 5.00 | {ratingsCount} Reviews
+                    {averageRating} Out of 5.00 | {totalReviews} Reviews
                   </span>
                 </div>
               </div>
@@ -221,7 +221,8 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({
                 </div>
               </div>
               <Button className="w-full sm:w-auto bg-color-primary hover:bg-color-primary text-white">
-                {price*quantity}TK / {quantity}{unitType}
+                {price * quantity}TK / {quantity}
+                {unitType}
               </Button>
               <Button
                 className="w-full sm:w-auto bg-primary hover:bg-primary/80 text-white"

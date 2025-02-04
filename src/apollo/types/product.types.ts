@@ -34,7 +34,7 @@ export interface Product {
   isDiscountable?: boolean;
   discountValue?: number;
   averageRating?: number;
-  ratingsCount?: number;
+  totalReviews?: number;
   isFavorite?: boolean;
 }
 
@@ -88,11 +88,20 @@ export interface GetProductResponse {
 }
 
 // get products
+
+export interface Pagination {
+  currentPage: number;
+  hasNextPage: number;
+  hasPrevPage: number;
+  totalPages: number;
+  totalItems: number;
+}
 export interface GetProductsResponse {
   success: boolean;
   error: boolean;
   error_message: string | null;
   products?: Product[];
+  pagination?: Pagination;
 }
 
 export enum PriceForSort {
