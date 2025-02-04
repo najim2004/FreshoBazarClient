@@ -357,6 +357,3 @@ export const ProductCard = ({
     </Card>
   );
 };
-
-
-</CardContent>
