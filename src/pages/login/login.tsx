@@ -14,8 +14,10 @@ import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { useLogin } from "@/apollo/hooks/user.hooks";
+import { useGetUser, useLogin } from "@/apollo/hooks/user.hooks";
 import LoadingSpinner from "@/components/ui/loading";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/rootReducer";
 
 interface LoginFormValues {
   email: string;
@@ -27,7 +29,13 @@ export const LoginPage: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const { login, loading } = useLogin();
+  const { refetch, loading: userLoading } = useGetUser();
   const { toast } = useToast();
+  const { isAuthenticated } = useSelector((state: RootState) => state?.user);
+
+  if (isAuthenticated) {
+    navigate("/");
+  }
 
   const form = useForm<LoginFormValues>({
     defaultValues: {
@@ -44,15 +52,12 @@ export const LoginPage: React.FC = () => {
         password: data.password,
       });
       if (response?.success) {
-        // Store token if needed
-        console.log(response);
-
+        await refetch();
+        navigate("/");
         toast({
           title: "Success",
           description: response?.message,
         });
-
-        navigate("/");
       } else {
         toast({
           variant: "destructive",
@@ -227,11 +232,15 @@ export const LoginPage: React.FC = () => {
             </div>
 
             <Button
-              disabled={loading}
+              disabled={loading || userLoading}
               type="submit"
               className="w-full py-2 px-4 text-sm font-medium rounded-sm text-white bg-primary hover:bg-primary/80 focus:ring-2 focus:ring-offset-2 focus:ring-primary"
             >
-              {loading ? <LoadingSpinner size={20} color="white" /> : "Login"}
+              {loading || userLoading ? (
+                <LoadingSpinner size={20} color="white" />
+              ) : (
+                "Login"
+              )}
             </Button>
           </form>
         </Form>

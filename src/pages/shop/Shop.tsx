@@ -81,7 +81,9 @@ export const Shop: React.FC = () => {
   });
 
   React.useEffect(() => {
-    setProducts(productsResponse || []);
+    if (productsResponse) {
+      setProducts(productsResponse);
+    }
   }, [productsResponse]);
 
   useEffect(() => {

@@ -3,9 +3,7 @@ import { ProductCard } from "./ProductCard";
 import { useGetProducts } from "@/apollo/hooks/product.hooks";
 
 export const TodayBestSellingProducts: React.FC = () => {
-  const { products,loading, error } =useGetProducts({})
-  console.log(products);
-;
+  const { products, loading, error } = useGetProducts({});
   // Handle loading and error states
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: Failed to get products</p>;

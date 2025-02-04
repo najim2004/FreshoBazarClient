@@ -13,6 +13,7 @@ export const useGetProduct = (id: string) => {
   }>(GET_PRODUCT, {
     skip: !id,
     variables: { id },
+    fetchPolicy: "cache-and-network", // Ensures updated data from server
   });
   if (data?.getProduct.success) {
     return {
@@ -35,6 +36,7 @@ export const useGetProducts = (input: GetProductsInput = {}) => {
     getProducts: GetProductsResponse;
   }>(GET_PRODUCTS, {
     variables: { input },
+    fetchPolicy: "cache-and-network", // Ensures updated data from server
   });
   if (data?.getProducts?.success) {
     return {
@@ -45,7 +47,7 @@ export const useGetProducts = (input: GetProductsInput = {}) => {
     };
   }
   return {
-    products: undefined,
+    products: [],
     loading,
     error: data?.getProducts?.error || error,
     refetch,

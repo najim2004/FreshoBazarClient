@@ -87,6 +87,7 @@ export const useGetUser = () => {
     getUser: GetUserResponse;
   }>(GET_USER_BY_ID, {
     skip: !localStorage.getItem("token"),
+    fetchPolicy: "cache-and-network", // Ensures updated data from server
   });
   dispatcher(setLoading(loading));
   try {

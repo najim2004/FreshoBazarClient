@@ -16,6 +16,8 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import LoadingSpinner from "@/components/ui/loading";
 import { useRegister } from "@/apollo/hooks/user.hooks";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/rootReducer";
 
 interface SignupFormValues {
   firstName: string;
@@ -41,6 +43,11 @@ export const SignupPage: React.FC = () => {
   });
   const { toast } = useToast();
   const navigate = useNavigate();
+  const { isAuthenticated } = useSelector((state: RootState) => state?.user);
+
+  if (isAuthenticated) {
+    navigate("/");
+  }
   const onSubmit = async (data: SignupFormValues) => {
     try {
       const response = await register({
