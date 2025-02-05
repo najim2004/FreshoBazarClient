@@ -177,9 +177,9 @@ export const ProductUploadModal: React.FC = () => {
 
     const tagsArray = tags.split(",").map((tag) => tag.trim());
     const itemImages = productImages.map((img) => img.file);
-    const categoryName =
-      categories?.find((c: Category) => c._id === category)?.name ||
-      "Default Category Name";
+    const foundedCategory = categories?.find(
+      (c: Category) => c._id === category
+    );
 
     try {
       const formattedImages = await Promise.all(itemImages.map(imageFormatter));
@@ -196,8 +196,10 @@ export const ProductUploadModal: React.FC = () => {
             images: formattedImages,
             thumbnail: formattedThumbnail,
             categoryId: category,
-            categoryName,
-            subCategories: subcategory ? [subcategory] : [],
+            categoryName: foundedCategory?.name || undefined,
+            subCategories: subcategory
+              ? [foundedCategory?.slug + "-all", subcategory]
+              : [],
             unitType: unitType as "kg" | "g" | "l" | "ml" | "piece",
             unitSize: isNaN(parseInt(unitSize)) ? 0 : parseInt(unitSize),
             stockSize: stockSize,
@@ -330,7 +332,7 @@ export const ProductUploadModal: React.FC = () => {
                             <img
                               src={URL.createObjectURL(thumbnail)}
                               alt="Thumbnail preview"
-                              className="w-full h-full object-cover rounded-md"
+                              className="w-full h-full object-contain rounded-md"
                             />
                             <button
                               type="button"
@@ -401,7 +403,7 @@ export const ProductUploadModal: React.FC = () => {
                                     <img
                                       src={URL.createObjectURL(img.file)}
                                       alt="Preview"
-                                      className="w-full h-full object-cover rounded-lg"
+                                      className="w-full h-full object-contain rounded-lg"
                                     />
                                     <button
                                       type="button"

@@ -42,7 +42,7 @@ export const Subscription: React.FC = () => {
           </p>
           <form
             onSubmit={handleSubmit}
-            className="flex flex-col sm:flex-row z-50"
+            className="flex "
           >
             <Input
               type="email"

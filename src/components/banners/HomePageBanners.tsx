@@ -28,7 +28,7 @@ export const HomePageBanners: React.FC = () => {
       <CarouselContent>
         {/* 1st */}
         <CarouselItem>
-          <div className="relative w-full flex items-center justify-between bg-green-50 h-[50vh] px-10">
+          <div className="relative w-full grid grid-cols-2 items-center justify-between bg-green-50  h-[260px] xl:min-h-[50vh] px-3 md:px-10">
             <div
               className="absolute inset-0 opacity-[0.03] z-0"
               style={{
@@ -36,23 +36,23 @@ export const HomePageBanners: React.FC = () => {
               }}
             ></div>
             <div className="h-full flex flex-col justify-center items-center text-center flex-1">
-              <h2 className="text-4xl font-black text-primary leading-[50px]">
+              <h2 className="text-lg xl:text-4xl font-black text-primary xl:leading-[50px]">
                 Fresh Vegetables, Directly from Farmers!
               </h2>
-              <p className="font-medium text-color-primary mt-3 mb-8">
+              <p className="text-xs md:text-sm font-medium text-color-primary mt-3 mb-3 xl:mb-8">
                 A Variety of Vegetables for Your Choice
               </p>
-              <Button className="w-max bg-primary h-11 text-xl font-semibold rounded-xl hover:bg-primary/80">
+              <Button variant="default" className="w-max bg-primary h-8 xl:h-11 text-sm xl:text-xl font-semibold rounded-lg hover:bg-primary/80">
                 Shop Now <ArrowRight />
               </Button>
             </div>
-            <img src={organicVegetables} alt="" className="h-[70%] " />
+            <img src={organicVegetables} alt="" className="w-full" />
           </div>
         </CarouselItem>
 
         {/* 2nd */}
         <CarouselItem>
-          <div className="relative w-full flex items-center justify-between bg-orange-50 h-[50vh] px-10">
+          <div className="relative w-full flex items-center justify-between bg-orange-50 h-[260px] xl:min-h-[50vh] px-3 md:px-10">
             <div
               className="absolute inset-0 opacity-[0.03] z-0"
               style={{
@@ -60,23 +60,23 @@ export const HomePageBanners: React.FC = () => {
               }}
             ></div>
             <div className="h-full flex flex-col justify-center items-center text-center flex-1">
-              <h2 className="text-4xl font-black text-primary leading-[50px]">
+              <h2 className="text-lg xl:text-4xl font-black text-primary xl:leading-[50px]">
                 Premium Quality Meat & Poultry, Fresh to Your Door!
               </h2>
-              <p className="font-medium text-color-primary mt-3 mb-8">
+              <p className="text-xs md:text-sm font-medium text-color-primary mt-3 mb-3 xl:mb-8">
                 Carefully sourced, expertly prepared for the finest taste.
               </p>
-              <Button className="w-max bg-primary h-11 text-xl font-semibold rounded-xl hover:bg-primary/80">
+              <Button variant="default" className="w-max bg-primary h-8 xl:h-11 text-sm xl:text-xl font-semibold rounded-lg hover:bg-primary/80">
                 Shop Now <ArrowRight />
               </Button>
             </div>
-            <img src={meats} alt="" className="h-[70%] max-w-[50%] flex-1" />
+            <img src={meats} alt="" className="w-[150px] xl:h-[70%] max-w-[50%] flex-1" />
           </div>
         </CarouselItem>
 
         {/* 3rd */}
         <CarouselItem>
-          <div className="relative w-full flex items-center justify-between bg-yellow-50 h-[50vh] px-10">
+          <div className="relative w-full flex items-center justify-between bg-yellow-50 h-[260px] xl:min-h-[50vh] px-3 md:px-10">
             <div
               className="absolute inset-0 opacity-[0.03] z-0"
               style={{
@@ -84,23 +84,23 @@ export const HomePageBanners: React.FC = () => {
               }}
             ></div>
             <div className="h-full flex flex-col justify-center items-center text-center flex-1">
-              <h2 className="text-4xl font-black text-primary leading-[50px]">
+              <h2 className="text-lg xl:text-4xl font-black text-primary xl:leading-[50px]">
                 Premium Quality Meat & Poultry, Fresh to Your Door!
               </h2>
-              <p className="font-medium text-color-primary mt-3 mb-8">
+              <p className="text-xs md:text-sm font-medium text-color-primary mt-3 mb-3 xl:mb-8">
                 Carefully sourced, expertly prepared for the finest taste.
               </p>
-              <Button className="w-max bg-primary h-11 text-xl font-semibold rounded-xl hover:bg-primary/80">
+              <Button variant="default" className="w-max bg-primary h-8 xl:h-11 text-sm xl:text-xl font-semibold rounded-lg hover:bg-primary/80">
                 Shop Now <ArrowRight />
               </Button>
             </div>
-            <img src={legumes} alt="" className="h-[70%] max-w-[50%] flex-1" />
+            <img src={legumes} alt="" className="w-[150px] xl:h-[70%] max-w-[50%] flex-1" />
           </div>
         </CarouselItem>
 
         {/* 4th */}
         <CarouselItem>
-          <div className="relative w-full flex items-center justify-between bg-amber-50 h-[50vh] px-10">
+          <div className="relative w-full flex items-center justify-between bg-amber-50 h-[260px] xl:min-h-[50vh] px-3 md:px-10">
             <div
               className="absolute inset-0 opacity-[0.03] z-0"
               style={{
@@ -108,20 +108,20 @@ export const HomePageBanners: React.FC = () => {
               }}
             ></div>
             <div className="h-full flex flex-col justify-center items-center text-center flex-1">
-              <h2 className="text-4xl font-black text-primary leading-[50px]">
+              <h2 className="text-lg xl:text-4xl font-black text-primary xl:leading-[50px]">
                 Premium Quality Meat & Poultry, Fresh to Your Door!
               </h2>
 
-              <p className="font-medium text-color-primary mt-3 mb-8">
+              <p className="text-xs md:text-sm font-medium text-color-primary mt-3 mb-3 xl:mb-8">
                 Carefully sourced, expertly prepared for the finest taste.
               </p>
 
-              <Button className="w-max bg-primary h-11 text-xl font-semibold rounded-xl hover:bg-primary/80">
+              <Button variant="default" className="w-max bg-primary h-8 xl:h-11 text-sm xl:text-xl font-semibold rounded-lg hover:bg-primary/80">
                 Shop Now <ArrowRight />
               </Button>
             </div>
 
-            <img src={spices} alt="" className="h-[70%] max-w-[50%] flex-1" />
+            <img src={spices} alt="" className="w-[150px] xl:h-[70%] max-w-[50%] flex-1" />
           </div>
         </CarouselItem>
       </CarouselContent>

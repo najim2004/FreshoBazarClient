@@ -66,7 +66,7 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({
               <img
                 src={images ? images[currentImage]?.url : ""}
                 alt={title}
-                className="w-full h-[300px] sm:h-[400px] lg:h-[500px] rounded-md object-cover"
+                className="w-full h-[300px] sm:h-[400px] lg:h-[500px] rounded-md object-contain"
               />
               <Button
                 variant="outline"
@@ -221,7 +221,8 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({
                 </div>
               </div>
               <Button className="w-full sm:w-auto bg-color-primary hover:bg-color-primary text-white">
-                {price * quantity}TK / {quantity}
+                {(price - (price * discountValue) / 100) * quantity}TK /{" "}
+                {quantity}
                 {unitType}
               </Button>
               <Button
