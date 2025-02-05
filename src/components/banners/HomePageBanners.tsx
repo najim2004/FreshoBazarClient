@@ -28,7 +28,7 @@ export const HomePageBanners: React.FC = () => {
       <CarouselContent>
         {/* 1st */}
         <CarouselItem>
-          <div className="relative w-full grid grid-cols-2 items-center justify-between bg-green-50  h-[260px] xl:min-h-[50vh] px-3 md:px-10">
+          <div className="relative w-full grid grid-cols-2 items-center justify-center bg-green-50  h-[260px] xl:min-h-[50vh] px-3 md:px-10">
             <div
               className="absolute inset-0 opacity-[0.03] z-0"
               style={{

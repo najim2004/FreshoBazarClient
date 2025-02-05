@@ -36,6 +36,7 @@ export interface Product {
   averageRating?: number;
   totalReviews?: number;
   isFavorite?: boolean;
+  updatedAt?: Date;
 }
 
 export interface ProductPayload {

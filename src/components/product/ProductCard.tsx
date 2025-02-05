@@ -28,7 +28,7 @@ interface ProductCardProps {
   unitSize?: number;
   category?: string;
   isFavorite?: boolean;
-  updatedAt?: string;
+  updatedAt?: Date;
 }
 
 // Define the structure of the response after toggling the favorite product.
@@ -307,7 +307,11 @@ export const ProductCard = ({
               ${price.toFixed(2)}/{unitSize} {unitType}
             </div>
             <p className="text-gray-500 text-sm mt-1">
-              {updatedAt ? new Date(updatedAt).toLocaleDateString() : ""}
+                {updatedAt ? new Date(updatedAt).toLocaleDateString('en-GB', {
+                day: '2-digit',
+                month: '2-digit',
+                year: '2-digit'
+                }) : ""}
             </p>
           </div>
         </div>

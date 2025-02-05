@@ -17,11 +17,13 @@ export const AboutProduct: React.FC<AboutProductProps> = ({
   return (
     <Card className="mt-8 rounded-b-md rounded-t-none border-none shadow-sm overflow-hidden">
       <CardContent className="p-0">
-        <div className="space-y-6 p-8">
-          <h2 className="text-xl font-semibold text-color-ternary mb-4">
+        <div className="space-y-2 p-8">
+          <h2 className="text-xl font-semibold text-color-ternary">
             Description
           </h2>
+          <hr />
           <div
+            className="description pt-2"
             dangerouslySetInnerHTML={{
               __html:
                 (description || ""?.length > 0

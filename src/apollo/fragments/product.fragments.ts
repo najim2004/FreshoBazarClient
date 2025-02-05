@@ -14,5 +14,6 @@ export const PRODUCT_FIELDS = gql`
     unitSize
     categoryName
     isFavorite
+    updatedAt
   }
 `;

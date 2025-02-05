@@ -113,6 +113,7 @@ export const Shop: React.FC = () => {
             category={product.categoryName}
             image={product?.thumbnail?.url}
             isFavorite={product?.isFavorite}
+            updatedAt={product?.updatedAt}
           />
         ))}
       </div>
