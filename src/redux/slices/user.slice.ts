@@ -30,10 +30,11 @@ const userSlice = createSlice({
       state.isAuthenticated = true;
       state.error = null;
     },
-    clearUser: (state) => {
+    logoutUser: (state) => {
       state.currentUser = null;
       state.isAuthenticated = false;
       state.error = null;
+      localStorage.removeItem("token");
     },
     setError: (state, action: PayloadAction<string>) => {
       state.error = action.payload;
@@ -48,7 +49,7 @@ const userSlice = createSlice({
 });
 
 // Export actions
-export const { setLoading, setUser, clearUser, setError, updateUserProfile } =
+export const { setLoading, setUser, logoutUser, setError, updateUserProfile } =
   userSlice.actions;
 
 // Export reducer

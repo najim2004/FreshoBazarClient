@@ -8,7 +8,6 @@ import { gql, useMutation } from "@apollo/client";
 import { useDispatch, useSelector } from "react-redux";
 import { setFavoriteProducts } from "@/redux/slices/favoriteProductSlice";
 import { RootState } from "@/redux/rootReducer";
-import { Cart, setCart } from "@/redux/slices/cartSlice";
 import { useToast } from "@/hooks/use-toast";
 import {
   DropdownMenu,
@@ -16,6 +15,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
+import { useAddItemToCart } from "@/apollo/hooks/cart.hooks";
 
 // Define ProductCardProps interface to ensure proper typing for props passed to the component.
 interface ProductCardProps {
@@ -55,25 +55,6 @@ interface Favorites {
   updatedAt?: Date;
 }
 
-// Define the structure of the response after adding the product on the cart.
-interface CartResponse {
-  addItemToCart: {
-    success?: boolean;
-    message?: string | null;
-    cart?: Cart;
-  };
-}
-
-// Define the structure of the request variables when toggling favorite.
-interface CartVariables {
-  userId?: string;
-  item: {
-    productId?: string;
-    quantity?: number;
-    options?: JSON;
-  };
-}
-
 // GraphQL mutation to toggle favorite product.
 const TOGGLE_FAVORITE = gql`
   mutation ToggleFavorite($productId: ID!) {
@@ -95,36 +76,6 @@ const TOGGLE_FAVORITE = gql`
   }
 `;
 
-// GraphQL mutation to add item to the cart
-const ADD_TO_CART = gql`
-  mutation AddToCart($userId: ID!, $item: CartItemInput!) {
-    addItemToCart(userId: $userId, item: $item) {
-      success
-      message
-      cart {
-        _id
-        userId
-        items {
-          productId
-          name
-          price
-          quantity
-          thumbnail {
-            id
-            url
-          }
-          totalPrice
-        }
-        status
-        totalPrice
-        totalQuantity
-        createdAt
-        updatedAt
-      }
-    }
-  }
-`;
-
 export const ProductCard = ({
   id = "",
   title = "Farm fresh organic meat 1 kg",
@@ -137,13 +88,11 @@ export const ProductCard = ({
   isFavorite = false,
   updatedAt,
 }: ProductCardProps) => {
-  const [quantity, setQuantity] = useState<number>(1); // Track quantity for this product.
-  // @tsignore
-  const [, setIsFavorite] = useState(false); // Track if the product is in the favorites.
+  const [quantity, setQuantity] = useState<number>(1);
+  const [, setIsFavorite] = useState(false);
 
-  const navigate: NavigateFunction = useNavigate(); // Hook to navigate to product detail page.
+  const navigate: NavigateFunction = useNavigate();
 
-  // Redux state to track favorite products and dispatch function to update them.
   const favoriteProducts = useSelector(
     (state: RootState) => state?.favoriteProducts?.favoriteProducts
   );
@@ -152,34 +101,58 @@ export const ProductCard = ({
   const location = useLocation();
   const isDashboard = location?.pathname?.includes("/dashboard");
 
-  // GraphQL mutation to toggle favorite for this product.
   const [toggleFavorite, { data, loading }] = useMutation<
     ToggleFavoriteResponse,
     ToggleFavoriteVariables
   >(TOGGLE_FAVORITE);
-  // console.log(data);
 
-  const [addItemToCart, { data: cartResponse, loading: isCartLoading }] =
-    useMutation<CartResponse, CartVariables>(ADD_TO_CART);
+  const { addCartItem, loading: isCartLoading } = useAddItemToCart();
 
-  // Effect hook to handle response after toggling favorite status.
+
   useEffect(() => {
     if (data?.toggleFavorite) {
       const { success, error, favorites } = data.toggleFavorite;
       if (success && !error && favorites) {
-        // Dispatch the updated favorite products to Redux store.
+        
         dispatch(setFavoriteProducts(favorites));
       }
     }
   }, [data?.toggleFavorite, dispatch]);
 
-  // Effect hook to handle response after adding cart.
+  
   useEffect(() => {
-    if (cartResponse?.addItemToCart) {
-      const { success, message, cart } = cartResponse.addItemToCart;
-      if (success && cart) {
-        // Dispatch the updated favorite products to Redux store.
-        dispatch(setCart(cart));
+    const isExist = favoriteProducts?.data?.products?.find(
+      (product) => product.productId === id
+    );
+    setIsFavorite(!!isExist); 
+  }, [favoriteProducts?.data?.products, id]);
+
+  const onFavoriteClick = (id: string | undefined): void => {
+    if (!loading && id) {
+      toggleFavorite({
+        variables: { productId: id },
+      });
+    }
+  };
+
+  const decreaseQuantity = (e: React.MouseEvent<HTMLButtonElement>): void => {
+    e.stopPropagation();
+    if (quantity > 1) setQuantity(quantity - 1);
+  };
+
+  const increaseQuantity = (e: React.MouseEvent<HTMLButtonElement>): void => {
+    e.stopPropagation();
+    setQuantity(quantity + 1);
+  };
+
+  const onClickCart = async (
+    e: React.MouseEvent<HTMLButtonElement>
+  ): Promise<void> => {
+    e.stopPropagation();
+    if (!isCartLoading && id) {
+      const cartResponse = await addCartItem({ product_id: id, quantity });
+
+      if (cartResponse?.success) {
         toast({
           title: "Success",
           description: "Item added to cart successfully!",
@@ -188,56 +161,11 @@ export const ProductCard = ({
       } else {
         toast({
           title: "Error",
-          description: message ?? "Failed to add item to cart!",
+          description: cartResponse?.message || "Failed to add item to cart!",
           duration: 3000,
           variant: "destructive",
         });
       }
-    }
-  }, [cartResponse?.addItemToCart, dispatch, toast]);
-
-  // Effect hook to check if this product is already in the user's favorites list.
-  useEffect(() => {
-    const isExist = favoriteProducts?.data?.products?.find(
-      (product) => product.productId === id
-    );
-    setIsFavorite(!!isExist); // Update favorite status based on product existence.
-  }, [favoriteProducts?.data?.products, id]);
-  // console.log(favoriteProducts);
-
-  // Function to handle the click on the favorite button.
-  const onFavoriteClick = (id: string | undefined): void => {
-    if (!loading && id) {
-      // Trigger GraphQL mutation to toggle favorite.
-      toggleFavorite({
-        variables: { productId: id },
-      });
-    }
-  };
-
-  // Function to decrease the product quantity.
-  const decreaseQuantity = (e: React.MouseEvent<HTMLButtonElement>): void => {
-    e.stopPropagation();
-    if (quantity > 1) setQuantity(quantity - 1);
-  };
-
-  // Function to increase the product quantity.
-  const increaseQuantity = (e: React.MouseEvent<HTMLButtonElement>): void => {
-    e.stopPropagation();
-    setQuantity(quantity + 1);
-  };
-
-  // Function to handle click on the cart button (optional: can trigger add-to-cart functionality).
-  const onClickCart = (e: React.MouseEvent<HTMLButtonElement>): void => {
-    e.stopPropagation();
-    if (!isCartLoading && id) {
-      // Trigger GraphQL mutation to toggle favorite.
-      addItemToCart({
-        variables: {
-          userId: "672cbfba5011c05833acf37e",
-          item: { productId: id, quantity },
-        },
-      });
     }
   };
 
@@ -245,7 +173,6 @@ export const ProductCard = ({
     <Card
       onClick={(e: React.MouseEvent<HTMLDivElement>): void => {
         e.stopPropagation();
-        // Navigate to the product detail page when the card is clicked.
         navigate(`/product/${id}`);
       }}
       className="w-full max-w-sm rounded-sm border-none"
@@ -286,7 +213,6 @@ export const ProductCard = ({
               className="absolute top-2 right-2 p-1 rounded-full bg-white/80 hover:bg-white transition-colors"
               onClick={(e: React.MouseEvent<HTMLButtonElement>): void => {
                 e.stopPropagation();
-                // Toggle favorite status when the button is clicked.
                 onFavoriteClick(id);
               }}
             >
@@ -301,17 +227,21 @@ export const ProductCard = ({
 
         <div className="mt-4">
           <div className="text-gray-500 text-sm uppercase">{category}</div>
-          <h3 className="font-semibold text-gray-800 text-lg line-clamp-1">{title}</h3>
+          <h3 className="font-semibold text-gray-800 text-lg line-clamp-1">
+            {title}
+          </h3>
           <div className="flex items-center justify-between mt-2">
             <div className="text-primary font-bold">
               ${price.toFixed(2)}/{unitSize} {unitType}
             </div>
             <p className="text-gray-500 text-sm mt-1">
-                {updatedAt ? new Date(updatedAt).toLocaleDateString('en-GB', {
-                day: '2-digit',
-                month: '2-digit',
-                year: '2-digit'
-                }) : ""}
+              {updatedAt
+                ? new Date(updatedAt).toLocaleDateString("en-GB", {
+                    day: "2-digit",
+                    month: "2-digit",
+                    year: "2-digit",
+                  })
+                : ""}
             </p>
           </div>
         </div>

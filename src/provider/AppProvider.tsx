@@ -1,5 +1,5 @@
+import { useGetCart } from "@/apollo/hooks/cart.hooks";
 import { useGetUser } from "@/apollo/hooks/user.hooks";
-import { Cart, setCart } from "@/redux/slices/cartSlice";
 import { setCategories } from "@/redux/slices/categoriesSlice";
 import { setFavoriteProducts } from "@/redux/slices/favoriteProductSlice";
 import { gql, useQuery } from "@apollo/client";
@@ -45,14 +45,6 @@ interface GetCategoriesResponse {
   };
 }
 
-interface GetCartResponse {
-  getCart: {
-    success: boolean;
-    message: string;
-    cart?: Cart;
-  };
-}
-
 // GraphQL queries
 const GET_FAVORITE_PRODUCTS = gql`
   query getFavorites {
@@ -90,54 +82,20 @@ const GET_ALL_CATEGORIES = gql`
   }
 `;
 
-const GET_CART = gql`
-  query GetCart($userId: ID!) {
-    getCart(userId: $userId) {
-      success
-      message
-      cart {
-        _id
-        userId
-        items {
-          productId
-          name
-          price
-          quantity
-          thumbnail {
-            id
-            url
-          }
-          totalPrice
-        }
-        status
-        totalPrice
-        totalQuantity
-        createdAt
-        updatedAt
-      }
-    }
-  }
-`;
-
 // Main AppProvider component with enhanced error handling
 export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   const dispatch = useDispatch();
-  const userId = "672cbfba5011c05833acf37e"; // Example user ID for demonstration
+
+  useGetCart();
+  useGetUser();
 
   // Execute GraphQL queries
   const { data: categoriesData, error: categoriesError } =
     useQuery<GetCategoriesResponse>(GET_ALL_CATEGORIES);
   const { data: favoriteProductsData, error: favoriteProductsError } =
     useQuery<GetFavoriteProductsResponse>(GET_FAVORITE_PRODUCTS);
-  const { data: cartData, error: cartError } = useQuery<GetCartResponse>(
-    GET_CART,
-    { variables: { userId } }
-  );
-
-  // console.log(cartData)
   // console.log(favoriteProductsData)
   // console.log(categoriesData)
-  useGetUser();
 
   useEffect(() => {
     try {
@@ -181,24 +139,6 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
     }
   }, [categoriesData, dispatch]);
 
-  useEffect(() => {
-    try {
-      if (cartData?.getCart?.success) {
-        const { cart } = cartData.getCart;
-        if (cart) {
-          dispatch(setCart(cart));
-        }
-      } else if (cartData?.getCart) {
-        console.error("Error fetching cart:", cartData.getCart.message);
-      }
-    } catch (error) {
-      console.error(
-        "An unexpected error occurred while fetching cart data:",
-        error
-      );
-    }
-  }, [cartData, dispatch]);
-
   // Log any query errors from Apollo Client
   useEffect(() => {
     if (categoriesError) {
@@ -213,10 +153,10 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
         favoriteProductsError
       );
     }
-    if (cartError) {
-      console.error("GraphQL error while fetching cart data:", cartError);
-    }
-  }, [categoriesError, favoriteProductsError, cartError]);
+    // if (cartError) {
+    //   console.error("GraphQL error while fetching cart data:", cartError);
+    // }
+  }, [categoriesError, favoriteProductsError]);
 
   return <>{children}</>;
 };

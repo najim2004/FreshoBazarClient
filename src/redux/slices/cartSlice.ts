@@ -1,35 +1,18 @@
+import { Cart } from "@/apollo/types/cart.types";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-
-// Define the shape of a cart item
-interface CartItem {
-  productId: string;
-  name: string;
-  quantity: number;
-  price: number;
-  totalPrice: number;
-  thumbnail: { id: string; url: string };
-}
-
-// Define the shape of a cart
-export interface Cart {
-  _id: string;
-  userId: string;
-  items: CartItem[];
-  totalQuantity: number;
-  totalPrice: number;
-  status: "pending" | "active" | "cancelled"; // Use a more specific type for status
-  createdAt?: Date; // Using string to store date in ISO 8601 format
-  updatedAt?: Date; // Same as above
-}
 
 // Define the shape of the cart state
 interface CartState {
-  cart: Cart | null; // Cart can be null initially to indicate an empty cart
+  cart: Cart | null;
+  loading: boolean;
+  error: string | null;
 }
 
-// Initial state with an empty cart object
+// Initial state with proper typing
 const initialState: CartState = {
   cart: null,
+  loading: false,
+  error: null,
 };
 
 // Create the cart slice
@@ -37,17 +20,23 @@ const cartSlice = createSlice({
   name: "cart",
   initialState,
   reducers: {
-    // Sets the entire cart object in the state
     setCart: (state, action: PayloadAction<Cart>) => {
       state.cart = action.payload;
+      state.error = null;
     },
-    // Optionally add more reducers for other cart actions, e.g., addItem, removeItem, updateItem
     clearCart: (state) => {
       state.cart = null;
+      state.error = null;
+    },
+    setLoading: (state, action: PayloadAction<boolean>) => {
+      state.loading = action.payload;
+    },
+    setError: (state, action: PayloadAction<string>) => {
+      state.error = action.payload;
+      state.loading = false;
     },
   },
 });
 
-// Export actions and reducer
-export const { setCart, clearCart } = cartSlice.actions;
+export const { setCart, clearCart, setLoading, setError } = cartSlice.actions;
 export default cartSlice.reducer;

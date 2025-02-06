@@ -11,6 +11,8 @@ import { FaUser, FaCog, FaSignOutAlt } from "react-icons/fa";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { DashboardIcon } from "@radix-ui/react-icons";
 import { Link } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { logoutUser } from "@/redux/slices/user.slice";
 
 interface AvatarMenuProps {
   userName: string;
@@ -21,6 +23,10 @@ export const AvatarMenu: React.FC<AvatarMenuProps> = ({
   userName,
   avatarUrl,
 }) => {
+  const dispatcher=useDispatch()
+  const onLogout=()=>{
+    dispatcher(logoutUser())
+  }
   return (
     <DropdownMenu>
       <DropdownMenuTrigger className="outline-none">
@@ -52,7 +58,10 @@ export const AvatarMenu: React.FC<AvatarMenuProps> = ({
           <FaCog />
           <span>Settings</span>
         </DropdownMenuItem>
-        <DropdownMenuItem className="flex items-center space-x-2">
+        <DropdownMenuItem
+          onClick={onLogout}
+          className="flex items-center space-x-2"
+        >
           <FaSignOutAlt />
           <span>Logout</span>
         </DropdownMenuItem>

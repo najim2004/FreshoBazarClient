@@ -13,7 +13,7 @@ import {
 /**
  * Generic reusable hook for fetching product-related data
  */
-const useFetchProducts = <T>({
+export const useFetchProducts = <T>({
   query,
   key,
   variables,

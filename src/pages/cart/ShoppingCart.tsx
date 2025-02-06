@@ -38,8 +38,8 @@ export const ShoppingCart: React.FC = () => {
 
             {myCart?.items?.map((item) => (
               <CartItem
-                key={item.productId}
-                id={item.productId}
+                key={item.product_id}
+                id={item.product_id}
                 name={item.name}
                 price={item.price}
                 quantity={item.quantity}
