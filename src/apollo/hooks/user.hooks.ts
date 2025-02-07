@@ -11,6 +11,8 @@ import { GET_USER_BY_ID } from "../queries/user.queries";
 import { useDispatch } from "react-redux";
 import { setLoading, setUser } from "@/redux/slices/user.slice";
 import { setError } from "@/redux/slices/favoriteProductSlice";
+import { useGetCart } from "./cart.hooks";
+import { useGetFavorites } from "./favorite.hooks";
 
 export const useRegister = () => {
   const [registerMutation, { loading, error }] = useMutation<
@@ -82,6 +84,8 @@ export const useLogin = () => {
 
 export const useGetUser = () => {
   const dispatcher = useDispatch();
+  useGetCart();
+  useGetFavorites();
 
   const { loading, error, data, refetch } = useQuery<{
     getUser: GetUserResponse;

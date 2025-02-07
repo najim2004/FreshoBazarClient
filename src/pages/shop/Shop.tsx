@@ -6,7 +6,10 @@ import {
   Product,
   UnitSizeForSort,
 } from "@/apollo/types/product.types";
-import { ProductCard } from "@/components/product/ProductCard";
+import {
+  ProductCard,
+  ProductCardSkeleton,
+} from "@/components/product/ProductCard";
 import { AllParamsState } from "@/components/searchbar/SearchBar";
 import { RootState } from "@/redux/rootReducer";
 import React, { useEffect } from "react";
@@ -44,7 +47,11 @@ export const Shop: React.FC = () => {
     setAllParams(newFilters);
   }, [searchParams]);
 
-  const { products: productsResponse, refetch } = useGetProducts({
+  const {
+    products: productsResponse,
+    refetch,
+    loading,
+  } = useGetProducts({
     categoryId:
       slug !== "all"
         ? categories.find((category) => category.slug === slug)?._id
@@ -116,6 +123,11 @@ export const Shop: React.FC = () => {
             updatedAt={product?.updatedAt}
           />
         ))}
+        {loading &&
+          (products ? products?.length <= 0 : true) &&
+          [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map(() => (
+            <ProductCardSkeleton />
+          ))}
       </div>
     </div>
   );

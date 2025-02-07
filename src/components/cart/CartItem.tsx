@@ -3,6 +3,7 @@ import { Trash2, Minus, Plus, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardContent } from "@/components/ui/card";
+import { Link } from "react-router-dom";
 
 interface CartItemProps {
   id: string;
@@ -104,13 +105,15 @@ export const CartItem: React.FC<CartItemProps> = ({
               >
                 <Trash2 className="h-4 w-4" />
               </Button>
-              <Button
-                variant="outline"
-                size="icon"
-                className="border-color-secondary hover:border-none text-color-primary hover:bg-primary/70 hover:text-white"
-              >
-                <Eye className="h-4 w-4" />
-              </Button>
+              <Link to={`/product/${id}`}>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="border-color-secondary hover:border-none text-color-primary hover:bg-primary/70 hover:text-white"
+                >
+                  <Eye className="h-4 w-4" />
+                </Button>
+              </Link>
             </div>
           </div>
         </CardContent>

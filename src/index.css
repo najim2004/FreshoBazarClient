@@ -35,9 +35,15 @@ body {
   @apply bg-primary/80 hover:bg-primary;
 }
 
-.description h1, h2, h3, h4, h5, h6 {
-  @apply  !text-color-ternary;
+.description h1,
+.description h2,
+.description h3,
+.description h4,
+.description h5,
+.description h6 {
+  @apply !text-color-ternary;
 }
+
 .description p {
   @apply text-color-ternary text-sm leading-relaxed;
 }

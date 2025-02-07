@@ -48,7 +48,7 @@ export const useAddItemToCart = () => {
       dispatcher(setLoading(true));
       if (!isTokenAvailable) {
         navigate("/login");
-        return {success:false, message:"Please login first", cart:null,};
+        return { success: false, message: "Please login first", cart: null };
       }
       const { data } = await addItemToCartMutation({
         variables: { item },

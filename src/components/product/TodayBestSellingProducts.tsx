@@ -1,11 +1,10 @@
 import React from "react";
-import { ProductCard } from "./ProductCard";
+import { ProductCard, ProductCardSkeleton } from "./ProductCard";
 import { useGetProducts } from "@/apollo/hooks/product.hooks";
 
 export const TodayBestSellingProducts: React.FC = () => {
   const { products, loading, error } = useGetProducts({});
-  // Handle loading and error states
-  if (loading) return <p>Loading...</p>;
+
   if (error) return <p>Error: Failed to get products</p>;
 
   return (
@@ -51,6 +50,11 @@ export const TodayBestSellingProducts: React.FC = () => {
             updatedAt={product?.updatedAt}
           />
         ))}
+        {loading &&
+          (products ? products?.length <= 0 : true) &&
+          [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map(() => (
+            <ProductCardSkeleton />
+          ))}
       </div>
     </section>
   );

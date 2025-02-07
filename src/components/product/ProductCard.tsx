@@ -4,9 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { NavigateFunction, useLocation, useNavigate } from "react-router-dom";
-import { gql, useMutation } from "@apollo/client";
-import { useDispatch, useSelector } from "react-redux";
-import { setFavoriteProducts } from "@/redux/slices/favoriteProductSlice";
+import { useSelector } from "react-redux";
 import { RootState } from "@/redux/rootReducer";
 import { useToast } from "@/hooks/use-toast";
 import {
@@ -16,6 +14,8 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import { useAddItemToCart } from "@/apollo/hooks/cart.hooks";
+import { useToggleFavorite } from "@/apollo/hooks/favorite.hooks";
+import { Skeleton } from "../ui/skeleton";
 
 // Define ProductCardProps interface to ensure proper typing for props passed to the component.
 interface ProductCardProps {
@@ -31,51 +31,6 @@ interface ProductCardProps {
   updatedAt?: Date;
 }
 
-// Define the structure of the response after toggling the favorite product.
-interface ToggleFavoriteResponse {
-  toggleFavorite: {
-    success?: boolean;
-    error?: boolean;
-    error_message?: string | null;
-    favorites?: Favorites;
-  };
-}
-
-// Define the structure of the request variables when toggling favorite.
-interface ToggleFavoriteVariables {
-  productId?: string;
-}
-
-// Define the structure of favorites object
-interface Favorites {
-  _id: string;
-  userId: string;
-  products?: Array<{ productId: string; addedAt?: Date }>;
-  createdAt?: Date;
-  updatedAt?: Date;
-}
-
-// GraphQL mutation to toggle favorite product.
-const TOGGLE_FAVORITE = gql`
-  mutation ToggleFavorite($productId: ID!) {
-    toggleFavorite(productId: $productId) {
-      success
-      error
-      error_message
-      favorites {
-        _id
-        userId
-        products {
-          productId
-          addedAt
-        }
-        updatedAt
-        createdAt
-      }
-    }
-  }
-`;
-
 export const ProductCard = ({
   id = "",
   title = "Farm fresh organic meat 1 kg",
@@ -88,50 +43,45 @@ export const ProductCard = ({
   isFavorite = false,
   updatedAt,
 }: ProductCardProps) => {
+  const { addCartItem, loading: isCartLoading } = useAddItemToCart();
+  const { toggleFavorite, loading: isFavoriteLoading } = useToggleFavorite();
   const [quantity, setQuantity] = useState<number>(1);
-  const [, setIsFavorite] = useState(false);
+  const [favorite, setFavorite] = useState(false);
 
   const navigate: NavigateFunction = useNavigate();
 
-  const favoriteProducts = useSelector(
-    (state: RootState) => state?.favoriteProducts?.favoriteProducts
+  const { products } = useSelector(
+    (state: RootState) => state?.favoriteProducts
   );
-  const dispatch = useDispatch();
+
   const { toast } = useToast();
   const location = useLocation();
+
   const isDashboard = location?.pathname?.includes("/dashboard");
 
-  const [toggleFavorite, { data, loading }] = useMutation<
-    ToggleFavoriteResponse,
-    ToggleFavoriteVariables
-  >(TOGGLE_FAVORITE);
-
-  const { addCartItem, loading: isCartLoading } = useAddItemToCart();
-
-
   useEffect(() => {
-    if (data?.toggleFavorite) {
-      const { success, error, favorites } = data.toggleFavorite;
-      if (success && !error && favorites) {
-        
-        dispatch(setFavoriteProducts(favorites));
+    const findTheProduct = products.find((p) => p.product_id == id);
+    if (findTheProduct) setFavorite(true);
+    else setFavorite(false);
+  }, [products, id]);
+
+  const onFavoriteClick = async (id: string | undefined): Promise<void> => {
+    if (!isFavoriteLoading && id) {
+      const res = await toggleFavorite(id);
+      if (res?.success) {
+        toast({
+          title: "Success",
+          description: res?.message || "Operation successful!",
+          duration: 3000,
+        });
+      } else {
+        toast({
+          title: "Error",
+          description: res?.message || "Failed to add item to favorite list!",
+          duration: 3000,
+          variant: "destructive",
+        });
       }
-    }
-  }, [data?.toggleFavorite, dispatch]);
-
-  
-  useEffect(() => {
-    const isExist = favoriteProducts?.data?.products?.find(
-      (product) => product.productId === id
-    );
-    setIsFavorite(!!isExist); 
-  }, [favoriteProducts?.data?.products, id]);
-
-  const onFavoriteClick = (id: string | undefined): void => {
-    if (!loading && id) {
-      toggleFavorite({
-        variables: { productId: id },
-      });
     }
   };
 
@@ -218,7 +168,7 @@ export const ProductCard = ({
             >
               <Heart
                 className={`w-5 h-5 ${
-                  isFavorite ? "fill-red-500 stroke-red-500" : "stroke-gray-600"
+                  favorite ? "fill-red-500 stroke-red-500" : "stroke-gray-600"
                 }`}
               />
             </Button>
@@ -291,3 +241,42 @@ export const ProductCard = ({
     </Card>
   );
 };
+
+export function ProductCardSkeleton() {
+  return (
+    <div className="w-full max-w-sm rounded-sm border-none">
+      <div className="p-4">
+        {/* Image Section Skeleton */}
+        <div className="relative">
+          <Skeleton className="w-full h-48 rounded-lg" />
+
+          {/* Discount Badge Skeleton */}
+          <Skeleton className="absolute top-2 left-2 h-6 w-12 rounded-sm" />
+
+          {/* Action Button Skeleton */}
+          <Skeleton className="absolute top-2 right-2 h-8 w-8 rounded-full" />
+        </div>
+
+        {/* Product Details Skeleton */}
+        <div className="mt-4 space-y-2">
+          <Skeleton className="h-4 w-1/4" />
+          <Skeleton className="h-6 w-3/4" />
+          <div className="flex justify-between items-center">
+            <Skeleton className="h-5 w-1/3" />
+            <Skeleton className="h-4 w-1/4" />
+          </div>
+        </div>
+
+        {/* Quantity Controls Skeleton */}
+        <div className="mt-4 flex items-center gap-2 justify-between">
+          <div className="flex items-center border rounded-md">
+            <Skeleton className="h-9 w-9 rounded-l-md" />
+            <Skeleton className="h-9 w-12 border-x" />
+            <Skeleton className="h-9 w-9 rounded-r-md" />
+          </div>
+          <Skeleton className="h-10 w-10 rounded-full" />
+        </div>
+      </div>
+    </div>
+  );
+}

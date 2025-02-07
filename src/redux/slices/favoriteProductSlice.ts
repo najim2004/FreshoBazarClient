@@ -1,64 +1,58 @@
+import { FavoriteProducts } from "@/apollo/types/favorite.types";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-interface Product {
-  productId: string;
-  addedAt?: Date;
-}
-
-interface Favorites {
-  _id: string;
-  userId: string;
-  products?: Product[];
-  createdAt?: Date;
-  updatedAt?: Date;
-}
-
 interface FavoriteProductsState {
-  favoriteProducts: {
-    success?: boolean;
-    error?: boolean;
-    error_message?: string | null;
-    data?: Favorites;
-  };
+  products: FavoriteProducts[];
+  loading: boolean;
+  error: boolean;
+  message: string;
 }
 
 const initialState: FavoriteProductsState = {
-  favoriteProducts: {
-    success: false,
-    error: false,
-    error_message: null,
-    data: undefined,
-  },
+  products: [],
+  loading: false,
+  error: false,
+  message: "",
 };
 
 const favoriteProductsSlice = createSlice({
   name: "favoriteProducts",
   initialState,
   reducers: {
-    setFavoriteProducts: (state, action: PayloadAction<Favorites>) => {
-      state.favoriteProducts = {
-        ...state.favoriteProducts,
-        success: true,
-        error: false,
-        error_message: null,
-        data: action.payload,
-      };
+    setFavoriteLoading: (state, action: PayloadAction<boolean>) => {
+      state.loading = action.payload;
+    },
+    setFavoriteProducts: (state, action: PayloadAction<FavoriteProducts[]>) => {
+      state.products = action?.payload;
+    },
+    addFavorite: (state, action: PayloadAction<string>) => {
+      state.products.push({
+        product_id: action.payload,
+        addedAt: `${Date.now()}`,
+      });
+    },
+    removeFavorite: (state, action: PayloadAction<string>) => {
+      state.products = state.products.filter(
+        (p) => p.product_id !== action.payload
+      );
     },
     setError: (state, action: PayloadAction<string>) => {
-      state.favoriteProducts = {
-        ...state.favoriteProducts,
-        success: false,
-        error: true,
-        error_message: action.payload,
-      };
+      state.error = true;
+      state.message = action.payload;
     },
     resetFavoriteProducts: (state) => {
-      state.favoriteProducts = initialState.favoriteProducts;
+      state = initialState;
     },
   },
 });
 
 // Export actions and reducer
-export const { setFavoriteProducts, setError, resetFavoriteProducts } =
-  favoriteProductsSlice.actions;
+export const {
+  setFavoriteLoading,
+  setFavoriteProducts,
+  setError,
+  addFavorite,
+  removeFavorite,
+  resetFavoriteProducts,
+} = favoriteProductsSlice.actions;
 export default favoriteProductsSlice.reducer;

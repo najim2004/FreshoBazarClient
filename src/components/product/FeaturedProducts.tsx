@@ -1,6 +1,6 @@
 import React from "react";
 import { BiExpandHorizontal } from "react-icons/bi";
-import { ProductCard } from "./ProductCard";
+import { ProductCard, ProductCardSkeleton } from "./ProductCard";
 import { Swiper, SwiperSlide } from "swiper/react";
 
 // Import Swiper styles
@@ -11,7 +11,7 @@ import { FreeMode, Autoplay } from "swiper/modules"; // Add Autoplay
 import { useGetFeaturedProducts } from "@/apollo/hooks/product.hooks";
 
 export const FeaturedProducts: React.FC = () => {
-  const { products } = useGetFeaturedProducts();
+  const { products, loading } = useGetFeaturedProducts();
   return (
     <section className="mt-10">
       <div className="flex justify-between items-center">
@@ -60,9 +60,15 @@ export const FeaturedProducts: React.FC = () => {
               />
             </SwiperSlide>
           ))}
+          {loading &&
+            (products ? products?.length <= 0 : true) &&
+            [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map((i) => (
+              <SwiperSlide className="mb-1" key={i}>
+                <ProductCardSkeleton />
+              </SwiperSlide>
+            ))}
         </Swiper>
       </div>
     </section>
   );
 };
-
