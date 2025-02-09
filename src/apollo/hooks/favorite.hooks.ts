@@ -9,7 +9,7 @@ import {
   setError,
   setFavoriteLoading,
   setFavoriteProducts,
-} from "@/redux/slices/favoriteProductSlice";
+} from "@/redux/slices/favoriteProduct.slice";
 import { TOGGLE_FAVORITE } from "../mutations/favorite.mutations";
 
 export const useGetFavorites = () => {

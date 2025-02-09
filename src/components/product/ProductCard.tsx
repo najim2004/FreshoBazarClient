@@ -40,7 +40,6 @@ export const ProductCard = ({
   unitType = "kg",
   unitSize = 1,
   category = "Meat",
-  isFavorite = false,
   updatedAt,
 }: ProductCardProps) => {
   const { addCartItem, loading: isCartLoading } = useAddItemToCart();
@@ -53,7 +52,6 @@ export const ProductCard = ({
   const { products } = useSelector(
     (state: RootState) => state?.favoriteProducts
   );
-
   const { toast } = useToast();
   const location = useLocation();
 

@@ -10,7 +10,7 @@ import {
 import { GET_USER_BY_ID } from "../queries/user.queries";
 import { useDispatch } from "react-redux";
 import { setLoading, setUser } from "@/redux/slices/user.slice";
-import { setError } from "@/redux/slices/favoriteProductSlice";
+import { setError } from "@/redux/slices/favoriteProduct.slice";
 import { useGetCart } from "./cart.hooks";
 import { useGetFavorites } from "./favorite.hooks";
 

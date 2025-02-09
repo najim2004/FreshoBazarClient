@@ -29,7 +29,7 @@ export const Shop: React.FC = () => {
   });
   const [searchParams] = useSearchParams();
   const { slug, sub_slug } = useParams();
-  const categories = useSelector((state: RootState) => state?.categories);
+  const { categories } = useSelector((state: RootState) => state?.categories);
   const [products, setProducts] = React.useState<Product[]>([]);
 
   React.useEffect(() => {
@@ -54,7 +54,7 @@ export const Shop: React.FC = () => {
   } = useGetProducts({
     categoryId:
       slug !== "all"
-        ? categories.find((category) => category.slug === slug)?._id
+        ? categories?.find((category) => category.slug === slug)?._id
         : "",
     subcategories: sub_slug ? [sub_slug.toString()] : [],
     search: allParams.search,

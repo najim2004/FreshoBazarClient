@@ -5,7 +5,6 @@ import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/rootReducer";
 import { Skeleton } from "../ui/skeleton";
-// import { Separator } from "@/components/ui/separator";
 
 interface Subcategory {
   slug: string;
@@ -20,7 +19,9 @@ interface Category {
 }
 
 export const Categories: React.FC = () => {
-  const categories = useSelector((state: RootState) => state?.categories);
+  const { categories, loading } = useSelector(
+    (state: RootState) => state?.categories
+  );
   const [expandedCategories, setExpandedCategories] = useState<string[]>([]);
   const navigator = useNavigate();
   const location = useLocation();
@@ -47,6 +48,10 @@ export const Categories: React.FC = () => {
     navigator(`/shop/category/${category?.slug}`);
   };
 
+  if (loading) {
+    return <CategoriesSkeleton />;
+  }
+
   return (
     <>
       {categories.map((category) => (
@@ -71,7 +76,7 @@ export const Categories: React.FC = () => {
           </Button>
           {expandedCategories.includes(category._id) &&
             category.subcategories && (
-              <div className="ml-4 mt-1 space-y-1 flex flex-col">
+              <div className="ml-4 mt-1 space-y-1 flex flex-col border-l-2 border-gray-200">
                 {category.subcategories.map((subcategory) => (
                   <NavLink
                     className="w-max justify-start pl-4 font-normal text-sm text-gray-600 hover:text-primary transition-colors duration-200"

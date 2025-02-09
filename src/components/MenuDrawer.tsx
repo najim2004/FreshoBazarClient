@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Categories } from "@/components/categories/Categories";
 import {
   Sheet,
@@ -11,10 +11,15 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { ChevronDown, ChevronRight, Menu } from "lucide-react";
 import { Button } from "./ui/button";
+import { useLocation } from "react-router-dom";
 
 export const MenuDrawer: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [expandCategories, setExpandCategories] = useState<boolean>(false);
+  const location = useLocation();
+  useEffect(() => {
+    setIsOpen(false);
+  }, [location]);
 
   return (
     <div className="lg:hidden">

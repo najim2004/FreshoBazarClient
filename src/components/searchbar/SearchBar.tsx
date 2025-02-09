@@ -14,7 +14,7 @@ import { FaSearch } from "react-icons/fa";
 import { Filter } from "./Filter";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/rootReducer";
-import { Subcategory } from "@/redux/slices/categoriesSlice";
+import { Subcategory } from "@/redux/slices/categories.slice";
 import {
   useLocation,
   useNavigate,
@@ -50,7 +50,9 @@ export const SearchBar: React.FC = () => {
   const [showSuggestions, setShowSuggestions] = useState<boolean>(false);
   const [filterCategory, setFilterCategory] = useState<string>("all");
   const [filterSubCategory, setFilterSubCategory] = useState<Subcategory[]>([]);
-  const categories = useSelector((state: RootState) => state?.categories);
+  const categories = useSelector(
+    (state: RootState) => state?.categories.categories
+  );
   const [allParams, setAllParams] = useState<AllParamsState>({
     search: "",
     subcategories: [],

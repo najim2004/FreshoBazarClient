@@ -24,7 +24,7 @@ import { RootState } from "@/redux/rootReducer";
 import { useSelector } from "react-redux";
 import { gql, useMutation } from "@apollo/client";
 import { useToast } from "@/hooks/use-toast";
-import { Category } from "@/redux/slices/categoriesSlice";
+import { Category } from "@/redux/slices/categories.slice";
 
 type ProductFormData = {
   title: string;
@@ -103,7 +103,7 @@ export const ProductUploadModal: React.FC = () => {
 
   const fileInputRef = React.useRef<HTMLInputElement>(null);
 
-  const categories = useSelector((state: RootState) => state?.categories);
+  const categories = useSelector((state: RootState) => state?.categories?.categories);
 
   const {
     register,

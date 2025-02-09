@@ -13,7 +13,6 @@ export const PRODUCT_FIELDS = gql`
     unitType
     unitSize
     categoryName
-    isFavorite
     updatedAt
   }
 `;

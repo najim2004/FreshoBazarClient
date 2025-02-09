@@ -55,7 +55,6 @@ export const FeaturedProducts: React.FC = () => {
                 unitSize={product.unitSize}
                 category={product.categoryName}
                 image={product?.thumbnail?.url}
-                isFavorite={product?.isFavorite}
                 updatedAt={product?.updatedAt}
               />
             </SwiperSlide>

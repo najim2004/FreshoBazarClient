@@ -35,7 +35,6 @@ export interface Product {
   discountValue?: number;
   averageRating?: number;
   totalReviews?: number;
-  isFavorite?: boolean;
   updatedAt?: Date;
 }
 

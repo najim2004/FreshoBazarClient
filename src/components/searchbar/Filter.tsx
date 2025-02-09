@@ -9,7 +9,7 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
-import { Subcategory } from "@/redux/slices/categoriesSlice";
+import { Subcategory } from "@/redux/slices/categories.slice";
 import { AllParamsState } from "./SearchBar";
 import { useParams } from "react-router-dom";
 

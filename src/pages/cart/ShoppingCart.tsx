@@ -8,10 +8,11 @@ import { Separator } from "@/components/ui/separator";
 import { Input } from "@/components/ui/input";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/rootReducer";
+import { CartItemSkeleton } from "@/components/cart/CartItemSkeleton";
 
 export const ShoppingCart: React.FC = () => {
   const [promoCode, setPromoCode] = useState("");
-  const myCart = useSelector((state: RootState) => state?.myCart.cart);
+  const { cart, loading } = useSelector((state: RootState) => state?.myCart);
   return (
     <div className="flex flex-col lg:flex-row gap-6 w-full">
       <div className="flex-grow">
@@ -36,7 +37,7 @@ export const ShoppingCart: React.FC = () => {
               <Button variant="destructive">Remove Selected</Button>
             </div>
 
-            {myCart?.items?.map((item) => (
+            {cart?.items?.map((item) => (
               <CartItem
                 key={item.product_id}
                 id={item.product_id}
@@ -46,6 +47,8 @@ export const ShoppingCart: React.FC = () => {
                 thumbnail={item.thumbnail}
               />
             ))}
+            {loading &&
+              [0, 1, 2, 3, 4].map((i) => <CartItemSkeleton key={i} />)}
           </CardContent>
         </Card>
       </div>

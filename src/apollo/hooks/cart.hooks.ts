@@ -9,19 +9,25 @@ import {
 } from "../mutations/cart.mutations";
 import { CartInput, CartPayload } from "../types/cart.types";
 import { useDispatch } from "react-redux";
-import { setCart, setError, setLoading } from "@/redux/slices/cartSlice";
+import { setCart, setError, setLoading } from "@/redux/slices/cart.slice";
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 const isTokenAvailable: string | null = localStorage?.getItem("token");
 
 export const useGetCart = () => {
-  const { data, error } = useQuery<{ getCart: CartPayload }>(GET_CART, {
-    skip: !isTokenAvailable,
-    fetchPolicy: "cache-and-network",
-  });
+  const { data, error, loading } = useQuery<{ getCart: CartPayload }>(
+    GET_CART,
+    {
+      skip: !isTokenAvailable,
+      fetchPolicy: "cache-and-network",
+    }
+  );
   const dispatcher = useDispatch();
+  useEffect(() => {
+    dispatcher(setLoading(loading));
+  }, [loading, dispatcher]);
   try {
-    dispatcher(setLoading(true));
     if (data?.getCart?.success && data?.getCart?.cart)
       dispatcher(setCart(data?.getCart?.cart));
     else if (!data?.getCart.success && data?.getCart.error) {
@@ -31,8 +37,6 @@ export const useGetCart = () => {
   } catch (e: any) {
     dispatcher(setError(e?.message || error?.message));
     console.log(error);
-  } finally {
-    dispatcher(setLoading(false));
   }
 };
 
@@ -76,7 +80,7 @@ export const useAddItemToCart = () => {
   return { addCartItem, loading, error };
 };
 
-export function useUpdateCartItem() {
+export const useUpdateCartItem = () => {
   const [updateCartItemMutation, { loading, error }] = useMutation<{
     updateCartItem: CartPayload;
   }>(UPDATE_CART_ITEM);
@@ -92,9 +96,9 @@ export function useUpdateCartItem() {
   };
 
   return { updateItem, loading, error };
-}
+};
 
-export function useRemoveItemFromCart() {
+export const useRemoveItemFromCart = () => {
   const [removeItemFromCartMutation, { loading, error }] = useMutation<{
     updateCartItem: CartPayload;
   }>(REMOVE_ITEM_FROM_CART);
@@ -104,13 +108,14 @@ export function useRemoveItemFromCart() {
       await removeItemFromCartMutation({
         variables: { product_id },
       });
+      
     } catch (err) {
       console.error("Error removing item from cart:", err);
     }
   };
 
   return { removeItem, loading, error };
-}
+};
 
 export function useClearCart() {
   const [clearCartMutation, { loading, error }] = useMutation<{

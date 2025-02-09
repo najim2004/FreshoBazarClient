@@ -41,7 +41,10 @@ const favoriteProductsSlice = createSlice({
       state.message = action.payload;
     },
     resetFavoriteProducts: (state) => {
-      state = initialState;
+      state.products = [];
+      state.loading = false;
+      state.error = false;
+      state.message = "";
     },
   },
 });

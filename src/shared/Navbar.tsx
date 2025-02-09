@@ -15,6 +15,7 @@ export const Navbar: React.FC = () => {
   const { isAuthenticated, currentUser } = useSelector(
     (state: RootState) => state?.user
   );
+  const { cart } = useSelector((state: RootState) => state.myCart);
   return (
     <>
       <div className="bg-white/95 backdrop-blur-md shadow fixed top-0 left-0 w-full z-50">
@@ -62,7 +63,7 @@ export const Navbar: React.FC = () => {
                     </Button>
                   </Link>
                   <span className="absolute top-1 right-1 transform translate-x-1/2 -translate-y-1/2 bg-red-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold">
-                    10
+                    {cart?.items?.length}
                   </span>
                 </div>
                 <AvatarMenu
